@@ -3,16 +3,10 @@
 
 #include "pch.h"
 #include <iostream>
-#include "Vector2.hpp"
-#include "Vector3.hpp"
-#include <string>
-using namespace std;
 
-int main() {
-	Vector3 v1(3, 2, 5);
-	Vector3 v2(4, 6, 1);
-	Vector3 cross = v1.Cross(v2);
-	cout << to_string(cross.x) << " " << to_string(cross.y) << " " << to_string(cross.z) << " " << to_string(cross.Mag());
+int main()
+{
+    std::cout << "Hello World!\n"; 
 }
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
