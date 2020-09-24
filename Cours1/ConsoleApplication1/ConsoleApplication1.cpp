@@ -3,23 +3,41 @@
 #include <iostream>
 #include "Vector2.hpp"
 #include "Vector3.hpp"
+#include "Vec2T.hpp"
+#include "Vec3T.hpp"
+#include "Arr.hpp"
 #include <string>
 using namespace std;
-
+void SubFunction() {
+	Arr<int> arr(4);
+	cout << arr.Get(0) << endl;
+	arr.Set(2, 120);
+	cout << arr.Get(2) << endl;
+}
 int main() {
-	Vector3 v1(3, 2, 5);
+	/*Vector3 v1(3, 2, 5);
 	Vector3 v2(4, 6, 1);
 	Vector3 cross = v1.Cross(v2);
 	cout << to_string(cross.x) << " " << to_string(cross.y) << " " << to_string(cross.z) << " " << to_string(cross.Mag());
-}
+	Vec3T<int> t0(3,5,2);
+	Vec3T<float> t1(4.5, 2, 3.25);
+	auto tres = t1.Mul(2);
+	cout << to_string(tres.x) << " " << to_string(tres.y) << " " << to_string(tres.z);*/
+	/*int tab[] = { 0,1,2,3,4 };
+	for (int i = 0; i < sizeof(tab)/sizeof(tab[0]); i++) {
+		cout << to_string(tab[i]) << " ";
+	}
 
-// Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
-// Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
+	int* c0 = tab;
+	int* c1 = &(tab[0]);
 
-// Astuces pour bien démarrer : 
-//   1. Utilisez la fenêtre Explorateur de solutions pour ajouter des fichiers et les gérer.
-//   2. Utilisez la fenêtre Team Explorer pour vous connecter au contrôle de code source.
-//   3. Utilisez la fenêtre Sortie pour voir la sortie de la génération et d'autres messages.
-//   4. Utilisez la fenêtre Liste d'erreurs pour voir les erreurs.
-//   5. Accédez à Projet > Ajouter un nouvel élément pour créer des fichiers de code, ou à Projet > Ajouter un élément existant pour ajouter des fichiers de code existants au projet.
-//   6. Pour rouvrir ce projet plus tard, accédez à Fichier > Ouvrir > Projet et sélectionnez le fichier .sln.
+	int valC = *c0++;*/
+	/*Vector2 sapin(33, 44);
+	Vector2 sapin2(55, 55);
+	sapin.incr(&sapin2);
+	cout << to_string(sapin2.x) << endl;*/
+	SubFunction();
+	cout << endl;
+ }
+
+

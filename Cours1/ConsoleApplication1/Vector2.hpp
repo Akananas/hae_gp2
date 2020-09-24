@@ -1,5 +1,7 @@
 #pragma once
 #include <math.h>  
+#include <string>
+using namespace std;
 class Vector2 {
 public:
 	float x, y;
@@ -10,6 +12,9 @@ public:
 	Vector2(float x, float y) {
 		this->x = x;
 		this->y = y;
+	}
+	~Vector2(){
+		cout << "Supprime " << to_string(x) << endl;
 	}
 	float Mag() {
 		return sqrt(this->x * this->x + this->y * this->y);
@@ -46,5 +51,12 @@ public:
 	}
 	float Dot(Vector2 otherVec) {
 		return this->x * otherVec.x + this->y * otherVec.y;
+	}
+	void incr(Vector2 * v) {
+		//(*v).x+=this->x;
+		v->x += this->x;
+	}
+	void incr(Vector2 & v) {
+		v.x += this->x;
 	}
 };
