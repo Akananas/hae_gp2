@@ -6,6 +6,7 @@
 #include "Node.cpp"
 #include "DynArr.hpp"
 #include <functional>
+
 void subFunction() {
 	Node * root = new Node(9);
 	Node* root2 = new Node(15);
@@ -64,10 +65,161 @@ void append() {
 	}*/
 	std::cout << std::endl;
 }
+void MemCpy(char* dst, char* src, int size){
+	for (int i = 0; i < size; i++) {
+		*dst = *src;
+		dst++;
+		src++;
+	}
+}
+
+char* StrChr(char* grange, char chat) {
+	if (*grange == chat) {
+		return grange;
+	}
+	if (!*grange) {
+		return nullptr;
+	}
+	return StrChr(++grange, chat);
+}
+int StrLen(char* meule) {
+	int len = 0;
+	while (*meule) {
+		meule++;
+		len++;
+	}
+	return len;
+}
+bool startsWith(char* meule, char* aiguille) {
+	int lMeule = StrLen(meule);
+	int lAiguille = StrLen(aiguille);
+
+	if (lAiguille > lMeule)
+		return false;
+
+	for (int i = 0; i < lAiguille; i++) {
+		if (aiguille[i] != meule[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+char* StrStr(char* meuleDeFoin, char* aiguille) {
+	if (aiguille == nullptr && meuleDeFoin == nullptr) {
+		return nullptr;
+	}
+	if (meuleDeFoin == nullptr) {
+		return nullptr;
+	}
+	if (*meuleDeFoin == 0) {
+		return nullptr;
+	}
+	if (startsWith(meuleDeFoin, aiguille)) {
+		return meuleDeFoin;
+	}
+	else {
+		return StrStr(++meuleDeFoin, aiguille);
+	}
+}
+
+void subFunction4() {
+	char data[] = { 1,2,3,4,5,6 };
+	char* dest = (char*)malloc(16);
+	for (int i = 0; i < 16; ++i){
+		dest[i] = 0;
+	}
+	MemCpy(dest, data, sizeof(data) * sizeof(char));
+	free(dest);
+	char* res;
+	char find[] = "meule";
+	char data2[] = "zmeuleaze";
+	res = StrChr(data, 1);
+	res = StrStr(data2,find);
+	std::cout << std::endl;
+}
+int add(int a, int b) {
+	if (b == 0) { return a; }
+	if (b < 0) {
+		return add(a - 1, b + 1);
+	}else {
+		return add(a + 1, b - 1);
+	}
+}
+int sub(int a, int b) {
+	if (b == 0) { return a; }
+	if (b < 0) { 
+		return sub(a + 1, b + 1);
+	}else {
+		return sub(a - 1, b - 1);
+	}
+}
+int mul(int a, int b) {
+	if (b == 0) { return 0; }
+	if (b < 0) {
+		return -a + mul(a, b + 1);
+	}
+	else if(b > 0){
+		return a + mul(a, b - 1);
+	}
+}
+
+int divide(int a, int b) {
+	if (b == 0) { throw "Error: Trying to divide by 0"; }
+	if (b == 1) { return a; }
+	if (b < 0) { return -divide(a, -b); }
+	if (a < 0) { return -divide(-a, b); }
+	if (a < b) { return 0; }
+	return 1 + divide(a - b, b);
+}
+
+int modulo(int a, int b) {
+	if (b == 0) { throw "Error: Trying to divide by 0"; }
+	if (b == 1) { return 0; }
+	if (b < 0) { return -modulo(a, -b); }
+	if (a < 0) { return -modulo(-a, b); }
+	if (a < b) { return a; }
+	return modulo(a - b, b);
+}
+
+
+void subFunction5() {
+	std::cout << add(5, -6) << std::endl;
+	std::cout << sub(5, -6) << std::endl;
+	std::cout << mul(5, 6) << std::endl;
+	std::cout << divide(-20, 5) << std::endl;
+	std::cout << modulo(-10,-3) << std::endl;
+}
+int StrCmp(const char* a, const char* b) {
+	if (!*a && !*b) {
+		return 0;
+	}
+	if (!*b) {
+		return 1;
+	}
+	else if (!*a) {
+		return -1;
+	}
+	if (*a == *b) {
+		return StrCmp(a+1, b+1);
+	}
+	if (*a > * b) {
+		return 1;
+	}
+	return -1;
+}
+void subFunction6() {
+	char mot1[] = "chat";
+	char mot2[] = "chien";
+	int res = StrCmp(mot1, mot2);
+	std::cout << std::endl;
+}
 int main() {
 	//subFunction();
 	//heapSort();
-	append();
+	//append();
+	//subFunction4();
+	//subFunction5();
+	subFunction6();
 }
 
 
