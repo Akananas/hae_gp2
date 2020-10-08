@@ -113,6 +113,7 @@ public:
 		return Node::merge(l, r);
 	}
 
+
 	static Node* merge(Node* a0, Node* a1);
 	static Node* fromTabRec(float* t, int tLen) {
 		if (!tLen) return nullptr;

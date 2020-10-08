@@ -2,12 +2,13 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <chrono>
 #include "Node.hpp"
 #include "Node.cpp"
 #include "DynArr.hpp"
 #include "IntArray.hpp"
 #include <functional>
-
+#include "Lib.hpp"
 void subFunction() {
 	Node * root = new Node(9);
 	Node* root2 = new Node(15);
@@ -219,13 +220,20 @@ void subFunction7() {
 	a.push_front(10);
 	a.push_back(10);
 	a.insert(3, 10);
-	a.insert(20, 30);
 	int find = a.Search(3);
 	int find2 = a.Search(20);
 	int insertAt2 = a.searchInsertionPos(1);
+	int insertAt3 = a.searchInsertionPosRec(1);
 	a.insert(a.searchInsertionPos(20), 20);
 	a.insert(a.searchInsertionPos(1), 1);
-
+	a = *IntArray::sort(&a,a.allocSize);
+	int insertAt6 = a.searchInsertionPos(4);
+	int insertAt4 = a.binarySearch(4,0,a.allocSize-1);
+	int insertAt5 = a.binarySearch(250,0,a.allocSize-1);
+	a.insert(a.binaryInsertSearch(15,0,a.allocSize - 1), 15);
+	a.insert(a.binaryInsertSearch(25,0,a.allocSize - 1), 25);
+	a.insert(a.binaryInsertSearch(-1,0,a.allocSize - 1), -1);
+	a.insert(a.binaryInsertSearch(250,0,a.allocSize - 1), 250);
 	std::cout << std::endl;
 }
 int main() {
