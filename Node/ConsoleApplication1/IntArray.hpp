@@ -1,8 +1,10 @@
 #pragma once
+#include <stdlib.h>
 class IntArray{
 public:
-	int* data;
+	int* data = nullptr;
 	int allocSize = 0;
+
 	IntArray(int size) {
 		data = (int*)malloc(size * sizeof(int));
 		for (int i = 0; i < size; i++) {
@@ -24,7 +26,7 @@ public:
 	
 	void Resize(int newSize) {
 		if (newSize > allocSize) {
-			realloc(data,newSize * sizeof(int));
+			data = (int*)realloc(data,newSize * sizeof(int));
 			for (int i = allocSize; i < newSize; i++) {
 				data[i] = 0;
 			}
@@ -78,8 +80,29 @@ public:
 	}
 
 	void push_front(int val) {
-		Resize(allocSize + 1);
+		insert(0, val);
+	}	
 
+	void push_back(int val) {
+		Resize(allocSize + 1);
+		data[allocSize-1] = val;
+	}
+
+	void insert(int pos, int val) {
+		if (pos >= allocSize) { Resize(pos + 1); }
+		else { Resize(allocSize + 1); }
+		for (int i = allocSize-1; i > pos; i--) {
+			data[i] = data[i - 1];
+		}
+		data[pos] = val;
+	}
+	int searchInsertionPos(int key) {
+		for (int i = 1; i < allocSize; i++) {
+			if (key > data[i-1] && key <= data[i]) {
+				return i;
+			}
+		}
+		return allocSize;
 	}
  };
 

@@ -5,6 +5,7 @@
 #include "Node.hpp"
 #include "Node.cpp"
 #include "DynArr.hpp"
+#include "IntArray.hpp"
 #include <functional>
 
 void subFunction() {
@@ -213,13 +214,28 @@ void subFunction6() {
 	int res = StrCmp(mot1, mot2);
 	std::cout << std::endl;
 }
+void subFunction7() {
+	IntArray a = IntArray::iota(5);
+	a.push_front(10);
+	a.push_back(10);
+	a.insert(3, 10);
+	a.insert(20, 30);
+	int find = a.Search(3);
+	int find2 = a.Search(20);
+	int insertAt2 = a.searchInsertionPos(1);
+	a.insert(a.searchInsertionPos(20), 20);
+	a.insert(a.searchInsertionPos(1), 1);
+
+	std::cout << std::endl;
+}
 int main() {
 	//subFunction();
 	//heapSort();
 	//append();
 	//subFunction4();
 	//subFunction5();
-	subFunction6();
+	//subFunction6();
+	subFunction7();
 }
 
 
