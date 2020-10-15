@@ -3,32 +3,12 @@
 
 #include <iostream> //Inclut un header appelle iostream
 #include <SFML/Graphics.hpp> //Inclut le header Graphics.hpp du dossier SFML
-#include <algorithm>
-float catmull(float p0, float p1, float p2, float p3, float t) {
-    float q = 2.0 * p1;
-    float t2 = t * t;
-
-    q += (-p0 + p2) * t;
-    q += (2.0 * p0 - 5.0 * p1 + 4 * p2 - p3) * t2;
-    q += (-p0 + 3 * p1 - 3 * p2 + p3) * t2 * t;
-
-    return 0.5 * q;
-}
-sf::Vertex getVert(sf::VertexArray point, int idx) {
-    return point[std::clamp(idx, 0, (int)point.getVertexCount() - 1)];
-}
-sf::VertexArray c2(float i, sf::VertexArray point) {
-
-    return point;
-}
-sf::VertexArray plotWhole(float t, sf::VertexArray point) {
-    return c2(t * (point.getVertexCount() - 1), point);
-}
+#include "catmull2.hpp"
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1280 , 720), "SFML works!", sf::Style::None);//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
     sf::Color vertColors[]{
-        sf::Color::Cyan,
+        sf::Color::Cyan,    
         sf::Color::Green,
         sf::Color::Magenta
     };
