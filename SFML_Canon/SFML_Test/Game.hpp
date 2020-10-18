@@ -7,17 +7,25 @@ public:
 	sf::RenderWindow* win;
 	sf::RectangleShape player;
 	std::vector<Bullet> bullets;
+	sf::Vertex mouseScope[3] = {};
+	float getMag(sf::Vector2f vec) {
+		return sqrt(vec.x * vec.x + vec.y * vec.y);
+	}
 	Game(sf::RenderWindow* win){
 		this->win = win;
 		player = sf::RectangleShape(sf::Vector2f(64, 64));
 		player.setFillColor(sf::Color(0xF57F5Dff));
 		player.setOutlineColor(sf::Color(0x59EB5Dff));
 		player.setOrigin(32, 32);
+		for (int i = 0; i < 3; i++) {
+			mouseScope[i].color = sf::Color::Green;
+		}
 	}
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::MouseMoved) {
 			sf::Vector2f dir(sf::Mouse::getPosition(*win).x - player.getPosition().x, sf::Mouse::getPosition(*win).y - player.getPosition().y);
 			player.setRotation(atan2(dir.y, dir.x) * 180 / 3.14);
+			mouseScope[1].position = (sf::Vector2f)sf::Mouse::getPosition(*win);
 		}
 		if (event.type == sf::Event::MouseButtonPressed) {
 			sf::Vector2f dir(sf::Mouse::getPosition(*win).x - player.getPosition().x, sf::Mouse::getPosition(*win).y - player.getPosition().y);
@@ -41,9 +49,11 @@ public:
 			dir.x++;
 		}
 		if (dir.x != 0 || dir.y != 0) {
-			dir = sf::Vector2f(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
+			float magDir = getMag(dir);
+			dir = sf::Vector2f(dir.x / magDir, dir.y / magDir);
 		}
 		player.setPosition(pos + dir);
+		mouseScope[0].position = player.getPosition();
 	}
 	void BulletUpdate() {
 		for (int i = 0; i < bullets.size(); i++) {
@@ -60,6 +70,9 @@ public:
 
 	void draw() {
 		win->draw(player);
+		sf::Vector2f lastVert = (mouseScope[1].position - mouseScope[0].position);
+		mouseScope[2].position = getMag((sf::Vector2f)win->getSize() - lastVert) * lastVert;
+		win->draw(mouseScope, 3, sf::LinesStrip);
 		for (int i = 0; i < bullets.size(); i++) {
 			win->draw(bullets[i].circle);
 		}

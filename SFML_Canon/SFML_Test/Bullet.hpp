@@ -6,7 +6,8 @@ public:
 	sf::CircleShape circle;
 	float speed = 0.0;
 	Bullet(sf::Vector2f pos, sf::Vector2f dir) {
-		circle.setRadius(5);
+		circle.setRadius(15);
+		circle.setOrigin(15, 15);
 		circle.setPosition(pos);
 		circle.setFillColor(sf::Color::Cyan);
 		this->dir = sf::Vector2f(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
