@@ -3,7 +3,6 @@
 
 #include <iostream> //Inclut un header appelle iostream
 #include <SFML/Graphics.hpp> //Inclut le header Graphics.hpp du dossier SFML
-#include "Tank.hpp";
 #include "Bullet.hpp";
 #include "Game.hpp"
 int main()
