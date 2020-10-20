@@ -8,16 +8,17 @@ public:
 	Bullet(sf::Vector2f pos, sf::Vector2f dir) {
 		circle.setRadius(15);
 		circle.setOrigin(15, 15);
-		circle.setPosition(pos);
+		sf::Vector2f normalized = sf::Vector2f(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
+		circle.setPosition(pos + normalized * (float)50);
 		circle.setFillColor(sf::Color::Cyan);
-		this->dir = sf::Vector2f(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
-		speed = 2.0;
+		this->dir = normalized;
+		speed = 10.0;
 	}
 	~Bullet() {
-		std::cout << "delete";
+		//std::cout << "delete";
 	}
-	void Move() {
-		circle.setPosition(circle.getPosition() + (dir * speed));
+	void Move(double deltaTime) {
+		circle.setPosition(circle.getPosition() + (dir * speed * (float)(60.0 * deltaTime)));
 	}
 	bool checkPos() {
 		sf::Vector2f currentPos = circle.getPosition();

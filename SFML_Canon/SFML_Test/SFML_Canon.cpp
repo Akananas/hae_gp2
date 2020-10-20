@@ -7,11 +7,30 @@
 #include "Game.hpp"
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280 , 720), "SFML works!", sf::Style::None);//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
+    sf::RenderWindow window(sf::VideoMode(1280 , 720), "Super jeu de fou");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
     //window.setMouseCursorVisible(false);
 	Game newGame(&window);
+	double frameStart = 0.0;
+	double frameEnd = 0.0;
+	window.setFramerateLimit(60);
+	sf::Text text;
+	sf::Font font;
+	if (!font.loadFromFile("../res/arial.ttf")) {
+		std::cout << "ERROR NO FONT" << std::endl;
+		return 1;
+	}
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setPosition(10, 20);
+	text.setFillColor(sf::Color::White);
+
     while (window.isOpen())//Tant que la fenetre est ouverte
     {
+		double dt = frameEnd - frameStart;
+		frameStart = Lib::getTimeStamp();
+		if (dt < 0.001) {
+			dt = 0.001;
+		}
         sf::Event event;//Creer une variable qui va contenir les inputs de l'utilisateur
 		while (window.pollEvent(event))//Execute les events
 		{
@@ -19,10 +38,13 @@ int main()
 				window.close();//Ferme la fenetre
 			newGame.processInput(event);
 		}
-		newGame.Update();
+		newGame.Update(dt);
 		window.clear();
 		newGame.draw();
+		window.draw(text);
 		window.display();
+		frameEnd = Lib::getTimeStamp();
+		text.setString("FPS: " + std::to_string((1.0/dt)));
     }
     return 0;
 }
