@@ -8,19 +8,26 @@
 class Game {
 public:
 	sf::RenderWindow* win;
-	sf::RectangleShape player;
-	sf::RectangleShape cannon;
+
 	std::vector<Bullet> bullets;
 	sf::Vertex mouseScope[3] = {};
 	sf::Vector2f defaultSize;
 	sf::Vector2f lastValidDir;
+
+	//Sprite
 	sf::Texture background;
 	sf::Sprite backgroundSprite;
+	sf::RectangleShape player;
+	sf::RectangleShape cannon;
+
+	//Sound
 	sf::Sound laser;
 	sf::SoundBuffer laserBuffer;
 	sf::Sound bulletExplosion;
 	sf::SoundBuffer bulletExplosionBuffer;
 	sf::Texture spaceship;
+	sf::Music music;
+
 	bool firing = false;
 	bool augmentSize = false;
 	bool canScreenShake = false;
@@ -34,25 +41,36 @@ public:
 
 	Game(sf::RenderWindow* win){
 		this->win = win;
+		defaultSize = win->getView().getSize();
+
 		player = sf::RectangleShape(sf::Vector2f(64, 64));
 		player.setFillColor(sf::Color(0xF57F5Dff));
 		player.setFillColor(sf::Color::Red);
 		player.setOrigin(32, 32);
 		player.setPosition(win->getSize().x / 2.0, win->getSize().y/ 2.0);
+
 		cannon = sf::RectangleShape(sf::Vector2f(50, 10));
 		cannon.setFillColor(sf::Color::White);
 		cannon.setOrigin(0,5);
 		cannon.setPosition(player.getPosition());
-		defaultSize = win->getView().getSize();
+
 		background.loadFromFile("../res/bg5.jpg");
 		backgroundSprite.setTexture(background);
 		backgroundSprite.setColor(sf::Color(255, 255, 255, 255));
+
 		laserBuffer.loadFromFile("../res/laser1.ogg");
 		laser.setBuffer(laserBuffer);
 		laser.setVolume(10);
+
 		bulletExplosionBuffer.loadFromFile("../res/laser4.ogg");
 		bulletExplosion.setBuffer(bulletExplosionBuffer);
-		bulletExplosion.setVolume(10);
+		bulletExplosion.setVolume(10); 
+
+		music.openFromFile("../res/music.ogg");
+		music.setVolume(10);
+		music.setLoop(true);
+		music.play();
+
 		for (int i = 0; i < 3; i++) {
 			mouseScope[i].color = sf::Color::Green;
 		}
@@ -105,7 +123,15 @@ public:
 			laser.play();
 			sf::Vector2f bulletPos = _bullet.circle.getPosition();
 			for (int i = 0; i < 30; i++) {
-				Particles tmp(bulletPos, dir,0.25, 2, sf::Vector2f(5,5), sf::Color(125,125,125));
+				Particles tmp(bulletPos, dir,0.25, 2, sf::Vector2f(5,5), sf::Color::Yellow, 1, 1);
+				particles.push_back(tmp);
+			}
+			for (int i = 0; i < 10; i++) {
+				Particles tmp(bulletPos, dir, 0.25, 3.5, sf::Vector2f(7.5, 7.5), sf::Color::Red, 1, 1);
+				particles.push_back(tmp);
+			}
+			for (int i = 0; i < 5; i++) {
+				Particles tmp(bulletPos, dir, 0.25, 2.75, sf::Vector2f(6, 6), sf::Color(255, 111, 0), 1, 1);
 				particles.push_back(tmp);
 			}
 		}
@@ -129,7 +155,7 @@ public:
 		if (dir.x != 0 || dir.y != 0) {
 			float magDir = getMag(dir);
 			dir = sf::Vector2f(dir.x / magDir, dir.y / magDir) * (float)60.0 * playerSpeed * (float)dt;
-			Particles part(pos, dir, 1.5, 0.25, sf::Vector2f(10, 10), sf::Color::Blue);
+			Particles part(pos - (dir * (float)2), -dir, 1.5, 0.25, sf::Vector2f(10, 10), sf::Color(125,125,125), 5, 0);
 			particles.push_back(part);
 		}
 		player.setPosition(pos + dir);
