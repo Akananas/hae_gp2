@@ -8,11 +8,10 @@
 class Game {
 public:
 	sf::RenderWindow* win;
-
-	std::vector<Bullet> bullets;
-	sf::Vertex mouseScope[3] = {};
 	sf::Vector2f defaultSize;
-	sf::Vector2f lastValidDir;
+
+	//Viseur
+	sf::Vertex mouseScope[3] = {};
 
 	//Sprite
 	sf::Texture background;
@@ -28,11 +27,17 @@ public:
 	sf::Texture spaceship;
 	sf::Music music;
 
+	sf::Vector2f lastValidDir;
+
+	float playerSpeed = 7.5;
 	bool firing = false;
 	bool augmentSize = false;
+	std::vector<Bullet> bullets;
+
 	bool canScreenShake = false;
 	int screenShakeTimer = 0;
-	float playerSpeed = 7.5;
+
+
 	std::vector<Particles> particles;
 
 	float getMag(sf::Vector2f vec) {
@@ -40,32 +45,39 @@ public:
 	}
 
 	Game(sf::RenderWindow* win){
+		//Get RenderWindow
 		this->win = win;
 		defaultSize = win->getView().getSize();
 
+		//Create player
 		player = sf::RectangleShape(sf::Vector2f(64, 64));
 		player.setFillColor(sf::Color(0xF57F5Dff));
 		player.setFillColor(sf::Color::Red);
 		player.setOrigin(32, 32);
 		player.setPosition(win->getSize().x / 2.0, win->getSize().y/ 2.0);
 
+		//Create cannon
 		cannon = sf::RectangleShape(sf::Vector2f(50, 10));
 		cannon.setFillColor(sf::Color::White);
 		cannon.setOrigin(0,5);
 		cannon.setPosition(player.getPosition());
 
+		//Create background
 		background.loadFromFile("../res/bg5.jpg");
 		backgroundSprite.setTexture(background);
 		backgroundSprite.setColor(sf::Color(255, 255, 255, 255));
 
+		//Load shooting sound
 		laserBuffer.loadFromFile("../res/laser1.ogg");
 		laser.setBuffer(laserBuffer);
 		laser.setVolume(10);
 
+		//Load bullet sound
 		bulletExplosionBuffer.loadFromFile("../res/laser4.ogg");
 		bulletExplosion.setBuffer(bulletExplosionBuffer);
 		bulletExplosion.setVolume(10); 
-
+		
+		//Load music
 		music.openFromFile("../res/music.ogg");
 		music.setVolume(10);
 		music.setLoop(true);
@@ -78,6 +90,8 @@ public:
 
 	void FiringEffect() {
 		sf::Vector2f sizeCannon = cannon.getSize();
+
+		//Shrink cannon
 		if (!augmentSize) {
 			if (sizeCannon.x > 25) {
 				sizeCannon.x -= 5;
@@ -86,6 +100,8 @@ public:
 				augmentSize = true;
 			}
 		}
+
+		//Expand cannon
 		if (augmentSize) {
 			if (sizeCannon.x <= 25) {
 				sizeCannon.x += 5;
@@ -96,8 +112,8 @@ public:
 				augmentSize = false;
 			}
 		}
+
 		cannon.setSize(sizeCannon);
-		cannon.setOrigin(0 , 5);
 	}
 
 	void screenShake() {
@@ -157,6 +173,10 @@ public:
 			dir = sf::Vector2f(dir.x / magDir, dir.y / magDir) * (float)60.0 * playerSpeed * (float)dt;
 			Particles part(pos - (dir * (float)2), -dir, 1.5, 0.25, sf::Vector2f(10, 10), sf::Color(125,125,125), 5, 0);
 			particles.push_back(part);
+			Particles roue1(pos - (dir * (float)2), sf::Vector2f(0, 0), 1.5, 0.25, sf::Vector2f(10, 10), sf::Color::Red, 1, 0);
+			Particles roue2(pos - (dir * (float)2), sf::Vector2f(0,0), 1.5, 0.25, sf::Vector2f(10, 10), sf::Color::Red, 1, 0);
+			particles.push_back(roue1);
+			particles.push_back(roue2);
 		}
 		player.setPosition(pos + dir);
 		cannon.setPosition(pos + dir);

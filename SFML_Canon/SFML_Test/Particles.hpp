@@ -21,6 +21,9 @@ public:
 		if (dot < 0) {
 			normalized = -normalized;
 		}
+		if (dir.x == 0 && dir.y == 0) {
+			normalized = dir;
+		}
 		shape.setPosition(pos);
 		shape.setFillColor(color);
 		this->dir = normalized;
@@ -35,17 +38,21 @@ public:
 		//std::cout << "delete";
 	}
 	bool Update(double dt) {
+		//Check lifetime
 		currentLife += dt;
 		if (currentLife >= lifeTime) {
 			return true;
 		}
+		//Change position
 		sf::Vector2f randDir = dir * (float)(rand() % 5);
 		shape.setPosition(shape.getPosition() + (randDir * (speed * (float)(60.0 * dt))));
+		//Change size
 		float nextSizeScale = 1 + (lastSize * (currentLife / lifeTime));
+		shape.setSize(baseSize * nextSizeScale);
+		//Change alpha
 		sf::Color tmp = shape.getFillColor();
 		if(tmp.a > 10){ tmp.a -= alpha * dt; }
 		shape.setFillColor(tmp);
-		shape.setSize(baseSize * nextSizeScale );
 		return false;
 	}
  };

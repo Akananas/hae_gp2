@@ -6,6 +6,7 @@ public:
 	sf::CircleShape circle;
 	float speed = 0.0;
 	Bullet(sf::Vector2f pos, sf::Vector2f dir) {
+		//Create bullet circle
 		circle.setRadius(15);
 		circle.setOrigin(15, 15);
 		sf::Vector2f normalized = sf::Vector2f(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
@@ -20,6 +21,7 @@ public:
 	void Move(double deltaTime) {
 		circle.setPosition(circle.getPosition() + (dir * speed * (float)(60.0 * deltaTime)));
 	}
+	//Check if bullet is still in the screen
 	bool checkPos() {
 		sf::Vector2f currentPos = circle.getPosition();
 		if (currentPos.x > (1280 - circle.getRadius()) || currentPos.x < (0 + circle.getRadius())) {
