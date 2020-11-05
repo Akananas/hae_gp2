@@ -12,7 +12,7 @@ public:
 	sf::VertexArray line;
 	std::vector<sf::VertexArray> lines;
 	bool draw = false;
-
+	sf::Color pixelColor;
 	Tortue(){
 		tortue.setRadius(25);
 		tortue.setFillColor(sf::Color::Green);
@@ -23,6 +23,7 @@ public:
 		direction.setPosition(tortue.getPosition());
 		direction.setRotation(tortue.getRotation());
 		line.setPrimitiveType(sf::LinesStrip);
+		pixelColor = sf::Color(rand() % 256, rand() % 256, rand() % 256);
 	}
 	bool GetNextMove() {
 		if (pixelToMove <= 0 && nextRotate == 0) {
@@ -46,7 +47,8 @@ public:
 			line.clear();
 		}
 		else {
-			line.append(sf::Vertex(tortue.getPosition()));
+			pixelColor = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+			line.append(sf::Vertex(tortue.getPosition(), pixelColor));
 		}
 		draw = val;
 	}

@@ -33,6 +33,6 @@ void Tortue::Move(double dt, int side) {
 	tortue.setPosition(tortuePos);
 	direction.setPosition(tortuePos);
 	if (draw) {
-		line.append(sf::Vertex(tortuePos));
+		line.append(sf::Vertex(tortuePos, pixelColor));
 	}
 }
