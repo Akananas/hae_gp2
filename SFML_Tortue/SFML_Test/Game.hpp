@@ -8,7 +8,7 @@
 #include "Tortue.hpp"
 #include <vector>
 
-enum Commands { AVANCE_30, RECULE_30, TOURNER_GAUCHE_45, TOURNER_DROITE_45, END };
+enum Commands { AVANCE_30, RECULE_30, TOURNER_GAUCHE_45, TOURNER_DROITE_45, DESSIN_ACTIVE, DESSIN_DESACTIVE ,END };
 
 class Game {
 public:
@@ -21,13 +21,14 @@ public:
 	FILE* cfile = nullptr;
 	struct stat file_details;
 	time_t latestModifiedTime;
-	Commands nextMove;
 	bool reading = false;
 
-	std::vector<Commands> cmd;
+	std::vector<Commands> cmd = {};
 
 	Game(sf::RenderWindow* win) {
 		this->win = win;
+		stat("../res/command.txt", &file_details);
+		latestModifiedTime = file_details.st_mtime;
 	}
 
 	void processInput(sf::Event event) {
@@ -51,7 +52,10 @@ public:
 			}
 			if (event.key.code == sf::Keyboard::F) {
 				errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
-				reading = true;
+				stat("../res/command.txt", &file_details);
+				latestModifiedTime = file_details.st_mtime;
+				cmd.clear();
+				ReadFile();
 			}
 		}
 	}
@@ -70,7 +74,7 @@ public:
 	}
 	Commands StringToEnum(char moveName[]);
 
-	void ReadFile(double dt);
+	void ReadFile();
 
 	void TortueAction(double dt);
 
@@ -78,15 +82,23 @@ public:
 		if (writing) {
 			pollInput(deltaTime);
 		}
-		else if (tortue.GetNextMove() && reading) {
-			ReadFile(deltaTime);
-		}
 		else if(reading) {
 			TortueAction(deltaTime);
+			if (tortue.GetNextMove()) {
+				cmd.erase(cmd.begin());
+			}
+		}
+		else {
+			stat("../res/command.txt", &file_details);
+			if (latestModifiedTime != file_details.st_mtime) {
+				errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
+				latestModifiedTime = file_details.st_mtime;
+				ReadFile();
+			}
 		}
 	}
 
 	void draw() {
-		win->draw(tortue);
+		tortue.drawTortue(win);
 	}
 };

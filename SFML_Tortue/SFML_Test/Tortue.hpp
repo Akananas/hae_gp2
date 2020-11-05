@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include <vector>
-class Tortue : public sf::Drawable{
+class Tortue{
 public:
 	sf::CircleShape tortue;
 	sf::RectangleShape direction;
@@ -9,6 +9,10 @@ public:
 	float nextRotate = 0;
 	float speed = 5;
 	float rotSpeed = 2.5f;
+	sf::VertexArray line;
+	std::vector<sf::VertexArray> lines;
+	bool draw = false;
+
 	Tortue(){
 		tortue.setRadius(25);
 		tortue.setFillColor(sf::Color::Green);
@@ -18,6 +22,7 @@ public:
 		direction.setOrigin(0, 4);
 		direction.setPosition(tortue.getPosition());
 		direction.setRotation(tortue.getRotation());
+		line.setPrimitiveType(sf::LinesStrip);
 	}
 	bool GetNextMove() {
 		if (pixelToMove <= 0 && nextRotate == 0) {
@@ -29,17 +34,29 @@ public:
 
 	void Move(double dt, int side);
 
-
 	sf::Vector2f rotateVector(sf::Vector2f pos) {
 		float angle = tortue.getRotation() * (3.14159 / 180.0);
 		sf::Vector2f dir(cos(angle), sin(angle));
 		return dir;
 	}
-
-
-private:
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-		target.draw(tortue, states);
-		target.draw(direction, states);
+	void ChangeDraw(bool val) {
+		if (!val) {
+			sf::VertexArray tmpLine = line;
+			lines.push_back(tmpLine);
+			line.clear();
+		}
+		else {
+			line.append(sf::Vertex(tortue.getPosition()));
+		}
+		draw = val;
 	}
+	void drawTortue(sf::RenderWindow* win) {
+		win->draw(tortue);
+		win->draw(direction);
+		for (int i = 0; i < lines.size(); i++) {
+			win->draw(lines[i]);
+		}
+		win->draw(line);
+	}
+
 };

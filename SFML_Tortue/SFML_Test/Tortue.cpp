@@ -32,4 +32,7 @@ void Tortue::Move(double dt, int side) {
 	tortuePos.y += dir.y;
 	tortue.setPosition(tortuePos);
 	direction.setPosition(tortuePos);
+	if (draw) {
+		line.append(sf::Vertex(tortuePos));
+	}
 }
