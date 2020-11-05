@@ -5,10 +5,10 @@
 #include "SFML/Audio.hpp"
 #include <sys/stat.h>
 #include <ctime>
-#include "Lib.hpp"
 #include "Tortue.hpp"
+#include <vector>
 
-enum Commands { AVANCE_30, RECULE_30, TOURNER_GAUCHE_45, TOURNER_DROITE_45, DESSIN_ACTIVE, DESSIN_DESACTIVE };
+enum Commands { AVANCE_30, RECULE_30, TOURNER_GAUCHE_45, TOURNER_DROITE_45, END };
 
 class Game {
 public:
@@ -21,21 +21,18 @@ public:
 	FILE* cfile = nullptr;
 	struct stat file_details;
 	time_t latestModifiedTime;
-	int frameCount = 6;
-	int nextMove = -1;
-	Game(sf::RenderWindow* win){
-		//Get RenderWindow
+	Commands nextMove;
+	bool reading = false;
+
+	std::vector<Commands> cmd;
+
+	Game(sf::RenderWindow* win) {
 		this->win = win;
-		Tortue tmp;
-		tortue = tmp;
-		errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
-		stat("../res/command.txt", &file_details);
-		latestModifiedTime = file_details.st_mtime;
 	}
 
 	void processInput(sf::Event event) {
-		if (writing) {
-			if (event.type == sf::Event::KeyPressed) {
+		if (event.type == sf::Event::KeyPressed) {
+			if (writing) {
 				if (event.key.code == sf::Keyboard::Q) {
 					fprintf(cfile, "%i", TOURNER_GAUCHE_45);
 					fprintf(cfile, "\n");
@@ -50,17 +47,11 @@ public:
 					fclose(cfile);
 					errno_t err = fopen_s(&cfile, "../res/command.txt", "r");
 					writing = false;
-					frameCount = 0;
 				}
-				/*if (event.key.code == sf::Keyboard::E) {
-					if (tortue.draw) {
-						fprintf(cfile, "%i", DESSIN_DESACTIVE);
-					}
-					else {
-						fprintf(cfile, "%i", DESSIN_ACTIVE);
-					}
-					fprintf(cfile, "\n");
-				}*/
+			}
+			if (event.key.code == sf::Keyboard::F) {
+				errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
+				reading = true;
 			}
 		}
 	}
@@ -77,63 +68,25 @@ public:
 			//tortue.MoveBackward();
 		}
 	}
-	void ReadFile() {
-		fscanf_s(cfile, "%i", &nextMove);
-		frameCount = 0;
-		TortueAction();
-	}
+	Commands StringToEnum(char moveName[]);
 
-	void TortueAction() {
-		switch (nextMove) {
-		case AVANCE_30:
-			tortue.MoveForward(frameCount);
-			break;
-		case RECULE_30:
-			tortue.MoveBackward();
-			break;
-		case TOURNER_GAUCHE_45:
-			tortue.RotateTortue(-45);
-			break;
-		case TOURNER_DROITE_45:
-			tortue.RotateTortue(45);
-			break;
-			/*case DESSIN_ACTIVE:
-				tortue.ChangeDraw(true);
-				break;
-			case DESSIN_DESACTIVE:
-				tortue.ChangeDraw(false);
-				break;*/
-		default:
-			fclose(cfile);
-			errno_t err = fopen_s(&cfile, "../res/command.txt", "w");
-			stat("../res/command.txt", &file_details);
-			latestModifiedTime = file_details.st_mtime;
-			writing = true;
-			break;
-		}
-	}
+	void ReadFile(double dt);
+
+	void TortueAction(double dt);
 
 	void Update(double deltaTime) {
 		if (writing) {
-			/*stat("../res/command.txt", &file_details);
-			time_t modifiedTime = file_details.st_mtime;
-			if (latestModifiedTime != modifiedTime) {
-				fclose(cfile);
-				errno_t err = fopen_s(&cfile, "../res/command.txt", "r");
-				writing = false;
-			}*/
 			pollInput(deltaTime);
 		}
-		else if (frameCount > 5) {
-			ReadFile();
+		else if (tortue.GetNextMove() && reading) {
+			ReadFile(deltaTime);
 		}
-		else {
-			frameCount++;
-			TortueAction();
+		else if(reading) {
+			TortueAction(deltaTime);
 		}
 	}
 
 	void draw() {
-		tortue.drawTortue(win);
+		win->draw(tortue);
 	}
 };

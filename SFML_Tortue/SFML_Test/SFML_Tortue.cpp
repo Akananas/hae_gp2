@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp> //Inclut le header Graphics.hpp du dossier SFML
 #include "Game.hpp"
 #include "Tortue.hpp"
+#include "Lib.hpp"
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1280 , 720), "Super jeu de fou");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"

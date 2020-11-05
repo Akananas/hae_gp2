@@ -1,13 +1,14 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include <vector>
-class Tortue {
+class Tortue : public sf::Drawable{
 public:
 	sf::CircleShape tortue;
 	sf::RectangleShape direction;
-	sf::VertexArray line;
-	vector<sf::VertexArray> lines;
-	bool draw = false;
+	float pixelToMove = 0;
+	float nextRotate = 0;
+	float speed = 5;
+	float rotSpeed = 2.5f;
 	Tortue(){
 		tortue.setRadius(25);
 		tortue.setFillColor(sf::Color::Green);
@@ -17,58 +18,28 @@ public:
 		direction.setOrigin(0, 4);
 		direction.setPosition(tortue.getPosition());
 		direction.setRotation(tortue.getRotation());
-		line.setPrimitiveType(sf::LinesStrip);
 	}
-
-	void RotateTortue(float angle) {
-		tortue.rotate(angle);
-		direction.setRotation(tortue.getRotation());
-	}
-
-	void MoveForward(int nextMove) {
-		sf::Vector2f tortuePos = tortue.getPosition();
-		sf::Vector2f dir = rotateVector(tortuePos);
-		dir.x *= 20 * float(5 /nextMove);
-		dir.y *= 20 * float(5 / nextMove);
-		tortuePos.x += dir.x;
-		tortuePos.y += dir.y;
-		tortue.setPosition(tortuePos);
-		direction.setPosition(tortuePos);
-		if (draw) {
-			line.append(sf::Vertex(tortuePos));
+	bool GetNextMove() {
+		if (pixelToMove <= 0 && nextRotate == 0) {
+			return true;
 		}
+		return false;
 	}
-	void ChangeDraw(bool val) {
-		sf::VertexArray tmpLine = line;
-		lines.push_back(tmpLine);
-		line.clear();
-		draw = val;
-	}
-	void MoveBackward() {
-		sf::Vector2f tortuePos = tortue.getPosition();
-		sf::Vector2f dir = rotateVector(tortuePos);
-		dir.x *= 20;
-		dir.y *= 20;
-		tortuePos.x -= dir.x;
-		tortuePos.y -= dir.y;
-		tortue.setPosition(tortuePos);
-		direction.setPosition(tortuePos);
-		if (draw) {
-			line.append(sf::Vertex(tortuePos));
-		}
-	}
+	void RotateTortue(float angle, double dt);
 
-	void drawTortue(sf::RenderWindow* win) {
-		win->draw(tortue);
-		win->draw(direction);
-		for (int i = 0; i < lines.size(); i++) {
-			win->draw(lines[i]);
-		}
-	}
+	void Move(double dt, int side);
+
 
 	sf::Vector2f rotateVector(sf::Vector2f pos) {
 		float angle = tortue.getRotation() * (3.14159 / 180.0);
 		sf::Vector2f dir(cos(angle), sin(angle));
 		return dir;
+	}
+
+
+private:
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+		target.draw(tortue, states);
+		target.draw(direction, states);
 	}
 };
