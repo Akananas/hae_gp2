@@ -7,11 +7,20 @@
 class Game {
 public:
 	sf::RenderWindow* win;
-
+	sf::CircleShape player;
+	sf::RectangleShape block;
 
 	Game(sf::RenderWindow* win){
 		//Get RenderWindow
 		this->win = win;
+		player.setRadius(10);
+		player.setOrigin(5, 5);
+		player.setFillColor(sf::Color::Green);
+		player.setPosition(300, 300);
+		block.setOrigin(5, 5);
+		block.setSize(sf::Vector2f(10,10));
+		block.setPosition(200, 200);
+
 	}
 
 	void processInput(sf::Event event) {
@@ -36,14 +45,20 @@ public:
 			dir.x++;
 		}
 		if (dir.x != 0 || dir.y != 0) {
-
+			dir = sf::Vector2f(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
+			player.setPosition(player.getPosition() + dir);
 		}
 	}
 
 	void Update(double deltaTime) {
 		pollInput(deltaTime);
+		if (player.getGlobalBounds().intersects(block.getGlobalBounds())) {
+			block.setFillColor(sf::Color::Red);
+		}
 	}
 
 	void draw() {
+		win->draw(player);
+		win->draw(block);
 	}
 };
