@@ -55,6 +55,7 @@ public:
 				stat("../res/command.txt", &file_details);
 				latestModifiedTime = file_details.st_mtime;
 				cmd.clear();
+				tortue.SetTortue();
 				ReadFile();
 			}
 		}

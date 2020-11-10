@@ -6,11 +6,15 @@
 #include "Game.hpp"
 #include "Tortue.hpp"
 #include "Lib.hpp"
+#include <imgui.h>
+#include <imgui-SFML.h>
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1280 , 720), "Super jeu de fou");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
     //window.setMouseCursorVisible(false);
 	Game newGame(&window);
+	ImGui::SFML::Init(window);
 	double frameStart = 0.0;
 	double frameEnd = 0.0;
 	window.setFramerateLimit(60);
@@ -25,28 +29,52 @@ int main()
 	text.setPosition(10, 20);
 	text.setFillColor(sf::Color::White);
 
+	sf::Color bgColor;
+
+	float color[3] = { 0.f, 0.f, 0.f };
+	window.resetGLStates();
+	sf::Clock deltaClock;
+
     while (window.isOpen())//Tant que la fenetre est ouverte
     {
+
 		double dt = frameEnd - frameStart;
 		frameStart = Lib::getTimeStamp();
+
 		if (dt < 0.001) {
 			dt = 0.001;
 		}
         sf::Event event;//Creer une variable qui va contenir les inputs de l'utilisateur
 		while (window.pollEvent(event))//Execute les events
 		{
+			ImGui::SFML::ProcessEvent(event);
 			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))//Si on essaye de fermer la fenetre
 				window.close();//Ferme la fenetre
 			newGame.processInput(event);
 		}
+		ImGui::SFML::Update(window, deltaClock.restart());
+		ImGui::Begin("Background color"); // begin window
+											   // Background color edit
+		if (ImGui::ColorEdit3("Color", color)) {
+			// this code gets called if color value changes, so
+			// the background color is upgraded automatically!
+			bgColor.r = static_cast<sf::Uint8>(color[0] * 255.f);
+			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
+			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
+		}
+		ImGui::End(); // end window
+
 		newGame.Update(dt);
-		window.clear();
+		window.clear(bgColor); // fill background with color
 		newGame.draw();
 		window.draw(text);
+		ImGui::SFML::Render(window);
 		window.display();
 		frameEnd = Lib::getTimeStamp();
 		text.setString("FPS: " + std::to_string((1.0/dt)));
     }
+
+	ImGui::SFML::Shutdown();
     return 0;
 }
 

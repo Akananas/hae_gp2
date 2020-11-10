@@ -25,6 +25,24 @@ public:
 		line.setPrimitiveType(sf::LinesStrip);
 		pixelColor = sf::Color(rand() % 256, rand() % 256, rand() % 256);
 	}
+	void SetTortue() {
+		tortue.setRadius(25);
+		tortue.setFillColor(sf::Color::Green);
+		tortue.setOrigin(25, 25);
+		tortue.setPosition(300, 300);
+		tortue.setRotation(0);
+		direction.setSize(sf::Vector2f(50, 8));
+		direction.setOrigin(0, 4);
+		direction.setPosition(tortue.getPosition());
+		direction.setRotation(tortue.getRotation());
+		line.setPrimitiveType(sf::LinesStrip);
+		pixelColor = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+		pixelToMove = 0;
+		nextRotate = 0;
+		draw = false;
+		lines.clear();
+		line.clear();
+	}
 	bool GetNextMove() {
 		if (pixelToMove <= 0 && nextRotate == 0) {
 			return true;
