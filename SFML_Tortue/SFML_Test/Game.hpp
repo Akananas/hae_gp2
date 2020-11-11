@@ -51,12 +51,7 @@ public:
 				}
 			}
 			if (event.key.code == sf::Keyboard::F) {
-				errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
-				stat("../res/command.txt", &file_details);
-				latestModifiedTime = file_details.st_mtime;
-				cmd.clear();
-				tortue.SetTortue();
-				ReadFile();
+				StartReading();
 			}
 		}
 	}
@@ -74,28 +69,35 @@ public:
 		}
 	}
 	Commands StringToEnum(char moveName[]);
-
+	void StartReading() {
+		errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
+		stat("../res/command.txt", &file_details);
+		latestModifiedTime = file_details.st_mtime;
+		cmd.clear();
+		tortue.SetTortue();
+		ReadFile();
+	}
 	void ReadFile();
 
 	void TortueAction(double dt);
 
 	void Update(double deltaTime) {
+		stat("../res/command.txt", &file_details);
 		if (writing) {
 			pollInput(deltaTime);
 		}
-		else if(reading) {
+		else if(reading && latestModifiedTime == file_details.st_mtime) {
 			TortueAction(deltaTime);
 			if (tortue.GetNextMove()) {
 				cmd.erase(cmd.begin());
 			}
 		}
-		else {
-			stat("../res/command.txt", &file_details);
-			if (latestModifiedTime != file_details.st_mtime) {
-				errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
-				latestModifiedTime = file_details.st_mtime;
-				ReadFile();
-			}
+		else if(latestModifiedTime != file_details.st_mtime){
+			latestModifiedTime = file_details.st_mtime;
+			cmd.clear();
+			tortue.SetTortue();
+			errno_t errRead = fopen_s(&cfile, "../res/command.txt", "r");
+			ReadFile();
 		}
 	}
 

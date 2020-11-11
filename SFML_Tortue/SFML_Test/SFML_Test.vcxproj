@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="..\libs\imgui-1.79\imgui-sfml-2.1\imgui-SFML.cpp" />
     <ClCompile Include="..\libs\imgui-1.79\imgui.cpp" />
+    <ClCompile Include="..\libs\imgui-1.79\imgui_demo.cpp" />
     <ClCompile Include="..\libs\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="..\libs\imgui-1.79\imgui_widgets.cpp" />
     <ClCompile Include="Game.cpp" />

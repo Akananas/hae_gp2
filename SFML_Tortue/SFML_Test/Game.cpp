@@ -29,6 +29,7 @@ void Game::ReadFile() {
 		Commands curCmd = StringToEnum(moveString);
 		cmd.push_back(curCmd);
 		if (curCmd == END) {
+			fclose(cfile);
 			break;
 		}
 	}
@@ -56,7 +57,6 @@ void Game::TortueAction(double dt) {
 		tortue.ChangeDraw(false);
 		break;
 	default:
-		fclose(cfile);
 		reading = false;
 		break;
 	}

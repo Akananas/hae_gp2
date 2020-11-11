@@ -11,13 +11,16 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280 , 720), "Super jeu de fou");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
+    sf::RenderWindow window(sf::VideoMode(1280 , 720), "Tortue");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
     //window.setMouseCursorVisible(false);
 	Game newGame(&window);
+
 	ImGui::SFML::Init(window);
+
 	double frameStart = 0.0;
 	double frameEnd = 0.0;
 	window.setFramerateLimit(60);
+
 	sf::Text text;
 	sf::Font font;
 	if (!font.loadFromFile("../res/arial.ttf")) {
@@ -28,11 +31,9 @@ int main()
 	text.setCharacterSize(24);
 	text.setPosition(10, 20);
 	text.setFillColor(sf::Color::White);
-
 	sf::Color bgColor;
-
 	float color[3] = { 0.f, 0.f, 0.f };
-	window.resetGLStates();
+
 	sf::Clock deltaClock;
 
     while (window.isOpen())//Tant que la fenetre est ouverte
@@ -53,7 +54,9 @@ int main()
 			newGame.processInput(event);
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());
+
 		ImGui::Begin("Background color"); // begin window
+		ImGui::SetWindowSize(ImVec2(200, 100));
 											   // Background color edit
 		if (ImGui::ColorEdit3("Color", color)) {
 			// this code gets called if color value changes, so
@@ -62,6 +65,10 @@ int main()
 			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
 		}
+		if (ImGui::Button("Read commands")) {
+			newGame.StartReading();
+		}
+
 		ImGui::End(); // end window
 
 		newGame.Update(dt);
