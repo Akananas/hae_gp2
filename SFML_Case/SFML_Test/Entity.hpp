@@ -77,11 +77,13 @@ public:
 	}
 	bool hasCollision(int nextX, int nextY);
 	void overlaps(Entity e);
-	void jump() {
+	bool jump() {
 		if (state != Jumping) {
 			dy = jumpSpeed;
 			state = Jumping;
+			return true;
 		}
+		return false;
 	}
 	void UpdateEntity(double dt) {
 		MoveX();

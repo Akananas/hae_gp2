@@ -8,7 +8,7 @@
 #include <vector>
 #include "Entity.hpp"
 #include "Particle.hpp"
-#include "HotReloadShader.hpp"
+class HotReloadShader;
 
 class Game {
 public:
@@ -16,40 +16,13 @@ public:
 	sf::RenderWindow* win;
 	Entity player;
 	sf::RectangleShape  bg;
-	HotReloadShader* bgShader = nullptr;
+	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
 	std::vector<Entity> otherEntity;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<Particle> particleManager;
-	Game(sf::RenderWindow* win) {
-		this->win = win;
-		bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
-		g_time = 0.0;
-		bool isOk = tex.loadFromFile("res/bg.jpg");
-		if (!isOk) {
-			printf("ERR : LOAD FAILED\n");
-		}
-		bg.setTexture(&tex);
-		bg.setSize(sf::Vector2f(1280, 720));
-
-		bgShader = new HotReloadShader("res/bg.vert", "res/bg_time.frag");
-		player = Entity(this);
-		player.SetPosition(200,700);
-		Entity block(this);
-		block.SetPosition(1220, 700);
-		otherEntity.push_back(block);
-		int cols = 1280 / Entity::GRID_SIZE;
-		int lastLine = 720 / Entity::GRID_SIZE - 1;
-		for (int i = 0; i < cols; ++i) {
-			walls.push_back(sf::Vector2i(i, lastLine));
-		}
-		for (int i = 0; i < lastLine; ++i) {
-			walls.push_back(sf::Vector2i(0, i));
-			walls.push_back(sf::Vector2i(cols - 1, i));
-		}
-		cacheWall();
-	}
+	Game(sf::RenderWindow* win);
 
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {
@@ -87,9 +60,10 @@ public:
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
-			player.jump();
-			for (int i = 0; i < 25; i++) {
-				particleManager.push_back(Particle(player.sprite.getPosition(), 100 + rand() % 20, sf::Color::Red));
+			if (player.jump()) {
+				for (int i = 0; i < 25; i++) {
+					particleManager.push_back(Particle(player.sprite.getPosition(), 100 + rand() % 20, sf::Color::Red));
+				}
 			}
 		}
 	}
@@ -115,27 +89,7 @@ public:
 		rect.setFillColor(sf::Color::Green);
 		wallsRender.push_back(rect);
 	}
-	void draw() {
-
-		sf::RenderStates states = sf::RenderStates::Default;
-		sf::Shader * sh = &bgShader->sh;
-		///states.texture = bg.getTexture();
-		states.blendMode = sf::BlendAdd;
-		states.shader = sh;
-		sh->setUniform("texture", tex);
-		sh->setUniform("time", g_time);
-		win->draw(bg, states);
-		win->draw(player.sprite);
-		for (int i = 0; i < otherEntity.size(); i++) {
-			win->draw(otherEntity[i].sprite);
-		}
-		for (sf::RectangleShape& w : wallsRender) {
-			win->draw(w);
-		}
-		for (Particle& parts : particleManager) {
-			win->draw(parts);
-		}
-	}
+	void draw();
 	bool isWall(float cx, float cy) {
 		for (sf::Vector2i & w : walls) {
 			if (cx == w.x && cy == w.y) {

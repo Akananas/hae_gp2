@@ -1,7 +1,6 @@
 #include "HotReloadShader.hpp"
 #include  <istream>
 #include  <iostream>
-#include "Lib.hpp"
 
 string HotReloadShader::getFileContent(const std::string& path) {
 
