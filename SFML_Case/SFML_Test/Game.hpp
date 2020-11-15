@@ -23,7 +23,9 @@ public:
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<Particle> particleManager;
 	Game(sf::RenderWindow* win);
-
+	sf::RenderTexture* destX = nullptr;
+	sf::RenderTexture* destFinal = nullptr;
+	sf::Texture winTex;
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Space) {
@@ -61,9 +63,9 @@ public:
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
 			if (player.jump()) {
-				for (int i = 0; i < 25; i++) {
+				/*for (int i = 0; i < 25; i++) {
 					particleManager.push_back(Particle(player.sprite.getPosition(), 100 + rand() % 20, sf::Color::Red));
-				}
+				}*/
 			}
 		}
 	}

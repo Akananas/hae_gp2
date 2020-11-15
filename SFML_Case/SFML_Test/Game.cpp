@@ -1,6 +1,5 @@
 #include "Game.hpp"
 #include "HotReloadShader.hpp"
-
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
