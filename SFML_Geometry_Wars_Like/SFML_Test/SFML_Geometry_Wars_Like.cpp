@@ -69,7 +69,10 @@ int main()
 
 		newGame.Update(dt);
 		window.clear(bgColor); // fill background with color
+		//Draw gameobjects
 		newGame.draw();
+		//Draw UI
+		window.setView(window.getDefaultView());
 		window.draw(text);
 		ImGui::SFML::Render(window);
 		window.display();

@@ -46,14 +46,15 @@ void Game::Update(double deltaTime) {
 }
 void Game::draw() {
 
-	sf::RenderStates states = sf::RenderStates::Default;
+	/*sf::RenderStates states = sf::RenderStates::Default;
 	sf::Shader* sh = &bgShader->sh;
 	///states.texture = bg.getTexture();
 	states.blendMode = sf::BlendAdd;
 	states.shader = sh;
 	sh->setUniform("texture", tex);
 	sh->setUniform("time", g_time);
-	win->draw(bg, states);
+	win->draw(bg, states);*/
+	win->draw(bg);
 	win->draw(player.sprite);
 	for (int i = 0; i < otherEntity.size(); i++) {
 		win->draw(otherEntity[i].sprite);

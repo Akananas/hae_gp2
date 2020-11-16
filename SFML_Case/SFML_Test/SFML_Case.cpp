@@ -160,7 +160,7 @@ int main()
 			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
 		}
-
+		ImGui::SliderFloat("Blur Width", &blurWidth, 0.0f, 80.0f);
 		ImGui::End(); // end window
 
 		newGame.Update(dt);
@@ -188,10 +188,10 @@ int main()
 			sp.setColor(c);
 
 			window.draw(sp, rs);
-			blurWidth += (1.0f / 60.0f) * 2;
+			/*blurWidth += (1.0f / 60.0f) * 2;
 
 			if (blurWidth >= 64)
-				blurWidth = 54;
+				blurWidth = 54;*/
 		}
 		ImGui::SFML::Render(window);
 		window.display();

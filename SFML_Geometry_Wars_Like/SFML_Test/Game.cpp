@@ -3,6 +3,7 @@
 
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
+	curView = win->getView();
 	bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
 	bool isOk = tex.loadFromFile("../res/bg.jpg");
 	if (!isOk) {
@@ -11,7 +12,6 @@ Game::Game(sf::RenderWindow* win) {
 	bg.setTexture(&tex);
 	bg.setSize(sf::Vector2f(1280, 720));
 
-	bgShader = new HotReloadShader("../res/bg.vert", "../res/bg_time.frag");
 	player = Entity(this);
 	player.SetPosition(200, 700);
 	Entity block(this);
@@ -44,18 +44,12 @@ void Game::Update(double deltaTime) {
 			particleManager.erase(particleManager.begin() + i);
 		}
 	}
+
 }
 void Game::draw() {
-
-	sf::RenderStates states = sf::RenderStates::Default;
-	sf::Shader* sh = &bgShader->sh;
-	///states.texture = bg.getTexture();
-	states.blendMode = sf::BlendAdd;
-	states.shader = sh;
-	sh->setUniform("texture", tex);
-	sh->setUniform("time", g_time);
-	win->draw(bg, states);
-	win->draw(player.sprite);
+	curView.setCenter(player.sprite.getPosition());
+	win->setView(curView);
+	win->draw(player);
 	for (int i = 0; i < otherEntity.size(); i++) {
 		win->draw(otherEntity[i].sprite);
 	}

@@ -5,7 +5,7 @@ enum State {
 	Dead,
 	Alive
 };
-class Entity {
+class Entity : public sf::Drawable{
 public:
 	static const int GRID_SIZE = 16;
 	sf::RectangleShape sprite;
@@ -80,5 +80,10 @@ public:
 		dx *= 0.5;
 		dy *= 0.5;
 		SetSpriteCoor();
+	}
+private:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+		target.draw(sprite, states);
 	}
 };
