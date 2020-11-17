@@ -10,6 +10,8 @@ public:
 	static const int GRID_SIZE = 16;
 	sf::RectangleShape sprite;
 	float radius = 0;
+	bool destroyed = false;
+
 	// Base coordinates
 	int cx = 0;
 	int cy = 0;
@@ -39,7 +41,12 @@ public:
 		SetCoordinate(_sprite.getPosition());
 		radius = 16;
 	}
-
+	bool CheckType(Entity * type) {
+		if (dynamic_cast<Entity*>(type)) {
+			return true;
+		}
+		return false;
+	}
 	void SetPosition(sf::Vector2f pos) {
 		sprite.setPosition(pos.x, pos.y);
 		SetCoordinate(pos.x, pos.y);
@@ -47,6 +54,9 @@ public:
 	void SetPosition(int x, int y) {
 		sprite.setPosition(sf::Vector2f(x, y));
 		SetCoordinate(x, y);
+	}
+	sf::Vector2f GetPosition() {
+		return sf::Vector2f(xx, yy);
 	}
 	void SetCoordinate(float x, float y) {
 		xx = x;
@@ -63,6 +73,9 @@ public:
 		cy = yy / GRID_SIZE;
 		rx = (xx - cx * GRID_SIZE) / GRID_SIZE;
 		ry = (yy - cy * GRID_SIZE) / GRID_SIZE;
+	}
+	sf::Vector2f ConvertCoor(sf::Vector2f pos) {
+		return sf::Vector2f(pos.x / GRID_SIZE, pos.y / GRID_SIZE);
 	}
 	void MoveX();
 	void MoveY();

@@ -43,11 +43,15 @@ void Game::Update(double deltaTime) {
 			particleManager.erase(particleManager.begin() + i);
 		}
 	}
+	for (int i = 0; i < bullet.size(); i++) {
+		bullet[i].UpdateEntity(deltaTime);
+		if (bullet[i].destroyed) {
+			bullet.erase(bullet.begin() + i);
+		}
+	}
 
 }
 void Game::draw() {
-	curView.setCenter(player.sprite.getPosition());
-	win->setView(curView);
 	win->draw(player);
 	for (int i = 0; i < ennemy.size(); i++) {
 		win->draw(*ennemy[i]);
@@ -57,5 +61,8 @@ void Game::draw() {
 	}
 	for (Particle& parts : particleManager) {
 		win->draw(parts);
+	}
+	for (Bullet& _bullet : bullet) {
+		win->draw(_bullet);
 	}
 }

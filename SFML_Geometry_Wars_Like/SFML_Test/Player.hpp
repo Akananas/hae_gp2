@@ -10,7 +10,12 @@ public:
 		radius = 16;
 		game = g;
 	}
-
+	bool CheckType(Entity* type) {
+		if (dynamic_cast<Player*>(type)) {
+			return true;
+		}
+		return false;
+	}
 	void UpdateEntity(double dt) {
 		Entity::UpdateEntity(dt);
 		dx *= 0.5;

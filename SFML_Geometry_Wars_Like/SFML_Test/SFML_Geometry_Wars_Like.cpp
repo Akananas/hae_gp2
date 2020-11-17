@@ -44,6 +44,7 @@ int main()
 		if (dt < 0.001) {
 			dt = 0.001;
 		}
+		newGame.PlayerView();
         sf::Event event;//Creer une variable qui va contenir les inputs de l'utilisateur
 		while (window.pollEvent(event))//Execute les events
 		{
