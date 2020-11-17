@@ -7,6 +7,7 @@
 #include <ctime>
 #include <vector>
 #include "Entity.hpp"
+#include "Player.hpp"
 #include "Particle.hpp"
 class HotReloadShader;
 
@@ -14,11 +15,11 @@ class Game {
 public:
 
 	sf::RenderWindow* win;
-	Entity player;
+	Player player;
 	sf::RectangleShape  bg;
 	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
-	std::vector<Entity> otherEntity;
+	std::vector<Entity*> ennemy;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<Particle> particleManager;
@@ -40,25 +41,25 @@ public:
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
 			player.dx = -0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(player.sprite.getPosition(),-50, sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this,player.sprite.getPosition(),sf::Vector2f(0,-0.5f), sf::Color(86, 61, 245)));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 			player.dx = 0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(player.sprite.getPosition(),-50, sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this, player.sprite.getPosition(),sf::Vector2f(0, -0.5f), sf::Color(86, 61, 245)));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
 			player.dy = -0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(player.sprite.getPosition(), -50, sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this, player.sprite.getPosition(), sf::Vector2f(0, -0.5f), sf::Color(86, 61, 245)));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
 			player.dy = 0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(player.sprite.getPosition(), -50, sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this, player.sprite.getPosition(), sf::Vector2f(0, -0.5f), sf::Color(86, 61, 245)));
 			}
 		}
 	}

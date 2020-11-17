@@ -40,9 +40,9 @@ public:
 		radius = 16;
 	}
 
-	void SetPosition(sf::Vector2u pos) {
-		sprite.setPosition(sf::Vector2f(pos.x / 2, pos.y / 2));
-		SetCoordinate(pos.x / 2, pos.y / 2);
+	void SetPosition(sf::Vector2f pos) {
+		sprite.setPosition(pos.x, pos.y);
+		SetCoordinate(pos.x, pos.y);
 	}
 	void SetPosition(int x, int y) {
 		sprite.setPosition(sf::Vector2f(x, y));
@@ -74,11 +74,9 @@ public:
 	bool hasCollision(int nextX, int nextY);
 	void overlaps(Entity e);
 
-	void UpdateEntity(double dt) {
+	virtual void UpdateEntity(double dt) {
 		MoveX();
 		MoveY();
-		dx *= 0.5;
-		dy *= 0.5;
 		SetSpriteCoor();
 	}
 private:
