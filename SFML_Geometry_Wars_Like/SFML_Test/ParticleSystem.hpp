@@ -59,6 +59,7 @@ public:
 	bool isDestroyed() {
 		return destroyed;
 	}
+
 	void UpdateParticle(double dt)
 	{
 		emitterLife -= dt;
@@ -70,13 +71,13 @@ public:
 			// update the particle lifetime
 			Particle& p = m_particles[i];
 			p.lifetime -= dt;
-
 			// if the particle is dead, respawn it
 			if (p.lifetime <= 0 && loop) {
 				resetParticle(i);
 			}
 			else if(p.lifetime <= 0 && !loop){
-				m_particles.erase(m_particles.begin() + i);
+				m_particles.erase(m_particles.begin() + i); 
+				m_vertices[i].color.a = static_cast<sf::Uint8>(0);
 				continue;
 			}
 			// update the position of the corresponding vertex

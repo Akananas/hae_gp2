@@ -14,7 +14,9 @@ Game::Game(sf::RenderWindow* win) {
 
 	player = Player(this);
 	player.SetPosition(200, 700);
-
+	e = Ennemy();
+	e.SetPosition(400, 200);
+	ennemy.push_back(&e);
 	int cols = 1280 / Entity::GRID_SIZE;
 	int lastLine = 720 / Entity::GRID_SIZE - 1;
 	for (int i = 0; i < cols; ++i) {
@@ -37,7 +39,9 @@ void Game::Update(double deltaTime) {
 	}
 	pollInput(deltaTime);
 	for (int i = 0; i < ennemy.size(); i++) {
-		player.overlaps(*ennemy[i]);
+		if (player.overlaps(*ennemy[i])) {
+			player.Pushback(*ennemy[i]);
+		}
 	}
 	player.UpdateEntity(deltaTime);
 	for (int i = 0; i < particleManager.size(); i ++) {
@@ -50,6 +54,11 @@ void Game::Update(double deltaTime) {
 	}
 	for (int i = 0; i < bullet.size(); i++) {
 		bullet[i].UpdateEntity(deltaTime);
+		for (int j = 0; j < ennemy.size(); j++) {
+			if (bullet[i].overlaps(*ennemy[j])) {
+				bullet[i].destroyed = true;
+			}
+		}
 		if (bullet[i].destroyed) {
 			sf::Vector2f bulPos = bullet[i].GetPosition();
 			particleManager.push_back(ParticleSystem(150,sf::Color::Yellow,bulPos, false,250));
@@ -60,9 +69,10 @@ void Game::Update(double deltaTime) {
 }
 void Game::draw() {
 	win->draw(player);
-	for (int i = 0; i < ennemy.size(); i++) {
+	/*for (int i = 0; i < ennemy.size(); i++) {
 		win->draw(*ennemy[i]);
-	}
+	}*/
+	win->draw(e);
 	for (sf::RectangleShape& w : wallsRender) {
 		win->draw(w);
 	}

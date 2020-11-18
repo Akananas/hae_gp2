@@ -9,7 +9,7 @@ public:
 		sprite.setOrigin(sf::Vector2f(4, 4));
 		sprite.setFillColor(sf::Color::Yellow);
 		SetPosition(spawnPos);
-		radius = 4;
+		radius = 8;
 		game = g;
 	}
 	bool CheckType(Entity* type) {

@@ -44,15 +44,19 @@ void Entity::MoveY() {
 bool Entity::hasCollision(int nextX, int nextY) {
 	return game->isWall(nextX,nextY);
 }
-
-void Entity::overlaps(Entity e) {
+void Entity::Pushback(Entity e) {
+	float dist = sqrt((e.xx - xx) * (e.xx - xx) + (e.yy - yy) * (e.yy - yy));
+	float ang = atan2(e.yy - yy, e.xx - xx);
+	float force = 1.5;
+	float repelPower = (radius + e.radius - dist) / (radius + e.radius);
+	dx -= cos(ang) * repelPower * force;
+	dy -= sin(ang) * repelPower * force;
+}
+bool Entity::overlaps(Entity e) {
 	float dist = sqrt((e.xx - xx) * (e.xx - xx) + (e.yy - yy) * (e.yy - yy));
 	if (dist <= radius + e.radius) {
-		float ang = atan2(e.yy - yy, e.xx - xx);
-		float force = 1.5;
-		float repelPower = (radius + e.radius - dist) / (radius + e.radius);
-		dx -= cos(ang) * repelPower * force;
-		dy -= sin(ang) * repelPower * force;
+		return true;
 	}
+	return false;
 }
 

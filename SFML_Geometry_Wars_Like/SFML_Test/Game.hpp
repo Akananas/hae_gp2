@@ -7,6 +7,7 @@
 #include <ctime>
 #include <vector>
 #include "Entity.hpp"
+#include "Ennemy.hpp"
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "ParticleSystem.hpp"
@@ -27,6 +28,7 @@ public:
 	std::vector<ParticleSystem> particleManager;
 	Game(sf::RenderWindow* win);
 	sf::View curView;
+	Ennemy e;
 	float shootCooldown = 0.2f;
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {

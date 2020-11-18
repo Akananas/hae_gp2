@@ -1,10 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 class Game;
-enum State {
-	Dead,
-	Alive
-};
 class Entity : public sf::Drawable{
 public:
 	static const int GRID_SIZE = 16;
@@ -88,7 +84,10 @@ public:
 		sprite.setPosition(sf::Vector2f(xx, yy));
 	}
 	bool hasCollision(int nextX, int nextY);
-	void overlaps(Entity e);
+
+	bool overlaps(Entity e);
+
+	void Pushback(Entity e);
 
 	virtual void UpdateEntity(double dt) {
 		MoveX();
