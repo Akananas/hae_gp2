@@ -164,7 +164,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="HotReloadShader.hpp" />
     <ClInclude Include="Lib.hpp" />
-    <ClInclude Include="Particle.hpp" />
+    <ClInclude Include="ParticleSystem.hpp" />
     <ClInclude Include="Player.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

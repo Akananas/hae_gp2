@@ -189,10 +189,10 @@ int main()
 			sp.setColor(c);
 
 			window.draw(sp, rs);
-			/*blurWidth += (1.0f / 60.0f) * 2;
+			blurWidth += (1.0f / 60.0f) * 2;
 
 			if (blurWidth >= 64)
-				blurWidth = 54;*/
+				blurWidth = 54;
 		}
 		//Draw UI
 		window.draw(text);

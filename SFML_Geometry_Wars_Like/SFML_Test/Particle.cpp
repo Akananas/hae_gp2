@@ -1,6 +1,6 @@
-#include "Particle.hpp"
+#include "ParticleSystem.hpp"
 
-void Particle::MoveY() {
+/*void Particle::MoveY() {
 	ry += dy;
 	while (ry > 1) {
 		ry--;
@@ -22,4 +22,4 @@ void Particle::MoveX() {
 		rx++;
 		cx--;
 	}
-}
+}*/
