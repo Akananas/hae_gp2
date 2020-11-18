@@ -47,25 +47,25 @@ public:
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
 			player.dx = -0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(this,player.sprite.getPosition(),sf::Vector2f(0,0), sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this,player.sprite.getPosition(),sf::Vector2f(0,0), sf::Color(86, 61, 245),0.5));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 			player.dx = 0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(this, player.sprite.getPosition(),sf::Vector2f(0, 0), sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this, player.sprite.getPosition(),sf::Vector2f(0, 0), sf::Color(86, 61, 245), 0.5));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
 			player.dy = -0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(this, player.sprite.getPosition(), sf::Vector2f(0, 0), sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this, player.sprite.getPosition(), sf::Vector2f(0, 0), sf::Color(86, 61, 245), 0.5));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
 			player.dy = 0.5f;
 			for (int i = 0; i < 5; i++) {
-				particleManager.push_back(Particle(this, player.sprite.getPosition(), sf::Vector2f(0, 0), sf::Color(86, 61, 245)));
+				particleManager.push_back(Particle(this, player.sprite.getPosition(), sf::Vector2f(0, 0), sf::Color(86, 61, 245), 0.5));
 			}
 		}
 	}

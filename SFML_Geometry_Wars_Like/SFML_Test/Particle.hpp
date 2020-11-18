@@ -5,14 +5,15 @@
 class Particle : public Entity{
 public:
 	float life = 1.0;
-	Particle(Game* g, sf::Vector2f spawnPos, sf::Vector2f speed, sf::Color color) {
+	Particle(Game* g, sf::Vector2f spawnPos, sf::Vector2f speed, sf::Color color, float maxLife = 1) {
 		dx = speed.x;
 		dy = speed.y;
-		sprite.setSize(sf::Vector2f(8, 8));
-		sprite.setOrigin(sf::Vector2f(4, 4));
+		sprite.setSize(sf::Vector2f(6, 6));
+		sprite.setOrigin(sf::Vector2f(3,3));
 		sprite.setFillColor(color);
 		SetPosition(spawnPos);
 		radius = 4;
+		life = maxLife;
 		game = g;
 	}
 	~Particle() {}

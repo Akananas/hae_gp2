@@ -46,6 +46,13 @@ void Game::Update(double deltaTime) {
 	for (int i = 0; i < bullet.size(); i++) {
 		bullet[i].UpdateEntity(deltaTime);
 		if (bullet[i].destroyed) {
+			sf::Vector2f bulPos = bullet[i].GetPosition();
+			for (int j = 0; j < 41; j++) {
+				float angle = float(j * (360.0 / 40.0));
+				float degree = (angle * 3.14531 /180.0 );
+				sf::Vector2f partSpeed(cos(angle) , sin(angle));
+				particleManager.push_back(Particle(this, bulPos, -sf::Vector2f(partSpeed.x / 1.25, partSpeed.y / 1.25), sf::Color::Yellow, 0.25));
+			}
 			bullet.erase(bullet.begin() + i);
 		}
 	}

@@ -58,6 +58,9 @@ public:
 	sf::Vector2f GetPosition() {
 		return sf::Vector2f(xx, yy);
 	}
+	sf::Vector2f GetSpeed() {
+		return sf::Vector2f(dx, dy);
+	}
 	void SetCoordinate(float x, float y) {
 		xx = x;
 		yy = y;
