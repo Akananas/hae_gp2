@@ -62,7 +62,7 @@ void Entity::overlaps(Entity e) {
 
 void Entity::jumpState() {
 	if (onGround) {
-		updateState = std::mem_fn(&Entity::Jump);
+		state = new JumpState(this);
 	}
 }
 
@@ -71,7 +71,7 @@ void Entity::Jump() {
 		dy = jumpSpeed;
 		onGround = false;
 	}
-	updateState = std::mem_fn(&Entity::Move);
+	state =  new RunningState(this);
 }
 
 void Entity::Move() {
@@ -79,3 +79,11 @@ void Entity::Move() {
 	MoveY();
 }
 
+void JumpState::updateState() {
+	e->jumpState();
+}
+
+void RunningState::updateState() {
+	e->MoveX();
+	e->MoveY();
+}

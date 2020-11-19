@@ -13,9 +13,9 @@ Game::Game(sf::RenderWindow* win) {
 	bgShader = new HotReloadShader("../res/bg.vert", "../res/bg_time.frag");
 	player = Entity(this);
 	player.SetPosition(200, 700);
-	Entity block(this);
+	/*Entity block(this);
 	block.SetPosition(1220, 700);
-	otherEntity.push_back(block);
+	otherEntity.push_back(block);*/
 	int cols = 1280 / Entity::GRID_SIZE;
 	int lastLine = 720 / Entity::GRID_SIZE - 1;
 	for (int i = 0; i < cols; ++i) {
@@ -33,9 +33,9 @@ void Game::Update(double deltaTime) {
 	g_time += deltaTime;
 	if (bgShader) bgShader->update(deltaTime);
 	pollInput(deltaTime);
-	for (int i = 0; i < otherEntity.size(); i++) {
+	/*for (int i = 0; i < otherEntity.size(); i++) {
 		player.overlaps(otherEntity[i]);
-	}
+	}*/
 	player.UpdateEntity(deltaTime);
 	for (int i = 0; i < particleManager.size(); i ++) {
 		particleManager[i].Update(deltaTime);

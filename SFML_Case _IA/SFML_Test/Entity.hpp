@@ -1,16 +1,41 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include <functional>
+
+class Entity;
 class Game;
-enum State {
-	Jumping,
-	Running
+
+class State {
+public:
+	Entity* e = nullptr;
+	State() {
+	}
+	State(Entity* ent) {
+		e = ent;
+	}
+	virtual void updateState() = 0;
 };
+class JumpState : public State {
+public:
+	JumpState(Entity* ent){
+		e = ent;
+	}
+	virtual void updateState() override;
+};
+class RunningState : public State {
+public:
+	RunningState(Entity* ent) {
+		e = ent;
+	}
+	virtual void updateState() override;
+};
+
 class Entity {
 public:
 	static const int GRID_SIZE = 16;
 	sf::RectangleShape sprite;
 	float radius = 0;
+	State* state = nullptr;
 	// Base coordinates
 	int cx = 0;
 	int cy = 0;
@@ -30,21 +55,22 @@ public:
 	Game *game = nullptr;
 	float jumpSpeed = -0.6;
 	bool onGround = true;
-	std::function<void(Entity&)> updateState;
-
+	//std::function<void(Entity&)> updateState;
 	Entity(Game *g = nullptr) {
 		sprite.setSize(sf::Vector2f(16, 64));
 		sprite.setOrigin(sf::Vector2f(8, 64));
 		radius = 16;
 		game = g;
 		onGround = true;
-		updateState = std::mem_fn(&Entity::Move);
+		state = new RunningState(this);
+		//updateState = std::mem_fn(&Entity::Move);
 	}
 
 	Entity(sf::RectangleShape _sprite) {
 		sprite = _sprite;
 		SetCoordinate(_sprite.getPosition());
 		radius = 16;
+		state = new RunningState(this);
 	}
 
 	void SetPosition(sf::Vector2u pos) {
@@ -86,8 +112,8 @@ public:
 	void Move();
 
 	void UpdateEntity(double dt) {
-		if (updateState) {
-			updateState(*this);
+		if (state) {
+			state->updateState();
 		}
 		/*if (state == Jumping) {
 			Jump(this);
@@ -100,3 +126,4 @@ public:
 		SetSpriteCoor();
 	}
 };
+
