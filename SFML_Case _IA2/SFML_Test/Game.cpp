@@ -21,6 +21,9 @@ Game::Game(sf::RenderWindow* win) {
 	for (int i = 0; i < cols; ++i) {
 		walls.push_back(sf::Vector2i(i, lastLine));
 	}
+	for (int i = 0; i < cols/2; ++i) {
+		walls.push_back(sf::Vector2i(i, lastLine/2));
+	}
 	for (int i = 0; i < lastLine; ++i) {
 		walls.push_back(sf::Vector2i(0, i));
 		walls.push_back(sf::Vector2i(cols - 1, i));

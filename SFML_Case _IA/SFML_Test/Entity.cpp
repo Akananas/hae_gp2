@@ -1,6 +1,26 @@
 #include "Entity.hpp"
 #include "Game.hpp"
 
+
+//std::function<void(Entity&)> updateState;
+
+Entity::Entity(Game* g) {
+	sprite.setSize(sf::Vector2f(16, 64));
+	sprite.setOrigin(sf::Vector2f(8, 64));
+	radius = 16;
+	game = g;
+	onGround = true;
+	state = new RunningState(this);
+	//updateState = std::mem_fn(&Entity::Move);
+}
+
+Entity::Entity(sf::RectangleShape _sprite) {
+	sprite = _sprite;
+	SetCoordinate(_sprite.getPosition());
+	radius = 16;
+	state = new RunningState(this);
+}
+
 void Entity::MoveX() {
 	rx += dx;
 	if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
@@ -79,11 +99,19 @@ void Entity::Move() {
 	MoveY();
 }
 
-void JumpState::updateState() {
-	e->jumpState();
+void Entity::UpdateEntity(double dt) {
+	if (state) {
+		state->updateState();
+	}
+	/*if (state == Jumping) {
+	Jump(this);
+	}
+	if (state == Running) {
+	Move(this);
+	}*/
+	dx *= 0.5;
+	dy += dt * gravity;
+	SetSpriteCoor();
 }
 
-void RunningState::updateState() {
-	e->MoveX();
-	e->MoveY();
-}
+

@@ -1,34 +1,11 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include <functional>
-
-class Entity;
+#include "State.hpp"
 class Game;
-
-class State {
-public:
-	Entity* e = nullptr;
-	State() {
-	}
-	State(Entity* ent) {
-		e = ent;
-	}
-	virtual void updateState() = 0;
-};
-class JumpState : public State {
-public:
-	JumpState(Entity* ent){
-		e = ent;
-	}
-	virtual void updateState() override;
-};
-class RunningState : public State {
-public:
-	RunningState(Entity* ent) {
-		e = ent;
-	}
-	virtual void updateState() override;
-};
+class State;
+class RunningState;
+class JumpState;
 
 class Entity {
 public:
@@ -56,22 +33,9 @@ public:
 	float jumpSpeed = -0.6;
 	bool onGround = true;
 	//std::function<void(Entity&)> updateState;
-	Entity(Game *g = nullptr) {
-		sprite.setSize(sf::Vector2f(16, 64));
-		sprite.setOrigin(sf::Vector2f(8, 64));
-		radius = 16;
-		game = g;
-		onGround = true;
-		state = new RunningState(this);
-		//updateState = std::mem_fn(&Entity::Move);
-	}
+	Entity(Game* g = nullptr);
 
-	Entity(sf::RectangleShape _sprite) {
-		sprite = _sprite;
-		SetCoordinate(_sprite.getPosition());
-		radius = 16;
-		state = new RunningState(this);
-	}
+	Entity(sf::RectangleShape _sprite);
 
 	void SetPosition(sf::Vector2u pos) {
 		sprite.setPosition(sf::Vector2f(pos.x / 2, pos.y / 2));
@@ -111,19 +75,6 @@ public:
 	void Jump();
 	void Move();
 
-	void UpdateEntity(double dt) {
-		if (state) {
-			state->updateState();
-		}
-		/*if (state == Jumping) {
-			Jump(this);
-		}
-		if (state == Running) {
-			Move(this);
-		}*/
-		dx *= 0.5;
-		dy += dt * gravity;
-		SetSpriteCoor();
-	}
+	void UpdateEntity(double dt);
 };
 

@@ -23,9 +23,7 @@ public:
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<Particle> particleManager;
 	Game(sf::RenderWindow* win);
-	sf::RenderTexture* destX = nullptr;
-	sf::RenderTexture* destFinal = nullptr;
-	sf::Texture winTex;
+
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Space) {

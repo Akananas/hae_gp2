@@ -28,10 +28,10 @@ public:
 	sf::Texture winTex;
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {
-			if (event.key.code == sf::Keyboard::A) {
+			if (event.key.code == sf::Keyboard::LControl) {
 				player.Walk();
 			}
-			if (event.key.code == sf::Keyboard::Z) {
+			if (event.key.code == sf::Keyboard::LShift) {
 				player.Run();
 			}
 		}
@@ -39,38 +39,37 @@ public:
 			sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
 			mousePos.x /= Entity::GRID_SIZE;
 			mousePos.y /= Entity::GRID_SIZE;
-			int index = checkWallAtMouse(mousePos);
-			if (index == -1) {
-				walls.push_back(mousePos);
-				CreateWall(mousePos);
-			}
-			else {
-				walls.erase(walls.begin() + index);
-				wallsRender.erase(wallsRender.begin() + index);
-			}
+			player.MoveTo(mousePos);
 		}
 	}
 
 	void pollInput(double dt) {
-		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-			player.dx = -0.5f;
+		/*sf::Vector2f dir;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+			dir.x += -0.5f;
 			for (int i = 0; i < 5; i++) {
 				particleManager.push_back(Particle(player.sprite.getPosition(),-50, sf::Color(86, 61, 245)));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-			player.dx = 0.5f;
+			dir.x += 0.5f;
 			for (int i = 0; i < 5; i++) {
 				particleManager.push_back(Particle(player.sprite.getPosition(),-50, sf::Color(86, 61, 245)));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
-			player.dy = -0.5f;
+			dir.y -= 0.5f;
 			particleManager.push_back(Particle(player.sprite.getPosition(), -50, sf::Color(86, 61, 245)));
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-			player.dy = 0.5f;
+			dir.y += 0.5f;
 			particleManager.push_back(Particle(player.sprite.getPosition(), -50, sf::Color(86, 61, 245)));
+		}
+		if (dir != sf::Vector2f(0, 0)) {
+			player.ChangeSpeed(dir.x, dir.y);
+		}
+		else {
+			player.IdleState();
 		}*/
 	}
 	int checkWallAtMouse(sf::Vector2i pos) {

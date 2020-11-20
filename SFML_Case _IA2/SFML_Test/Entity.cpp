@@ -2,14 +2,16 @@
 #include "Game.hpp"
 
 void Entity::MoveX() {
-	rx += dx;
+	rx += dx * speedMul;
 	if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
 		rx = 0.7;
 		dx = 0; // stop movement
+		IdleState();
 	}
 	if (hasCollision(cx - radius / GRID_SIZE, cy) && rx <= 0.3) {
 		rx = 0.3;
 		dx = 0;
+		IdleState();
 	}
 	while (rx > 1) {
 		rx--;
@@ -22,15 +24,17 @@ void Entity::MoveX() {
 }
 
 void Entity::MoveY() {
-	ry += dy;
+	ry += dy * speedMul;
 	if (hasCollision(cx, cy + radius / GRID_SIZE) && ry >= 0.7) {
 		ry = 0.7;
 		dy = 0;
+		IdleState();
 	}
 
 	if (hasCollision(cx, cy - radius / GRID_SIZE) && ry <= 0.3) {
 		ry = 0.3;
 		dy = 0;
+		IdleState();
 	}
 	while (ry > 1) {
 		ry--;
@@ -61,4 +65,37 @@ void Entity::overlaps(Entity e) {
 void Entity::Move() {
 	MoveX();
 	MoveY();
+	if (targetPos == sf::Vector2f(cx, cy)) {
+		dy = 0;
+		dx = 0;
+		IdleState();
+	}
+}
+
+void Entity::MoveTo(sf::Vector2i pos) {
+	if (sf::Vector2f(pos) == sf::Vector2f(cx, cy)) {
+		IdleState();
+		return;
+	}
+	targetPos = (sf::Vector2f(pos) - sf::Vector2f(cx,cy));
+	dx = targetPos.x / sqrt(targetPos.x * targetPos.x + targetPos.y * targetPos.y);
+	dy = targetPos.y / sqrt(targetPos.x * targetPos.x + targetPos.y * targetPos.y);
+	targetPos = sf::Vector2f(pos);
+	if (!moving) {
+		if (speedMul == 0.5f) {
+			Walk();
+		}
+		else {
+			Run();
+		}
+		updateState = std::mem_fn(&Entity::Move);
+		moving = true;
+	}
+}
+
+void Entity::UpdateEntity(double dt) {
+	if (updateState) {
+		updateState(*this);
+	}
+	SetSpriteCoor();
 }

@@ -22,16 +22,18 @@ public:
 	float dx = 0;
 	float dy = 0;
 
-
+	float speedMul = 0;
 	Game* game = nullptr;
 	std::function<void(Entity&)> updateState;
-
+	bool moving = false;
+	sf::Vector2f targetPos;
 	Entity(Game* g = nullptr) {
 		sprite.setSize(sf::Vector2f(16, 64));
 		sprite.setOrigin(sf::Vector2f(8, 64));
 		radius = 16;
 		game = g;
-		updateState = std::mem_fn(&Entity::Move);
+		moving = false;
+		updateState = std::mem_fn(&Entity::Idle);
 	}
 
 	Entity(sf::RectangleShape _sprite) {
@@ -73,44 +75,53 @@ public:
 	}
 	bool hasCollision(int nextX, int nextY);
 	void overlaps(Entity e);
-
+	void ChangeSpeed(float x, float y) {
+		dx = x;
+		dy = y;
+		if (!moving) {
+			if (speedMul == 0.5f) {
+				Walk();
+			}
+			else {
+				Run();
+			}
+			updateState = std::mem_fn(&Entity::Move);
+			moving = true;
+		}
+	}
 	void Move();
 	void Walk() {
-		dy = 1.f;
-		dx = 1.f;
+		speedMul = 0.5f;
 		sprite.setFillColor(sf::Color::Green);
-		updateState = std::mem_fn(&Entity::Move);
 	}
 	void Run() {
-		dy = 0.5f;
-		dx = 0.5f;
+		speedMul = 1.f;
 		sprite.setFillColor(sf::Color::Blue);
-		updateState = std::mem_fn(&Entity::Move);
 	}
 	void IdleState() {
-		sprite.setFillColor(sf::Color::White);
+		moving = false;
+		sprite.setFillColor(sf::Color::Yellow);
 		updateState = std::mem_fn(&Entity::Idle);
 	}
 	void Idle() {
-		//
+		if (hasCollision(cx, cy + radius / GRID_SIZE) || hasCollision(cx, cy - radius / GRID_SIZE)
+			|| hasCollision(cx + radius /GRID_SIZE, cy) || hasCollision(cx - radius / GRID_SIZE, cy) ) {
+			CoverState();
+		}	
 	}
 	void Cover() {
-		//
+		if (!hasCollision(cx, cy + radius / GRID_SIZE) && !hasCollision(cx, cy - radius / GRID_SIZE)
+			&& !hasCollision(cx + radius / GRID_SIZE, cy) && !hasCollision(cx - radius / GRID_SIZE, cy)) {
+			IdleState();
+		}
 	}
 	void CoverState() {
 		sprite.setFillColor(sf::Color::Red);
 		updateState = std::mem_fn(&Entity::Cover);
 	}
-	void UpdateEntity(double dt) {
-		if (updateState) {
-			updateState(*this);
-		}
-		/*if (state == Jumping) {
-			Jump(this);
-		}
-		if (state == Running) {
-			Move(this);
-		}*/
-		SetSpriteCoor();
+	void RecalculateDir() {
 	}
+
+	void MoveTo(sf::Vector2i pos);
+	void UpdateEntity(double dt);
 };

@@ -154,6 +154,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HotReloadShader.cpp" />
     <ClCompile Include="SFML_Case_IA.cpp" />
+    <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.hpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="HotReloadShader.hpp" />
     <ClInclude Include="Lib.hpp" />
     <ClInclude Include="Particle.hpp" />
+    <ClInclude Include="State.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
