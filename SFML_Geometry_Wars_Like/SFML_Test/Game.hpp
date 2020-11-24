@@ -7,12 +7,13 @@
 #include <ctime>
 #include <vector>
 #include "Entity.hpp"
-#include "Ennemy.hpp"
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "ParticleSystem.hpp"
-class HotReloadShader;
+#include "Ennemy.hpp"
 
+class HotReloadShader;
+class Ennemy;
 class Game {
 public:
 
@@ -21,7 +22,7 @@ public:
 	sf::RectangleShape  bg;
 	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
-	std::vector<Entity*> ennemy;
+	std::vector<Ennemy> ennemy;
 	std::vector<Bullet> bullet;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
@@ -29,7 +30,9 @@ public:
 	Game(sf::RenderWindow* win);
 	sf::View curView;
 	Ennemy e;
+	int level = 1;
 	float shootCooldown = 0.2f;
+
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Space) {

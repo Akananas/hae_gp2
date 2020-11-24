@@ -29,6 +29,14 @@ Game::Game(sf::RenderWindow* win) {
 		walls.push_back(sf::Vector2i(cols - 1, i));
 	}
 	cacheWall();
+	for (int i = 0; i < cols; ++i) {
+		for (int j = 0; j < lastLine; ++j) {
+			if (!isWall(i,j)) {
+				notWalls.push_back(sf::Vector2i(i, j));
+			}
+		}
+	}
+	path.setPrimitiveType(sf::LinesStrip);
 }
 static float g_time = 0.0;
 
@@ -68,4 +76,5 @@ void Game::draw() {
 	for (Particle& parts : particleManager) {
 		win->draw(parts);
 	}
+	win->draw(path);
 }

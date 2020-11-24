@@ -161,6 +161,7 @@
     <ClInclude Include="HotReloadShader.hpp" />
     <ClInclude Include="Lib.hpp" />
     <ClInclude Include="Particle.hpp" />
+    <ClInclude Include="Pathfinding.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

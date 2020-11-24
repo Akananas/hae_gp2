@@ -8,6 +8,7 @@
 #include <vector>
 #include "Entity.hpp"
 #include "Particle.hpp"
+#include "Pathfinding.hpp"
 class HotReloadShader;
 
 class Game {
@@ -26,6 +27,9 @@ public:
 	sf::RenderTexture* destX = nullptr;
 	sf::RenderTexture* destFinal = nullptr;
 	sf::Texture winTex;
+	sf::VertexArray path;
+	Pathfinding pathfinding;
+	std::vector<sf::Vector2i> notWalls;
 	void processInput(sf::Event event) {
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::LControl) {
@@ -39,7 +43,19 @@ public:
 			sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
 			mousePos.x /= Entity::GRID_SIZE;
 			mousePos.y /= Entity::GRID_SIZE;
-			player.MoveTo(mousePos);
+			//player.MoveTo(mousePos);
+			if (!isWall(mousePos.x, mousePos.y)) {
+				pathfinding.UpdatePath(notWalls, sf::Vector2i(player.cx, player.cy));
+				path.clear();
+				sf::Vector2i curPos = mousePos;
+				while (curPos != pathfinding.start) {
+					sf::Vector2f screenPos = sf::Vector2f(curPos * Entity::GRID_SIZE);
+					screenPos.x += 8;
+					screenPos.y += 8;
+					path.append(sf::Vertex(screenPos));
+					curPos = pathfinding.parentNode[curPos];
+				}
+			}
 		}
 	}
 

@@ -11,12 +11,12 @@ Game::Game(sf::RenderWindow* win) {
 	}
 	bg.setTexture(&tex);
 	bg.setSize(sf::Vector2f(1280, 720));
-
+	level = 1;
 	player = Player(this);
 	player.SetPosition(200, 700);
-	e = Ennemy();
+	e = Ennemy(this);
 	e.SetPosition(400, 200);
-	ennemy.push_back(&e);
+	ennemy.push_back(e);
 	int cols = 1280 / Entity::GRID_SIZE;
 	int lastLine = 720 / Entity::GRID_SIZE - 1;
 	for (int i = 0; i < cols; ++i) {
@@ -39,8 +39,8 @@ void Game::Update(double deltaTime) {
 	}
 	pollInput(deltaTime);
 	for (int i = 0; i < ennemy.size(); i++) {
-		if (player.overlaps(*ennemy[i])) {
-			player.Pushback(*ennemy[i]);
+		if (player.overlaps(ennemy[i])) {
+			player.Pushback(ennemy[i]);
 		}
 	}
 	player.UpdateEntity(deltaTime);
@@ -53,15 +53,20 @@ void Game::Update(double deltaTime) {
 		}
 	}
 	for (int i = 0; i < bullet.size(); i++) {
+		sf::Color explosionColor(sf::Color::Yellow);
 		bullet[i].UpdateEntity(deltaTime);
 		for (int j = 0; j < ennemy.size(); j++) {
-			if (bullet[i].overlaps(*ennemy[j])) {
+			if (bullet[i].overlaps(ennemy[j])) {
 				bullet[i].destroyed = true;
+				explosionColor = ennemy[j].sprite.getFillColor();
+				if (ennemy[j].getDamage(player.damage)) {
+					ennemy.erase(ennemy.begin() + j);
+				}
 			}
 		}
 		if (bullet[i].destroyed) {
 			sf::Vector2f bulPos = bullet[i].GetPosition();
-			particleManager.push_back(ParticleSystem(150,sf::Color::Yellow,bulPos, false,250));
+			particleManager.push_back(ParticleSystem(150,explosionColor,bulPos, false,250));
 			bullet.erase(bullet.begin() + i);
 		}
 	}
@@ -69,10 +74,9 @@ void Game::Update(double deltaTime) {
 }
 void Game::draw() {
 	win->draw(player);
-	/*for (int i = 0; i < ennemy.size(); i++) {
-		win->draw(*ennemy[i]);
-	}*/
-	win->draw(e);
+	for (int i = 0; i < ennemy.size(); i++) {
+		win->draw(ennemy[i]);
+	}
 	for (sf::RectangleShape& w : wallsRender) {
 		win->draw(w);
 	}

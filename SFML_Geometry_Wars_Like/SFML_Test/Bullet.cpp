@@ -1,5 +1,11 @@
 #include "Bullet.hpp"
 
+void Bullet::UpdateEntity(double dt) {
+	MoveX();
+	MoveY();
+	SetSpriteCoor();
+}
+
 void Bullet::MoveY() {
 	ry += dy;
 	if (hasCollision(cx, cy + radius / GRID_SIZE) && ry >= 0.7) {

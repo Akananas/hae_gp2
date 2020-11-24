@@ -18,11 +18,7 @@ public:
 		}
 		return false;
 	}
-	void UpdateEntity(double dt) {
-		MoveX();
-		MoveY();
-		SetSpriteCoor();
-	}
+	void UpdateEntity(double dt);
 
 	void MoveY();
 	void MoveX();
