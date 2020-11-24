@@ -51,7 +51,6 @@ std::vector<sf::Vector2i> PathfindingAStar::UpdatePath(std::vector<sf::Vector2i>
         if (current == _goal) {
             return reconstruct_path(cameFrom, current);
         }
-
         openSet.erase(openSet.begin() + getIndex(current, openSet));
         std::vector<sf::Vector2i> neightbours = getNeightbour(current, node);
         for (sf::Vector2i& neighbour : neightbours) {

@@ -1,42 +1,46 @@
 #pragma once
+#include <iostream> 
 #include "SFML/Graphics.hpp"
 #include <limits>
 #include <unordered_map> 
+#include "Game.hpp"
+#include <chrono>
+#include <ctime>
+using namespace std;
+using namespace std::chrono;
+class Game;
 namespace std
 {
-    template <class T>
-    struct hash<sf::Vector2<T>>
-    {
-        std::size_t operator()(const sf::Vector2<T>& v) const
-        {
-            using std::hash;
-
-            std::size_t tmp0 = hash<T>()(v.x);
-            std::size_t tmp1 = hash<T>()(v.y);
-
-            tmp0 ^= tmp1 + 0x9e3779b9 + (tmp0 << 6) + (tmp0 >> 2);
-			return tmp0;
-         }
-    };
+	template <>
+	struct hash<sf::Vector2i>
+	{
+		std::size_t operator()(const sf::Vector2i& k) const
+		{
+			return (hash<int>()(k.x) ^ (hash<int>()(k.y)));
+		};
+	};
 }
 class Pathfinding {
 public:
 	std::vector<sf::Vector2i> availableNode;
-	std::unordered_map<sf::Vector2i, float> value;
+	std::vector<float> value;
 	std::unordered_map<sf::Vector2i, sf::Vector2i> parentNode;
 	sf::Vector2i start;
-
-	float GetMag(sf::Vector2i a, sf::Vector2i b) {
-		sf::Vector2i tmp = a - b;
-		return sqrt(tmp.x * tmp.x + tmp.y * tmp.y);
+	Game* g = nullptr;
+	float GetMag(sf::Vector2i a, sf::Vector2i b);
+	void UpdatePath(std::vector<sf::Vector2i> node, sf::Vector2i& _start, Game* g);
+	void Init(std::vector<sf::Vector2i>& node, sf::Vector2i& _start);
+	double getTimeStamp() //retourne le temps actuel en seconde
+	{
+		std::chrono::nanoseconds ns =
+			duration_cast<std::chrono::nanoseconds>(system_clock::now().time_since_epoch());
+		return ns.count() / 1000000000.0;
 	}
-	void UpdatePath(std::vector<sf::Vector2i> node, sf::Vector2i _start);
-	void Init(std::vector<sf::Vector2i> node, sf::Vector2i _start);
-	int getIndex(sf::Vector2i val, std::vector<sf::Vector2i>& node);
+	std::vector<sf::Vector2i> getNeightbour(sf::Vector2i& val);
 
-	std::vector<sf::Vector2i> getNeightbour(sf::Vector2i val);
-
-	sf::Vector2i FindMin(std::vector<sf::Vector2i>& _node);
-
+	bool FindMin(std::vector<sf::Vector2i>& q, sf::Vector2i& result);
+	int getKey(sf::Vector2i vec) {
+		return vec.x + (vec.y * 256);
+	}
 	void maj_distance(sf::Vector2i s1, sf::Vector2i s2);
 };

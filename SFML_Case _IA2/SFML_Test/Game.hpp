@@ -10,7 +10,7 @@
 #include "Particle.hpp"
 #include "Pathfinding.hpp"
 class HotReloadShader;
-
+class Pathfinding;
 class Game {
 public:
 
@@ -28,35 +28,9 @@ public:
 	sf::RenderTexture* destFinal = nullptr;
 	sf::Texture winTex;
 	sf::VertexArray path;
-	Pathfinding pathfinding;
+	Pathfinding* pathfinding = nullptr;
 	std::vector<sf::Vector2i> notWalls;
-	void processInput(sf::Event event) {
-		if (event.type == sf::Event::KeyPressed) {
-			if (event.key.code == sf::Keyboard::LControl) {
-				player.Walk();
-			}
-			if (event.key.code == sf::Keyboard::LShift) {
-				player.Run();
-			}
-		}
-		if (event.type == sf::Event::MouseButtonPressed) {
-			sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
-			mousePos.x /= Entity::GRID_SIZE;
-			mousePos.y /= Entity::GRID_SIZE;
-			//player.MoveTo(mousePos);
-			if (!isWall(mousePos.x, mousePos.y)) {
-				path.clear();
-				sf::Vector2i curPos = mousePos;
-				while (curPos != pathfinding.start) {
-					sf::Vector2f screenPos = sf::Vector2f(curPos * Entity::GRID_SIZE);
-					screenPos.x += 8;
-					screenPos.y += 8;
-					path.append(sf::Vertex(screenPos));
-					curPos = pathfinding.parentNode[curPos];
-				}
-			}
-		}
-	}
+	void processInput(sf::Event event);
 
 	void pollInput(double dt) {
 		/*sf::Vector2f dir;

@@ -31,13 +31,53 @@ Game::Game(sf::RenderWindow* win) {
 	cacheWall();
 	for (int i = 0; i < cols; ++i) {
 		for (int j = 0; j < lastLine; ++j) {
+			sf::Vector2i cell(i, j);
 			if (!isWall(i,j)) {
-				notWalls.push_back(sf::Vector2i(i, j));
+				notWalls.push_back(cell);
 			}
 		}
 	}
-	pathfinding.UpdatePath(notWalls, sf::Vector2i(player.cx, player.cy));
+	pathfinding = new Pathfinding();
+	sf::Vector2i playerPos(player.cx, player.cy);
+	pathfinding->UpdatePath(notWalls,  playerPos, this);
 	path.setPrimitiveType(sf::LinesStrip);
+}
+void Game::processInput(sf::Event event) {
+	if (event.type == sf::Event::KeyPressed) {
+		if (event.key.code == sf::Keyboard::LControl) {
+			player.Walk();
+		}
+		if (event.key.code == sf::Keyboard::LShift) {
+			player.Run();
+		}
+		if (event.key.code == sf::Keyboard::A) {
+			sf::Vector2i playerPos(player.cx, player.cy);
+
+			pathfinding->UpdatePath(notWalls, playerPos, this);
+			path.clear();
+		}
+	}
+	if (event.type == sf::Event::MouseButtonPressed) {
+		sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
+		mousePos.x /= Entity::GRID_SIZE;
+		mousePos.y /= Entity::GRID_SIZE;
+		if (event.mouseButton.button == sf::Mouse::Button::Left) {
+			if (!isWall(mousePos.x, mousePos.y)) {
+				path.clear();
+				sf::Vector2i curPos = mousePos;
+				while (curPos != pathfinding->start) {
+					sf::Vector2f screenPos = sf::Vector2f(curPos * Entity::GRID_SIZE);
+					screenPos.x += 8;
+					screenPos.y += 8;
+					path.append(sf::Vertex(screenPos));
+					curPos = pathfinding->parentNode[curPos];
+				}
+			}
+		}
+		if (event.mouseButton.button == sf::Mouse::Button::Right) {
+			player.MoveTo(mousePos);
+		}
+	}
 }
 static float g_time = 0.0;
 
