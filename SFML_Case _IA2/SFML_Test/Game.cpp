@@ -36,6 +36,7 @@ Game::Game(sf::RenderWindow* win) {
 			}
 		}
 	}
+	pathfinding.UpdatePath(notWalls, sf::Vector2i(player.cx, player.cy));
 	path.setPrimitiveType(sf::LinesStrip);
 }
 static float g_time = 0.0;

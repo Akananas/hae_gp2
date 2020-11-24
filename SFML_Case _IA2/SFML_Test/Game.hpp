@@ -45,7 +45,6 @@ public:
 			mousePos.y /= Entity::GRID_SIZE;
 			//player.MoveTo(mousePos);
 			if (!isWall(mousePos.x, mousePos.y)) {
-				pathfinding.UpdatePath(notWalls, sf::Vector2i(player.cx, player.cy));
 				path.clear();
 				sf::Vector2i curPos = mousePos;
 				while (curPos != pathfinding.start) {
