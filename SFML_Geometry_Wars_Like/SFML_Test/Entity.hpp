@@ -43,6 +43,12 @@ public:
 		}
 		return false;
 	}
+	float getMag(sf::Vector2f& vec) {
+		return sqrt(vec.x * vec.x + vec.y * vec.y);
+	}
+	sf::Vector2f normalized(sf::Vector2f& vec) {
+		return sf::Vector2f(vec.x / getMag(vec), vec.y / getMag(vec));
+	}
 	void SetPosition(sf::Vector2f pos) {
 		sprite.setPosition(pos.x, pos.y);
 		SetCoordinate(pos.x, pos.y);
@@ -53,6 +59,9 @@ public:
 	}
 	sf::Vector2f GetPosition() {
 		return sf::Vector2f(xx, yy);
+	}
+	sf::Vector2i GetPositionCase() {
+		return sf::Vector2i(cx, cy);
 	}
 	sf::Vector2f GetSpeed() {
 		return sf::Vector2f(dx, dy);

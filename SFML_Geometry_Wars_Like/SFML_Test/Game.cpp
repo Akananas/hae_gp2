@@ -11,12 +11,7 @@ Game::Game(sf::RenderWindow* win) {
 	}
 	bg.setTexture(&tex);
 	bg.setSize(sf::Vector2f(1280, 720));
-	level = 1;
-	player = Player(this);
-	player.SetPosition(200, 700);
-	e = Ennemy(this);
-	e.SetPosition(400, 200);
-	ennemy.push_back(e);
+	StartGame();
 	int cols = 1280 / Entity::GRID_SIZE;
 	int lastLine = 720 / Entity::GRID_SIZE - 1;
 	for (int i = 0; i < cols; ++i) {
@@ -31,18 +26,53 @@ Game::Game(sf::RenderWindow* win) {
 }
 static float g_time = 0.0;
 
+void Game::pollInput(double dt) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+		player.dx = -0.5f;
+		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+		player.dx = 0.5f;
+		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
+		player.dy = -0.5f;
+		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+		player.dy = 0.5f;
+		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50,0.5));
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && shootCooldown >= player.attackSpeed) {
+		sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
+		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
+		sf::Vector2f dir = mouseWorld - player.GetPosition();
+		sf::Vector2f normalized(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
+		bullet.push_back(Bullet(this, player.GetPosition(), normalized));
+		shootCooldown = 0;
+	}
+}
+
 void Game::Update(double deltaTime) {
 	g_time += deltaTime;
 	if (bgShader) bgShader->update(deltaTime);
-	if (shootCooldown < 0.1) {
+	if (shootCooldown < player.attackSpeed) {
 		shootCooldown += deltaTime;
 	}
-	pollInput(deltaTime);
-	for (int i = 0; i < ennemy.size(); i++) {
-		if (player.overlaps(ennemy[i])) {
-			player.Pushback(ennemy[i]);
+	if (player.isAlive) {
+		pollInput(deltaTime);
+		sf::Vector2i playerPos = player.GetPositionCase();
+		for (int i = 0; i < ennemy.size(); i++) {
+			ennemy[i].UpdateEntity(deltaTime, playerPos);
+			if (player.overlaps(ennemy[i])) {
+				player.KillPlayer();
+				ennemy.clear();
+				particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 150, 5));
+				continue;
+			}
 		}
 	}
+
 	player.UpdateEntity(deltaTime);
 	for (int i = 0; i < particleManager.size(); i ++) {
 		if (particleManager[i].isDestroyed()) {
@@ -65,8 +95,8 @@ void Game::Update(double deltaTime) {
 			}
 		}
 		if (bullet[i].destroyed) {
-			sf::Vector2f bulPos = bullet[i].GetPosition();
-			particleManager.push_back(ParticleSystem(150,explosionColor,bulPos, false,250));
+			sf::Vector2f bulPos = sf::Vector2f(bullet[i].GetPositionCase() * Entity::GRID_SIZE);
+			particleManager.push_back(ParticleSystem(200,explosionColor,bulPos, false,250,1.5f));
 			bullet.erase(bullet.begin() + i);
 		}
 	}

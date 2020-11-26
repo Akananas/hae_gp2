@@ -75,7 +75,22 @@ void Game::processInput(sf::Event event) {
 			}
 		}
 		if (event.mouseButton.button == sf::Mouse::Button::Right) {
-			player.MoveTo(mousePos);
+			sf::Vector2i playerPos(player.cx, player.cy);
+			if (playerPos != pathfinding->start) {
+				pathfinding->UpdatePath(notWalls, playerPos, this);
+				path.clear();
+			}
+			std::vector<sf::Vector2i> path;
+			sf::Vector2i curPos = sf::Mouse::getPosition(*win);
+			curPos.x /= Entity::GRID_SIZE;
+			curPos.y /= Entity::GRID_SIZE;
+			if (!isWall(curPos.x, curPos.y)) {
+				while (curPos != pathfinding->start) {
+					path.insert(path.begin(), curPos);
+					curPos = pathfinding->parentNode[curPos];
+				}
+				player.MoveTo(path);
+			}
 		}
 	}
 }

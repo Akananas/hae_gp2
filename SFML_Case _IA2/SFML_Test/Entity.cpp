@@ -63,24 +63,30 @@ void Entity::overlaps(Entity e) {
 
 
 void Entity::Move() {
+
 	MoveX();
 	MoveY();
-	if (targetPos == sf::Vector2f(cx, cy)) {
-		dy = 0;
-		dx = 0;
-		IdleState();
+	if (path[0] == sf::Vector2i(cx, cy)) {
+		path.erase(path.begin());
+		if (path.size() <= 0) {
+			dy = 0;
+			dx = 0;
+			IdleState();
+		}
+		else {
+			RecalculateDir();
+		}
 	}
 }
 
-void Entity::MoveTo(sf::Vector2i pos) {
-	if (sf::Vector2f(pos) == sf::Vector2f(cx, cy)) {
+void Entity::MoveTo(std::vector<sf::Vector2i>& pos) {
+	path.clear();
+	path = pos;
+	if (path[0] == sf::Vector2i(cx, cy)) {
 		IdleState();
 		return;
 	}
-	targetPos = (sf::Vector2f(pos) - sf::Vector2f(cx,cy));
-	dx = targetPos.x / sqrt(targetPos.x * targetPos.x + targetPos.y * targetPos.y);
-	dy = targetPos.y / sqrt(targetPos.x * targetPos.x + targetPos.y * targetPos.y);
-	targetPos = sf::Vector2f(pos);
+	RecalculateDir();
 	if (!moving) {
 		if (speedMul == 0.5f) {
 			Walk();

@@ -4,51 +4,29 @@
 #include <iostream>
 class ParticleSystem: public sf::Drawable, public sf::Transformable {
 public:
-	/*float life = 1.0;
-	ParticleSystem(Game* g, sf::Vector2f spawnPos, sf::Vector2f speed, sf::Color color, float maxLife = 1) {
-		dx = speed.x;
-		dy = speed.y;
-		sprite.setSize(sf::Vector2f(6, 6));
-		sprite.setOrigin(sf::Vector2f(3,3));
-		sprite.setFillColor(color);
-		SetPosition(spawnPos);
-		radius = 4;
-		life = maxLife;
-		game = g;
-	}
-	~ParticleSystem() {}
-	bool CheckType(Entity* type) {
-		if (dynamic_cast<ParticleSystem*>(type)) {
-			return true;
-		}
-		return false;
-	}
-	void UpdateEntity(double dt) {
-		MoveX();
-		MoveY();
-		SetSpriteCoor();
-		life -= dt;
-		if (life < 0) {
-			destroyed = true;
-		}
-	}
-	void MoveY();
-	void MoveX();*/
-
-
-	ParticleSystem(unsigned int count, sf::Color _color, sf::Vector2f pos, bool _loop, float speed):
+	sf::Texture tex;
+	ParticleSystem(unsigned int count, sf::Color _color, sf::Vector2f pos, bool _loop, float speed, float life):
 		m_particles(count),
-		m_vertices(sf::Points, count)
+		m_vertices(sf::Quads, count)
 	{
 		m_lifetime = 3.0f;
 		m_emitter = pos;
 		color = _color;
 		destroyed = false;
-		emitterLife = 5.0f;
+		emitterLife = life;
 		loop = _loop;
 		baseSpeed = speed;
-		for (std::size_t i = 0; i < m_particles.size(); ++i){
-			resetParticle(i);
+		for (std::size_t i = 0; i < m_particles.size(); i+=4){
+			float angle = (std::rand() % 360) * 3.14f / 180.f;
+			float speed = (std::rand() % (int)baseSpeed) + baseSpeed;
+			resetParticle(i, pos,angle, speed);
+			resetParticle(i+1, pos + sf::Vector2f(4,0), angle, speed);
+			resetParticle(i+2, pos + sf::Vector2f(4,4), angle, speed);
+			resetParticle(i+3, pos + sf::Vector2f(0,4), angle, speed);
+			m_vertices[i].texCoords = sf::Vector2f(0, 0);
+			m_vertices[i+1].texCoords = sf::Vector2f(128, 0);
+			m_vertices[i+2].texCoords = sf::Vector2f(128, 128);
+			m_vertices[i+3].texCoords = sf::Vector2f(0, 128);
 		}
 	}
 
@@ -68,14 +46,25 @@ public:
 		}
 		for (std::size_t i = 0; i < m_particles.size(); ++i)
 		{
+
 			// update the particle lifetime
 			Particle& p = m_particles[i];
-			p.lifetime -= dt;
-			// if the particle is dead, respawn it
-			if (p.lifetime <= 0 && loop) {
-				resetParticle(i);
+			if (i % 4 == 0 ||i == 0) {
+				if (m_vertices[i].position.x >= 1280 || m_vertices[i].position.x <= 0) {
+					p.velocity.x = -p.velocity.x;
+					for (int j = i + 1; j < i + 4; j++) {
+						m_particles[j].velocity.x = -m_particles[j].velocity.x;
+					}
+				}
+				if (m_vertices[i].position.y >= 720 || m_vertices[i].position.y <= 0) {
+					p.velocity.y = -p.velocity.y;
+					for (int j = i + 1; j < i + 4; j++) {
+						m_particles[j].velocity.y = -m_particles[j].velocity.y;
+					}
+				}
 			}
-			else if(p.lifetime <= 0 && !loop){
+			p.lifetime -= dt;
+			if(p.lifetime <= 0 && !loop){
 				m_particles.erase(m_particles.begin() + i); 
 				m_vertices[i].color.a = static_cast<sf::Uint8>(0);
 				continue;
@@ -109,15 +98,14 @@ private:
 		float lifetime;
 	};
 
-	void resetParticle(std::size_t index)
+	void resetParticle(std::size_t index, sf::Vector2f pos, float angle, float speed)
 	{
 		// give a random velocity and lifetime to the particle
-		float angle = (std::rand() % 360) * 3.14f / 180.f;
-		float speed = (std::rand() % 50) + baseSpeed;
+
 		m_particles[index].velocity = sf::Vector2f(std::cos(angle) * speed, std::sin(angle) * speed);
 		m_particles[index].lifetime = m_lifetime;
 		// reset the position of the corresponding vertex
-		m_vertices[index].position = m_emitter;
+		m_vertices[index].position = pos;
 		m_vertices[index].color = color;
 	}
 

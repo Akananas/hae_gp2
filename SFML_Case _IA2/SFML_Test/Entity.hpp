@@ -26,7 +26,8 @@ public:
 	Game* game = nullptr;
 	std::function<void(Entity&)> updateState;
 	bool moving = false;
-	sf::Vector2f targetPos;
+	sf::Vector2i targetPos;
+	std::vector<sf::Vector2i> path;
 	Entity(Game* g = nullptr) {
 		sprite.setSize(sf::Vector2f(16, 64));
 		sprite.setOrigin(sf::Vector2f(8, 64));
@@ -120,8 +121,11 @@ public:
 		updateState = std::mem_fn(&Entity::Cover);
 	}
 	void RecalculateDir() {
+		sf::Vector2i dir = (path[0] - sf::Vector2i(cx, cy));
+		dx = dir.x / 4.0;
+		dy = dir.y / 4.0;
 	}
 
-	void MoveTo(sf::Vector2i pos);
+	void MoveTo(std::vector<sf::Vector2i>& pos);
 	void UpdateEntity(double dt);
 };

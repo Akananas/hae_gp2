@@ -107,8 +107,8 @@ int main()
 	text.setCharacterSize(24);
 	text.setPosition(10, 20);
 	text.setFillColor(sf::Color::White);
-	sf::Color bgColor;
-	float color[3] = { 0.f, 0.f, 0.f };
+	/*sf::Color bgColor;
+	float color[3] = { 0.f, 0.f, 0.f };*/
 
 	sf::Clock deltaClock;
 	bloomShader = new sf::Shader();
@@ -118,7 +118,7 @@ int main()
 	blurShader = new sf::Shader();
 	if (!blurShader->loadFromFile("../res/simple.vert", "../res/blur.frag"))
 		printf("unable to load shaders\n");
-	float blurWidth = 50.0f;
+	float blurWidth = 10.0f;
 	sf::RenderTexture* destX = new sf::RenderTexture();
 	destX->create(window.getSize().x, window.getSize().y);
 	destX->clear(sf::Color(0, 0, 0, 0));
@@ -150,21 +150,22 @@ int main()
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());
 
-		ImGui::Begin("Background color"); // begin window
+		ImGui::Begin("Settings"); // begin window
 		ImGui::SetWindowSize(ImVec2(200, 100));
 											   // Background color edit
-		if (ImGui::ColorEdit3("Color", color)) {
+		/*if (ImGui::ColorEdit3("Color", color)) {
 			// this code gets called if color value changes, so
 			// the background color is upgraded automatically!
 			bgColor.r = static_cast<sf::Uint8>(color[0] * 255.f);
 			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
-		}
+		}*/
 		ImGui::SliderFloat("Blur Width", &blurWidth, 0.0f, 80.0f);
 		ImGui::End(); // end window
 
 		newGame.Update(dt);
-		window.clear(bgColor); // fill background with color
+		//window.clear(bgColor); // fill background with color
+		window.clear(); // fill background with color
 		//Draw gameobjects
 		newGame.draw();
 		window.setView(window.getDefaultView());
@@ -189,10 +190,8 @@ int main()
 			sp.setColor(c);
 
 			window.draw(sp, rs);
-			blurWidth += (1.0f / 60.0f) * 2;
 
-			if (blurWidth >= 64)
-				blurWidth = 54;
+
 		}
 		//Draw UI
 		window.draw(text);
