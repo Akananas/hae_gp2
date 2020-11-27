@@ -167,8 +167,9 @@ int main()
 		//window.clear(bgColor); // fill background with color
 		window.clear(); // fill background with color
 		//Draw gameobjects
-		newGame.draw();
+		newGame.drawGame();
 		window.setView(window.getDefaultView());
+		newGame.drawUI();
 		///Draw all bloomed before this
 		{
 			winTex.update(window);

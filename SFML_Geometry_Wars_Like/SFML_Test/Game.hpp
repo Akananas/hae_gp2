@@ -29,7 +29,10 @@ public:
 	std::vector<ParticleSystem> particleManager;
 	sf::View curView;
 	int level = 1;
+	int money = 0;
 	float shootCooldown = 0.2f;
+	sf::Font moneyFont;
+	sf::Text moneyText;
 	Game(sf::RenderWindow* win);
 
 
@@ -57,7 +60,8 @@ public:
 		rect.setFillColor(sf::Color::Green);
 		wallsRender.push_back(rect);
 	}
-	void draw();
+	void drawGame();
+	void drawUI();
 	void PlayerView() {
 		curView.setCenter(player.GetPosition());
 		win->setView(curView);

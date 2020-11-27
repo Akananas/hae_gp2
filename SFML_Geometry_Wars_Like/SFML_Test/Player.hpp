@@ -44,7 +44,7 @@ public:
 		}
 		else {
 			spawnTimer += dt;
-			sprite.setSize(baseSize * (float)(spawnTimer / 0.75));
+			sprite.setScale(sf::Vector2f(spawnTimer / 0.75, spawnTimer / 0.75));
 		}
 	}
 

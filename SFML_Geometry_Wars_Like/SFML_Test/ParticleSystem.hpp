@@ -50,13 +50,14 @@ public:
 			// update the particle lifetime
 			Particle& p = m_particles[i];
 			if (i % 4 == 0 ||i == 0) {
-				if (m_vertices[i].position.x >= 1280 || m_vertices[i].position.x <= 0) {
+				if (m_vertices[i].position.x >= 1268 || m_vertices[i].position.x <= 16) {
 					p.velocity.x = -p.velocity.x;
+
 					for (int j = i + 1; j < i + 4; j++) {
 						m_particles[j].velocity.x = -m_particles[j].velocity.x;
 					}
 				}
-				if (m_vertices[i].position.y >= 720 || m_vertices[i].position.y <= 0) {
+				if (m_vertices[i].position.y >= 708 || m_vertices[i].position.y <= 16) {
 					p.velocity.y = -p.velocity.y;
 					for (int j = i + 1; j < i + 4; j++) {
 						m_particles[j].velocity.y = -m_particles[j].velocity.y;

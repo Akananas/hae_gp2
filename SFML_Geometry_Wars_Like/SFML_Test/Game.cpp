@@ -4,6 +4,13 @@
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	curView = win->getView();
+	if (!moneyFont.loadFromFile("../res/arial.ttf")) {
+		std::cout << "ERROR NO FONT" << std::endl;
+	}
+	moneyText.setFont(moneyFont);
+	moneyText.setCharacterSize(24);
+	moneyText.setPosition(1200, 20);
+	moneyText.setFillColor(sf::Color::White);
 	bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
 	bool isOk = tex.loadFromFile("../res/bg.jpg");
 	if (!isOk) {
@@ -91,6 +98,7 @@ void Game::Update(double deltaTime) {
 				explosionColor = ennemy[j].sprite.getFillColor();
 				if (ennemy[j].getDamage(player.damage)) {
 					ennemy.erase(ennemy.begin() + j);
+					money += 5 * level;
 				}
 			}
 		}
@@ -100,9 +108,12 @@ void Game::Update(double deltaTime) {
 			bullet.erase(bullet.begin() + i);
 		}
 	}
-
+	moneyText.setString(to_string(money));
 }
-void Game::draw() {
+void Game::drawUI(){
+	win->draw(moneyText);
+}
+void Game::drawGame() {
 	win->draw(player);
 	for (int i = 0; i < ennemy.size(); i++) {
 		win->draw(ennemy[i]);
@@ -116,4 +127,5 @@ void Game::draw() {
 	for (Bullet& _bullet : bullet) {
 		win->draw(_bullet);
 	}
+
 }
