@@ -10,6 +10,7 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "ParticleSystem.hpp"
+#include "MenuObject.hpp"
 #include "Ennemy.hpp"
 
 class HotReloadShader;
@@ -27,12 +28,15 @@ public:
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<ParticleSystem> particleManager;
+	std::vector<MenuObject> menuObject;
 	sf::View curView;
 	int level = 1;
 	int money = 0;
 	float shootCooldown = 0.2f;
 	sf::Font moneyFont;
 	sf::Text moneyText;
+	bool playing = false;
+
 	Game(sf::RenderWindow* win);
 
 
@@ -76,10 +80,35 @@ public:
 	}
 	void StartGame() {
 		level = 1;
-		player = Player(this);
+		playing = true;
 		player.SetPosition(sf::Vector2f(640, 360));
 		for (int i = 0; i < 20; i++) {
 			ennemy.push_back(Ennemy(this, 20 + (rand() % 1220), 20 + (rand() % 660)));
+		}
+	}
+	void StartMenu() {
+		playing = false;
+		player.SetPosition(sf::Vector2f(640, 360));
+	}
+	void CreateMenu() {
+		MenuObject start(StartState, sf::Color::Cyan, sf::Vector2f(100, 120), moneyFont);
+		MenuObject powerUp(PowerUpState, sf::Color::Red, sf::Vector2f(260, 120), moneyFont);
+		menuObject.push_back(start);
+		menuObject.push_back(powerUp);
+	}
+	void SwitchMenu(MenuState val) {
+		switch (val) {
+		case StartState:
+			StartGame();
+			break;
+		case PowerUpState:
+			if (money >= 5) {
+				player.damage += 1;
+				money -= 5;
+			}
+			break;
+		default:
+			break;
 		}
 	}
 };

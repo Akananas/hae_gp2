@@ -3,12 +3,12 @@
 
 class Player :public Entity {
 public:
-	float damage;
-	int bomb;
-	float attackSpeed;
-	int life;
+	float damage =  1;
+	int bomb = 3;
+	float attackSpeed = 0.2;
+	int life = 0;
 	bool isAlive = false;
-	double spawnTimer;
+	double spawnTimer = 0;
 	sf::Vector2f baseSize = sf::Vector2f(32, 32);
 	Player() {}
 	Player(Game* g) {
@@ -49,8 +49,11 @@ public:
 	}
 
 	void KillPlayer() {
+		dx = 0;
+		dy = 0;
 		spawnTimer = 0;
 		isAlive = false;
+		SetPosition(sf::Vector2f(640, 360));
 	}
 };
 

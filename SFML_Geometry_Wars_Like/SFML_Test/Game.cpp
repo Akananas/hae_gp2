@@ -18,7 +18,9 @@ Game::Game(sf::RenderWindow* win) {
 	}
 	bg.setTexture(&tex);
 	bg.setSize(sf::Vector2f(1280, 720));
-	StartGame();
+	player = Player(this);
+	CreateMenu();
+	StartMenu();
 	int cols = 1280 / Entity::GRID_SIZE;
 	int lastLine = 720 / Entity::GRID_SIZE - 1;
 	for (int i = 0; i < cols; ++i) {
@@ -50,7 +52,7 @@ void Game::pollInput(double dt) {
 		player.dy = 0.5f;
 		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50,0.5));
 	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && shootCooldown >= player.attackSpeed) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && shootCooldown >= player.attackSpeed && (playing || !playing && bullet.size() == 0)) {
 		sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
 		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
 		sf::Vector2f dir = mouseWorld - player.GetPosition();
@@ -68,18 +70,29 @@ void Game::Update(double deltaTime) {
 	}
 	if (player.isAlive) {
 		pollInput(deltaTime);
-		sf::Vector2i playerPos = player.GetPositionCase();
-		for (int i = 0; i < ennemy.size(); i++) {
-			ennemy[i].UpdateEntity(deltaTime, playerPos);
-			if (player.overlaps(ennemy[i])) {
-				player.KillPlayer();
-				ennemy.clear();
-				particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 150, 5));
-				continue;
+		if (playing) {
+			sf::Vector2i playerPos = player.GetPositionCase();
+			for (int i = 0; i < ennemy.size(); i++) {
+				ennemy[i].UpdateEntity(deltaTime, playerPos);
+				if (player.overlaps(ennemy[i])) {
+					player.KillPlayer();
+					for (int j = 0; j < menuObject.size(); j++) {
+						menuObject[j].StartSpawn();
+					}
+					StartMenu();
+					ennemy.clear();
+					bullet.clear();
+					particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 150, 5));
+					continue;
+				}
 			}
 		}
 	}
-
+	if (!playing) {
+		for (int i = 0; i < menuObject.size(); i++) {
+			menuObject[i].UpdateEntity(deltaTime);
+		}
+	}
 	player.UpdateEntity(deltaTime);
 	for (int i = 0; i < particleManager.size(); i ++) {
 		if (particleManager[i].isDestroyed()) {
@@ -92,13 +105,24 @@ void Game::Update(double deltaTime) {
 	for (int i = 0; i < bullet.size(); i++) {
 		sf::Color explosionColor(sf::Color::Yellow);
 		bullet[i].UpdateEntity(deltaTime);
-		for (int j = 0; j < ennemy.size(); j++) {
-			if (bullet[i].overlaps(ennemy[j])) {
-				bullet[i].destroyed = true;
-				explosionColor = ennemy[j].sprite.getFillColor();
-				if (ennemy[j].getDamage(player.damage)) {
-					ennemy.erase(ennemy.begin() + j);
-					money += 5 * level;
+		if (playing) {
+			for (int j = 0; j < ennemy.size(); j++) {
+				if (bullet[i].overlaps(ennemy[j])) {
+					bullet[i].destroyed = true;
+					explosionColor = ennemy[j].sprite.getFillColor();
+					if (ennemy[j].getDamage(player.damage)) {
+						ennemy.erase(ennemy.begin() + j);
+						money += 5 * level;
+					}
+				}
+			}
+		}
+		else {
+			for (int j = 0; j < menuObject.size(); j++) {
+				if (bullet[i].overlaps(menuObject[j])) {
+					bullet[i].destroyed = true;
+					explosionColor = menuObject[j].sprite.getFillColor();
+					SwitchMenu(menuObject[j].ReturnVal());
 				}
 			}
 		}
@@ -115,8 +139,16 @@ void Game::drawUI(){
 }
 void Game::drawGame() {
 	win->draw(player);
-	for (int i = 0; i < ennemy.size(); i++) {
-		win->draw(ennemy[i]);
+	if (playing) {
+		for (int i = 0; i < ennemy.size(); i++) {
+			win->draw(ennemy[i]);
+		}
+	}
+	else {
+		for (int i = 0; i < menuObject.size(); i++) {
+			win->draw(menuObject[i]);
+			menuObject[i].DrawText(*win);
+		}
 	}
 	for (sf::RectangleShape& w : wallsRender) {
 		win->draw(w);
