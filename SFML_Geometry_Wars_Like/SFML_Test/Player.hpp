@@ -4,8 +4,10 @@
 class Player :public Entity {
 public:
 	float damage =  1;
+	float damageLevel =  1;
 	int bomb = 3;
 	float attackSpeed = 0.2;
+	float attackSpeedLevel = 1;
 	int life = 0;
 	bool isAlive = false;
 	double spawnTimer = 0;

@@ -81,7 +81,7 @@ public:
 	void StartGame() {
 		level = 1;
 		playing = true;
-		player.SetPosition(sf::Vector2f(640, 360));
+		player.KillPlayer();
 		for (int i = 0; i < 20; i++) {
 			ennemy.push_back(Ennemy(this, 20 + (rand() % 1220), 20 + (rand() % 660)));
 		}
@@ -93,8 +93,13 @@ public:
 	void CreateMenu() {
 		MenuObject start(StartState, sf::Color::Cyan, sf::Vector2f(100, 120), moneyFont);
 		MenuObject powerUp(PowerUpState, sf::Color::Red, sf::Vector2f(260, 120), moneyFont);
+		MenuObject attackSpeedUp(AttackSpeedState, sf::Color::Magenta, sf::Vector2f(420, 120), moneyFont);
 		menuObject.push_back(start);
 		menuObject.push_back(powerUp);
+		menuObject.push_back(attackSpeedUp);
+	}
+	void AddMoney(int _money) {
+		money += _money;
 	}
 	void SwitchMenu(MenuState val) {
 		switch (val) {
@@ -104,9 +109,16 @@ public:
 		case PowerUpState:
 			if (money >= 5) {
 				player.damage += 1;
+				player.damageLevel++;
 				money -= 5;
 			}
 			break;
+		case AttackSpeedState:
+			if (money >= 5) {
+				player.attackSpeed -= 0.025 * pow(0.85,player.attackSpeedLevel);
+				player.attackSpeedLevel++;
+				money -= 5;
+			}
 		default:
 			break;
 		}

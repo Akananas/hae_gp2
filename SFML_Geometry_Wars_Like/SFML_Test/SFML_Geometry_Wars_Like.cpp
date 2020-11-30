@@ -96,7 +96,7 @@ int main()
 	double frameStart = 0.0;
 	double frameEnd = 0.0;
 	window.setFramerateLimit(60);
-
+	int _money = 0;
 	sf::Text text;
 	sf::Font font;
 	if (!font.loadFromFile("../res/arial.ttf")) {
@@ -161,6 +161,10 @@ int main()
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
 		}*/
 		ImGui::SliderFloat("Blur Width", &blurWidth, 0.0f, 80.0f);
+		ImGui::SliderInt("Money", &_money, 0, 10000);
+		if (ImGui::Button("Add Money")) {
+			newGame.AddMoney(_money);
+		}
 		ImGui::End(); // end window
 
 		newGame.Update(dt);

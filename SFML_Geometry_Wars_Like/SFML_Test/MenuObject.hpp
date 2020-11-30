@@ -62,6 +62,9 @@ private:
         case PowerUpState:
             text.setString("PowerUp");
             break;
+        case AttackSpeedState:
+            text.setString("AttackSpeed");
+            break;
         default:
             text.setString("");
             break;
