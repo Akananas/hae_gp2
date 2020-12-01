@@ -6,6 +6,7 @@ public:
 	float damage =  1;
 	float damageLevel =  1;
 	int bomb = 3;
+	float bombRadius = 250;
 	float attackSpeed = 0.2;
 	float attackSpeedLevel = 1;
 	int life = 0;
@@ -16,6 +17,9 @@ public:
 	Player(Game* g) {
 		sprite.setSize(baseSize);
 		sprite.setOrigin(sf::Vector2f(16, 16));
+		sprite.setFillColor(sf::Color(
+			200, 200, 200
+		));
 		radius = 16;
 		game = g;
 		damage = 1;
@@ -25,6 +29,12 @@ public:
 	}
 	bool CheckType(Entity* type) {
 		if (dynamic_cast<Player*>(type)) {
+			return true;
+		}
+		return false;
+	}
+	bool BombAvailable() {
+		if (bomb > 0) {
 			return true;
 		}
 		return false;

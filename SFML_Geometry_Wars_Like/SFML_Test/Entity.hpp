@@ -43,7 +43,7 @@ public:
 		}
 		return false;
 	}
-	float getMag(sf::Vector2f& vec) {
+	static float getMag(sf::Vector2f& vec) {
 		return sqrt(vec.x * vec.x + vec.y * vec.y);
 	}
 	sf::Vector2f normalized(sf::Vector2f& vec) {

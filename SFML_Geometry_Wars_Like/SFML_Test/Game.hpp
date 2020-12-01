@@ -12,6 +12,8 @@
 #include "ParticleSystem.hpp"
 #include "MenuObject.hpp"
 #include "Ennemy.hpp"
+#include "FloatingText.hpp"
+
 
 class HotReloadShader;
 class Ennemy;
@@ -29,12 +31,15 @@ public:
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<ParticleSystem> particleManager;
 	std::vector<MenuObject> menuObject;
+	std::vector<FloatingText> floatingText;
 	sf::View curView;
 	int level = 1;
 	int money = 0;
+	int score = 0;
 	float shootCooldown = 0.2f;
 	sf::Font moneyFont;
 	sf::Text moneyText;
+	sf::Text scoreText;
 	bool playing = false;
 
 	Game(sf::RenderWindow* win);
@@ -45,6 +50,28 @@ public:
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Space) {
 				StartGame();
+			}
+			if (event.key.code == sf::Keyboard::E) {
+				if (player.BombAvailable() && playing) {
+					float bombRa = player.bombRadius;
+					int bombChain = 0;
+					for (int i = ennemy.size()-1; i >= 0; i--) {
+						sf::Vector2f dis = ennemy[i].GetPosition() - player.GetPosition();
+						float mag = Entity::getMag(dis);
+						if (mag <= bombRa) {
+							particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), ennemy[i].GetPosition(), false, 250, 1.5f));
+							ennemy.erase(ennemy.begin() + i);
+							money += 5 + bombChain;
+							score += 50 * (bombChain+1);
+							bombChain++;
+						}
+					}
+					if (bombChain > 1) {
+						FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), moneyFont, player.GetPosition(), sf::Color(255, 166, 158));
+						floatingText.push_back(bombText);
+					}
+					player.bomb--;
+				}
 			}
 		}
 	}
@@ -58,69 +85,29 @@ public:
 			CreateWall(w);
 		}
 	}
-	void CreateWall(sf::Vector2i& w) {
-		sf::RectangleShape rect(sf::Vector2f(16, 16));
-		rect.setPosition(w.x * Entity::GRID_SIZE, w.y * Entity::GRID_SIZE);
-		rect.setFillColor(sf::Color::Green);
-		wallsRender.push_back(rect);
-	}
+	void CreateWall(sf::Vector2i& w);
 	void drawGame();
 	void drawUI();
 	void PlayerView() {
 		curView.setCenter(player.GetPosition());
 		win->setView(curView);
 	}
-	bool isWall(float cx, float cy) {
-		for (sf::Vector2i & w : walls) {
-			if (cx == w.x && cy == w.y) {
-				return true;
-			}
-		}
-		return false;
-	}
+	bool isWall(float cx, float cy);
 	void StartGame() {
 		level = 1;
 		playing = true;
 		player.KillPlayer();
 		for (int i = 0; i < 20; i++) {
-			ennemy.push_back(Ennemy(this, 20 + (rand() % 1220), 20 + (rand() % 660)));
+			ennemy.push_back(Ennemy(this, 20 + (rand() % 1220), 20 + (rand() % 660), sf::Color(134, 91, 111)));
 		}
 	}
 	void StartMenu() {
 		playing = false;
 		player.SetPosition(sf::Vector2f(640, 360));
 	}
-	void CreateMenu() {
-		MenuObject start(StartState, sf::Color::Cyan, sf::Vector2f(100, 120), moneyFont);
-		MenuObject powerUp(PowerUpState, sf::Color::Red, sf::Vector2f(260, 120), moneyFont);
-		MenuObject attackSpeedUp(AttackSpeedState, sf::Color::Magenta, sf::Vector2f(420, 120), moneyFont);
-		menuObject.push_back(start);
-		menuObject.push_back(powerUp);
-		menuObject.push_back(attackSpeedUp);
-	}
+	void CreateMenu();
 	void AddMoney(int _money) {
 		money += _money;
 	}
-	void SwitchMenu(MenuState val) {
-		switch (val) {
-		case StartState:
-			StartGame();
-			break;
-		case PowerUpState:
-			if (money >= 5) {
-				player.damage += 1;
-				player.damageLevel++;
-				money -= 5;
-			}
-			break;
-		case AttackSpeedState:
-			if (money >= 5) {
-				player.attackSpeed -= 0.025 * pow(0.85,player.attackSpeedLevel);
-				player.attackSpeedLevel++;
-				money -= 5;
-			}
-		default:
-			break;
-		}
-	}
+	void SwitchMenu(MenuState val, int& index);
 };

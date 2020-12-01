@@ -8,11 +8,11 @@ public:
 	Ennemy() {
 		hp = 5;
 	}
-	Ennemy(Game* g, float x, float y) {
+	Ennemy(Game* g, float x, float y, sf::Color _col) {
 		this->game = g;
 		sprite.setSize(sf::Vector2f(32, 32));
 		sprite.setOrigin(sf::Vector2f(16, 16));
-		sprite.setFillColor(sf::Color::Red);
+		sprite.setFillColor(_col);
 		radius = 16;
 		hp = 5;
 		SetPosition(x, y);

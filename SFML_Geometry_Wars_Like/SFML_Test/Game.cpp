@@ -11,6 +11,11 @@ Game::Game(sf::RenderWindow* win) {
 	moneyText.setCharacterSize(24);
 	moneyText.setPosition(1200, 20);
 	moneyText.setFillColor(sf::Color::White);
+	scoreText.setFont(moneyFont);
+	scoreText.setCharacterSize(24);
+	sf::FloatRect textBounds = scoreText.getLocalBounds();
+	scoreText.setPosition(sf::Vector2f(640 -textBounds.width / 2.0f, 20));
+	scoreText.setFillColor(sf::Color::White);
 	bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
 	bool isOk = tex.loadFromFile("../res/bg.jpg");
 	if (!isOk) {
@@ -72,7 +77,7 @@ void Game::Update(double deltaTime) {
 		pollInput(deltaTime);
 		if (playing) {
 			sf::Vector2i playerPos = player.GetPositionCase();
-			for (int i = 0; i < ennemy.size(); i++) {
+			for (int i = ennemy.size() - 1; i >= 0; i--) {
 				ennemy[i].UpdateEntity(deltaTime, playerPos);
 				if (player.overlaps(ennemy[i])) {
 					player.KillPlayer();
@@ -83,18 +88,21 @@ void Game::Update(double deltaTime) {
 					ennemy.clear();
 					bullet.clear();
 					particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 150, 5));
-					continue;
+					break;
 				}
 			}
 		}
 	}
 	if (!playing) {
-		for (int i = 0; i < menuObject.size(); i++) {
+		for (int i = menuObject.size() - 1; i >= 0; i--){
 			menuObject[i].UpdateEntity(deltaTime);
+			if (player.overlaps(menuObject[i])) {
+				player.Pushback(menuObject[i]);
+			}
 		}
 	}
 	player.UpdateEntity(deltaTime);
-	for (int i = 0; i < particleManager.size(); i ++) {
+	for (int i = particleManager.size() - 1; i >= 0; i--) {
 		if (particleManager[i].isDestroyed()) {
 			particleManager.erase(particleManager.begin() + i);
 		}
@@ -102,8 +110,8 @@ void Game::Update(double deltaTime) {
 			particleManager[i].UpdateParticle(deltaTime);
 		}
 	}
-	for (int i = 0; i < bullet.size(); i++) {
-		sf::Color explosionColor(sf::Color::Yellow);
+	for (int i = bullet.size() - 1; i >= 0; i--) {
+		sf::Color explosionColor(sf::Color(247, 249, 118));
 		bullet[i].UpdateEntity(deltaTime);
 		if (playing) {
 			for (int j = 0; j < ennemy.size(); j++) {
@@ -113,16 +121,17 @@ void Game::Update(double deltaTime) {
 					if (ennemy[j].getDamage(player.damage)) {
 						ennemy.erase(ennemy.begin() + j);
 						money += 5 * level;
+						score += 100 * level;
 					}
 				}
 			}
 		}
 		else {
-			for (int j = 0; j < menuObject.size(); j++) {
+			for (int j = menuObject.size() - 1; j >= 0; j--) {
 				if (bullet[i].overlaps(menuObject[j])) {
 					bullet[i].destroyed = true;
 					explosionColor = menuObject[j].sprite.getFillColor();
-					SwitchMenu(menuObject[j].ReturnVal());
+					SwitchMenu(menuObject[j].ReturnVal(), j);
 				}
 			}
 		}
@@ -132,10 +141,78 @@ void Game::Update(double deltaTime) {
 			bullet.erase(bullet.begin() + i);
 		}
 	}
+	for (int i = floatingText.size() - 1; i >= 0; i--) {
+		floatingText[i].UpdateText(deltaTime);
+		if (floatingText[i].destroyed) {
+			floatingText.erase(floatingText.begin() + i);
+		}
+	}
+	scoreText.setString("SCORE: " + to_string(score));
 	moneyText.setString(to_string(money));
 }
 void Game::drawUI(){
 	win->draw(moneyText);
+	win->draw(scoreText);
+}
+bool Game::isWall(float cx, float cy) {
+	for (sf::Vector2i& w : walls) {
+		if (cx == w.x && cy == w.y) {
+			return true;
+		}
+	}
+	return false;
+}
+void Game::CreateMenu() {
+	MenuObject start(StartState, sf::Color(71, 191, 255), sf::Vector2f(100, 120), moneyFont, false);
+	MenuObject powerUp(PowerUpState, sf::Color(134, 91, 111), sf::Vector2f(260, 120), moneyFont, true);
+	MenuObject attackSpeedUp(AttackSpeedState, sf::Color(143, 57, 133), sf::Vector2f(420, 120), moneyFont, true);
+	MenuObject BombBuy(BombState, sf::Color(118, 5, 72), sf::Vector2f(580, 120), moneyFont, true, 50);
+	menuObject.push_back(start);
+	menuObject.push_back(powerUp);
+	menuObject.push_back(attackSpeedUp);
+	menuObject.push_back(BombBuy);
+}
+void Game::SwitchMenu(MenuState val, int& index) {
+	switch (val) {
+	case StartState:
+		StartGame();
+		break;
+	case PowerUpState:
+		if (money - (5 * player.damageLevel) >= 0) {
+			player.damage += 1;
+			money -= (5 * player.damageLevel);
+			player.damageLevel++;
+			menuObject[index].SetPrice(5 * player.damageLevel);
+			FloatingText text("Damage Up", moneyFont, player.GetPosition(), menuObject[index].GetColor());
+			floatingText.push_back(text);
+		}
+		break;
+	case AttackSpeedState:
+		if (money - (5 * player.attackSpeedLevel) >= 0) {
+			player.attackSpeed -= 0.025 * pow(0.85, player.attackSpeedLevel);
+			money -= (5 * player.attackSpeedLevel);
+			player.attackSpeedLevel++;
+			menuObject[index].SetPrice(5 * player.attackSpeedLevel);
+			FloatingText text("Attack Speed Up",moneyFont,player.GetPosition(), menuObject[index].GetColor());
+			floatingText.push_back(text);
+		}
+	case BombState:
+		if (money - 50 >= 0 && player.bomb < 5) {
+			player.bomb++;
+			money -= 50;
+			FloatingText text("+1 Bomb", moneyFont, player.GetPosition(), menuObject[index].GetColor());
+			floatingText.push_back(text);
+		}
+	default:
+		break;
+	}
+}
+void Game::CreateWall(sf::Vector2i& w) {
+	sf::RectangleShape rect(sf::Vector2f(16, 16));
+	rect.setPosition(w.x * Entity::GRID_SIZE, w.y * Entity::GRID_SIZE);
+	//rect.setFillColor(sf::Color(0, 51, 79));
+	rect.setFillColor(sf::Color(1, 141, 104));
+	wallsRender.push_back(rect);
 }
 void Game::drawGame() {
 	win->draw(player);
@@ -158,6 +235,9 @@ void Game::drawGame() {
 	}
 	for (Bullet& _bullet : bullet) {
 		win->draw(_bullet);
+	}
+	for (FloatingText& _text : floatingText) {
+		win->draw(_text);
 	}
 
 }

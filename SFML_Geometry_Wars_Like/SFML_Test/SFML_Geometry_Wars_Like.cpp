@@ -118,7 +118,7 @@ int main()
 	blurShader = new sf::Shader();
 	if (!blurShader->loadFromFile("../res/simple.vert", "../res/blur.frag"))
 		printf("unable to load shaders\n");
-	float blurWidth = 10.0f;
+	float blurWidth = 35.0f;
 	sf::RenderTexture* destX = new sf::RenderTexture();
 	destX->create(window.getSize().x, window.getSize().y);
 	destX->clear(sf::Color(0, 0, 0, 0));

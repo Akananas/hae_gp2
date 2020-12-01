@@ -49,7 +49,19 @@ public:
 
 			// update the particle lifetime
 			Particle& p = m_particles[i];
-			if (i % 4 == 0 ||i == 0) {
+			p.lifetime -= dt;
+			if(p.lifetime <= 0 && !loop){
+				m_particles.erase(m_particles.begin() + i); 
+				m_vertices[i].color.a = static_cast<sf::Uint8>(0);
+				continue;
+			}
+			// update the position of the corresponding vertex
+			m_vertices[i].position += p.velocity * (float)dt;
+
+			// update the alpha (transparency) of the particle according to its lifetime
+			float ratio = p.lifetime / m_lifetime;
+			m_vertices[i].color.a = static_cast<sf::Uint8>(ratio * 255);
+			if (i % 4 == 0 || i == 0) {
 				if (m_vertices[i].position.x >= 1268 || m_vertices[i].position.x <= 16) {
 					p.velocity.x = -p.velocity.x;
 
@@ -63,19 +75,8 @@ public:
 						m_particles[j].velocity.y = -m_particles[j].velocity.y;
 					}
 				}
+				ChangeSize(i, ratio);
 			}
-			p.lifetime -= dt;
-			if(p.lifetime <= 0 && !loop){
-				m_particles.erase(m_particles.begin() + i); 
-				m_vertices[i].color.a = static_cast<sf::Uint8>(0);
-				continue;
-			}
-			// update the position of the corresponding vertex
-			m_vertices[i].position += p.velocity * (float)dt;
-
-			// update the alpha (transparency) of the particle according to its lifetime
-			float ratio = p.lifetime / m_lifetime;
-			m_vertices[i].color.a = static_cast<sf::Uint8>(ratio * 255);
 		}
 	}
 	private:
@@ -98,7 +99,13 @@ private:
 		sf::Vector2f velocity;
 		float lifetime;
 	};
-
+	void ChangeSize(int index, float ratio) {
+		float val = 4.0 * ratio;
+		sf::Vector2f basePos = m_vertices[index].position;
+		m_vertices[index + 1].position = basePos + sf::Vector2f(val, 0);
+		m_vertices[index + 2].position = basePos + sf::Vector2f(val, val);
+		m_vertices[index + 3].position = basePos + sf::Vector2f(0, val);
+	}
 	void resetParticle(std::size_t index, sf::Vector2f pos, float angle, float speed)
 	{
 		// give a random velocity and lifetime to the particle

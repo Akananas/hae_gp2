@@ -167,6 +167,7 @@
     <ClInclude Include="Bullet.hpp" />
     <ClInclude Include="Ennemy.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="FloatingText.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="HotReloadShader.hpp" />
     <ClInclude Include="Lib.hpp" />
