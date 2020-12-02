@@ -4,7 +4,7 @@
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	curView = win->getView();
-	if (!moneyFont.loadFromFile("../res/arial.ttf")) {
+	if (!moneyFont.loadFromFile("../res/Squares Bold Free.otf")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
 	moneyText.setFont(moneyFont);

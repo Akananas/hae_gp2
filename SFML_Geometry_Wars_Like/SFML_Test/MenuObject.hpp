@@ -9,12 +9,11 @@ enum MenuState {
     LevelUpState,
     LevelDownState,
     NothingState
-
 };
 #include "Entity.hpp"
 class MenuObject : public Entity{
 public:
-    MenuObject(MenuState value, sf::Color color, sf::Vector2f pos, sf::Font& font, bool _isBuyable, int price = 0) {
+    MenuObject(MenuState value, sf::Color color, sf::Vector2f pos, sf::Font& font, bool _isBuyable, int price = 5) {
         itemVal = value;
         isBuyable = _isBuyable;
         sprite.setFillColor(color);
