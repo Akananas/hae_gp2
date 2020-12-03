@@ -59,7 +59,6 @@ public:
 			sprite.setScale(sf::Vector2f(spawnTimer / 0.75, spawnTimer / 0.75));
 		}
 	}
-
 	void KillPlayer() {
 		dx = 0;
 		dy = 0;

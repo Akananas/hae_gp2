@@ -4,12 +4,11 @@
 #include <iostream>
 class ParticleSystem: public sf::Drawable, public sf::Transformable {
 public:
-	sf::Texture tex;
 	ParticleSystem(unsigned int count, sf::Color _color, sf::Vector2f pos, bool _loop, float speed, float life):
 		m_particles(count),
 		m_vertices(sf::Quads, count)
 	{
-		m_lifetime = 3.0f;
+		m_lifetime = life;
 		m_emitter = pos;
 		color = _color;
 		destroyed = false;
@@ -46,7 +45,6 @@ public:
 		}
 		for (std::size_t i = 0; i < m_particles.size(); ++i)
 		{
-
 			// update the particle lifetime
 			Particle& p = m_particles[i];
 			p.lifetime -= dt;
@@ -57,7 +55,7 @@ public:
 			}
 			// update the position of the corresponding vertex
 			m_vertices[i].position += p.velocity * (float)dt;
-
+			p.velocity *= 1.0f / (1 + (2.5f/m_lifetime) * float(dt));
 			// update the alpha (transparency) of the particle according to its lifetime
 			float ratio = p.lifetime / m_lifetime;
 			m_vertices[i].color.a = static_cast<sf::Uint8>(ratio * 255);

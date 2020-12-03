@@ -97,18 +97,7 @@ int main()
 	double frameEnd = 0.0;
 	window.setFramerateLimit(60);
 	int _money = 0;
-	sf::Text text;
-	sf::Font font;
-	if (!font.loadFromFile("../res/arial.ttf")) {
-		std::cout << "ERROR NO FONT" << std::endl;
-		return 1;
-	}
-	text.setFont(font);
-	text.setCharacterSize(24);
-	text.setPosition(10, 20);
-	text.setFillColor(sf::Color::White);
-	/*sf::Color bgColor;
-	float color[3] = { 0.f, 0.f, 0.f };*/
+
 
 	sf::Clock deltaClock;
 	bloomShader = new sf::Shader();
@@ -198,12 +187,9 @@ int main()
 
 
 		}
-		//Draw UI
-		window.draw(text);
 		ImGui::SFML::Render(window);
 		window.display();
 		frameEnd = Lib::getTimeStamp();
-		text.setString("FPS: " + std::to_string((1.0/dt)));
     }
 
 	ImGui::SFML::Shutdown();

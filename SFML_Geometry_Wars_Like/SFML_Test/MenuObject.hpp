@@ -61,19 +61,20 @@ public:
         spawnTimer = 0;
         isSpawned = false;
     }
-    void DrawText(sf::RenderWindow& win) {
-        win.draw(textEffect);
-        if (isBuyable) {
-            win.draw(textPrice);
-        }
-    }
     void SetPrice(int price) {
         textPrice.setString(std::to_string(price));
         sf::FloatRect textBounds = textPrice.getLocalBounds();
         textPrice.setPosition(sf::Vector2f(GetPosition().x - textBounds.width / 2.0, GetPosition().y));
     }
 private:
-
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        target.draw(sprite, states);
+        target.draw(textEffect, states);
+        if (isBuyable) {
+            target.draw(textPrice, states);
+        }
+    }
     void SetText() {
         switch (itemVal) {
         case StartState:

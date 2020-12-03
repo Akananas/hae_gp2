@@ -11,6 +11,7 @@
 #include "Bullet.hpp"
 #include "ParticleSystem.hpp"
 #include "MenuObject.hpp"
+#include "Stars.hpp"
 #include "Ennemy.hpp"
 #include "FloatingText.hpp"
 
@@ -34,47 +35,34 @@ public:
 	std::vector<FloatingText> floatingText;
 	sf::View curView;
 	int level = 1;
+	float levelTimer = 0;
+	float nextSpawnTimer = 0;
 	int money = 0;
 	int score = 0;
 	float shootCooldown = 0.2f;
+	Stars stars;
 	sf::Font moneyFont;
 	sf::Text moneyText;
 	sf::Text scoreText;
+	sf::Text levelText;
+	sf::Text fpsText;
+	sf::SoundBuffer attackSoundBuffer;
+	sf::Sound attackSound;
+	sf::SoundBuffer powerUpSoundBuffer;
+	sf::Sound powerUpSound;
+	sf::SoundBuffer hitSoundBuffer;
+	sf::Sound hitSound;
+	sf::SoundBuffer explosionSoundBuffer;
+	sf::Sound explosionSound;
+	sf::SoundBuffer bombSoundBuffer;
+	sf::Sound bombSound;
 	bool playing = false;
 
 	Game(sf::RenderWindow* win);
 
 
 
-	void processInput(sf::Event event) {
-		if (event.type == sf::Event::KeyPressed) {
-			if (event.key.code == sf::Keyboard::Space) {
-				StartGame();
-			}
-			if (event.key.code == sf::Keyboard::E) {
-				if (player.BombAvailable() && playing) {
-					float bombRa = player.bombRadius;
-					int bombChain = 0;
-					for (int i = ennemy.size()-1; i >= 0; i--) {
-						sf::Vector2f dis = ennemy[i].GetPosition() - player.GetPosition();
-						float mag = Entity::getMag(dis);
-						if (mag <= bombRa) {
-							particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), ennemy[i].GetPosition(), false, 250, 1.5f));
-							ennemy.erase(ennemy.begin() + i);
-							money += 5 + bombChain;
-							score += 50 * (bombChain+1);
-							bombChain++;
-						}
-					}
-					if (bombChain > 1) {
-						FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), moneyFont, player.GetPosition(), sf::Color(255, 166, 158));
-						floatingText.push_back(bombText);
-					}
-					player.bomb--;
-				}
-			}
-		}
-	}
+	void processInput(sf::Event event);
 
 	void pollInput(double dt);
 
@@ -95,11 +83,13 @@ public:
 	bool isWall(float cx, float cy);
 	void StartGame() {
 		level = 1;
+		levelTimer = 0;
 		playing = true;
 		player.KillPlayer();
-		for (int i = 0; i < 20; i++) {
+		levelText.setString("Level: " + std::to_string(level));
+		/*for (int i = 0; i < 20; i++) {
 			ennemy.push_back(Ennemy(this, 20 + (rand() % 1220), 20 + (rand() % 660), sf::Color(134, 91, 111)));
-		}
+		}*/
 	}
 	void StartMenu() {
 		playing = false;
