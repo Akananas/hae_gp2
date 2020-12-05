@@ -28,8 +28,7 @@ public:
 	sf::RectangleShape  bg;
 	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
-	std::vector<FastEnnemy> fastEnnemy;
-	std::vector<SlowEnnemy> slowEnnemy;
+	std::vector<Ennemy*> ennemy;
 	std::vector<Bullet> bullet;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;

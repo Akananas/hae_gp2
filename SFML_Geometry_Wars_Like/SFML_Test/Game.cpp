@@ -79,23 +79,12 @@ void Game::processInput(sf::Event event) {
 				bombSound.play();
 				float bombRa = player.bombRadius;
 				int bombChain = 0;
-				for (int i = fastEnnemy.size() - 1; i >= 0; i--) {
-					sf::Vector2f dis = fastEnnemy[i].GetPosition() - player.GetPosition();
+				for (int i = ennemy.size() - 1; i >= 0; i--) {
+					sf::Vector2f dis = ennemy[i]->GetPosition() - player.GetPosition();
 					float mag = Entity::getMag(dis);
 					if (mag <= bombRa) {
-						particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), fastEnnemy[i].GetPosition(), false, 350, 2.5f));
-						fastEnnemy.erase(fastEnnemy.begin() + i);
-						money += 5 + bombChain;
-						score += 50 * (bombChain + 1);
-						bombChain++;
-					}
-				}
-				for (int i = slowEnnemy.size() - 1; i >= 0; i--) {
-					sf::Vector2f dis = slowEnnemy[i].GetPosition() - player.GetPosition();
-					float mag = Entity::getMag(dis);
-					if (mag <= bombRa) {
-						particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), slowEnnemy[i].GetPosition(), false, 350, 2.5f));
-						slowEnnemy.erase(slowEnnemy.begin() + i);
+						particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), ennemy[i]->GetPosition(), false, 350, 2.5f));
+						ennemy.erase(ennemy.begin() + i);
 						money += 5 + bombChain;
 						score += 50 * (bombChain + 1);
 						bombChain++;
@@ -163,37 +152,25 @@ void Game::Update(double deltaTime) {
 				}
 				int spawnRate = rand() % 100;
 				if (spawnRate < 50) {
-					slowEnnemy.push_back(SlowEnnemy(this, level, spawnPos, sf::Color(134, 91, 111)));
+					SlowEnnemy *enn = new SlowEnnemy(this, level, spawnPos, sf::Color(134, 91, 111));
+					ennemy.push_back(enn);
 				}
 				else {
-					fastEnnemy.push_back(FastEnnemy(this, level, spawnPos, sf::Color(59, 148, 204)));
+					FastEnnemy *enn = new FastEnnemy(this, level, spawnPos, sf::Color(59, 148, 204));
+					ennemy.push_back(enn);
 				}
 				nextSpawnTimer = 0;
 			}
 			sf::Vector2i playerPosCase = player.GetPositionCase();
-			for (int i = fastEnnemy.size() - 1; i >= 0; i--) {
-				fastEnnemy[i].UpdateEntity(deltaTime, playerPosCase);
-				if (player.overlaps(fastEnnemy[i]) && fastEnnemy[i].canHurtPlayer()) {
+			for (int i = ennemy.size() - 1; i >= 0; i--) {
+				ennemy[i]->UpdateEntity(deltaTime, playerPosCase);
+				if (player.overlaps(*ennemy[i]) && ennemy[i]->canHurtPlayer()) {
 					player.KillPlayer();
 					for (int j = 0; j < menuObject.size(); j++) {
 						menuObject[j].StartSpawn();
 					}
 					StartMenu();
-					fastEnnemy.clear();
-					bullet.clear();
-					particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 250, 5));
-					break;
-				}
-			}
-			for (int i = slowEnnemy.size() - 1; i >= 0; i--) {
-				slowEnnemy[i].UpdateEntity(deltaTime, playerPosCase);
-				if (player.overlaps(slowEnnemy[i]) && slowEnnemy[i].canHurtPlayer()) {
-					player.KillPlayer();
-					for (int j = 0; j < menuObject.size(); j++) {
-						menuObject[j].StartSpawn();
-					}
-					StartMenu();
-					fastEnnemy.clear();
+					ennemy.clear();
 					bullet.clear();
 					particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 250, 5));
 					break;
@@ -225,27 +202,12 @@ void Game::Update(double deltaTime) {
 		sf::Color explosionColor(sf::Color(247, 249, 118));
 		bullet[i].UpdateEntity(deltaTime);
 		if (playing) {
-			for (int j = 0; j < fastEnnemy.size(); j++) {
-				if (bullet[i].overlaps(fastEnnemy[j])) {
+			for (int j = 0; j < ennemy.size(); j++) {
+				if (bullet[i].overlaps(*ennemy[j])) {
 					bullet[i].destroyed = true;
-					explosionColor = fastEnnemy[j].sprite.getFillColor();
-					if (fastEnnemy[j].getDamage(player.damage)) {
-						fastEnnemy.erase(fastEnnemy.begin() + j);
-						money += 5 * level;
-						score += 100 * level;
-						explosionSound.play();
-					}
-					else {
-						hitSound.play();
-					}
-				}
-			}
-			for (int j = 0; j < slowEnnemy.size(); j++) {
-				if (bullet[i].overlaps(slowEnnemy[j])) {
-					bullet[i].destroyed = true;
-					explosionColor = slowEnnemy[j].sprite.getFillColor();
-					if (slowEnnemy[j].getDamage(player.damage)) {
-						slowEnnemy.erase(slowEnnemy.begin() + j);
+					explosionColor = ennemy[j]->sprite.getFillColor();
+					if (ennemy[j]->getDamage(player.damage)) {
+						ennemy.erase(ennemy.begin() + j);
 						money += 5 * level;
 						score += 100 * level;
 						explosionSound.play();
@@ -357,11 +319,8 @@ void Game::drawGame() {
 	win->draw(stars);
 	win->draw(player);
 	if (playing) {
-		for (int i = 0; i < fastEnnemy.size(); i++) {
-			win->draw(fastEnnemy[i]);
-		}
-		for (int i = 0; i < slowEnnemy.size(); i++) {
-			win->draw(slowEnnemy[i]);
+		for (int i = 0; i < ennemy.size(); i++) {
+			win->draw(*ennemy[i]);
 		}
 	}
 	else {
