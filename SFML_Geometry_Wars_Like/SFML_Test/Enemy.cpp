@@ -1,6 +1,6 @@
-#include "Ennemy.hpp"
+#include "Enemy.hpp"
 
-void Ennemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
+void Enemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 	if (canMove) {
 		sf::Vector2i curPos(cx, cy);
 		sf::Vector2f dir(playerPos - curPos);

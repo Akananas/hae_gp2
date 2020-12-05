@@ -1,9 +1,9 @@
 #pragma once
-#include "Ennemy.hpp"
-class SlowEnnemy : public Ennemy
+#include "Enemy.hpp"
+class SlowEnemy : public Enemy
 {
 public:
-	SlowEnnemy(Game* g, int level, float x, float y, sf::Color _col) {
+	SlowEnemy(Game* g, int level, float x, float y, sf::Color _col) {
 		this->game = g;
 		sprite.setSize(sf::Vector2f(32, 32));
 		sprite.setOrigin(sf::Vector2f(16, 16));
@@ -15,7 +15,7 @@ public:
 		spawnTime = 0;
 		speed = 5.0;
 	}
-	SlowEnnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
+	SlowEnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
 		this->game = g;
 		sprite.setSize(sf::Vector2f(32, 32));
 		sprite.setOrigin(sf::Vector2f(16, 16));

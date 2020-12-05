@@ -1,16 +1,16 @@
 #pragma once
 #include "Entity.hpp"
 
-class Ennemy : public Entity{
+class Enemy : public Entity{
 public:
-	float hp;
+	float hp = 5;
 	float speed = 5.0;
 	bool canMove = false;
 	float spawnTime = 0;
-	Ennemy() {
+	Enemy() {
 		hp = 5;
 	}
-	Ennemy(Game* g, int level, float x, float y, sf::Color _col) {
+	Enemy(Game* g, int level, float x, float y, sf::Color _col) {
 		this->game = g;
 		sprite.setSize(sf::Vector2f(32, 32));
 		sprite.setOrigin(sf::Vector2f(16, 16));
@@ -21,7 +21,7 @@ public:
 		canMove = false;
 		spawnTime = 0;
 	}
-	Ennemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
+	Enemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
 		this->game = g;
 		sprite.setSize(sf::Vector2f(32, 32));
 		sprite.setOrigin(sf::Vector2f(16, 16));

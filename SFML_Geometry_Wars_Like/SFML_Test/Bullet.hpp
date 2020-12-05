@@ -12,12 +12,6 @@ public:
 		radius = 8;
 		game = g;
 	}
-	bool CheckType(Entity* type) {
-		if (dynamic_cast<Bullet*>(type)) {
-			return true;
-		}
-		return false;
-	}
 	void UpdateEntity(double dt);
 
 	void MoveY();

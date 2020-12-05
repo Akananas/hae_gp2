@@ -12,23 +12,23 @@
 #include "ParticleSystem.hpp"
 #include "MenuObject.hpp"
 #include "Stars.hpp"
-#include "Ennemy.hpp"
-#include "FastEnnemy.hpp"
-#include "SlowEnnemy.hpp"
+#include "Enemy.hpp"
+#include "FastEnemy.hpp"
+#include "SlowEnemy.hpp"
 #include "FloatingText.hpp"
 
 
 class HotReloadShader;
-class Ennemy;
+class enemy;
 class Game {
 public:
 
-	sf::RenderWindow* win;
+	sf::RenderWindow* win = nullptr;
 	Player player;
 	sf::RectangleShape  bg;
 	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
-	std::vector<Ennemy*> ennemy;
+	std::vector<Enemy*> enemy;
 	std::vector<Bullet> bullet;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
@@ -61,6 +61,10 @@ public:
 	bool playing = false;
 
 	Game(sf::RenderWindow* win);
+	~Game() {
+		delete bgShader;
+		delete win;
+	}
 
 
 
@@ -90,7 +94,7 @@ public:
 		player.KillPlayer();
 		levelText.setString("Level: " + std::to_string(level));
 		/*for (int i = 0; i < 20; i++) {
-			ennemy.push_back(Ennemy(this, 20 + (rand() % 1220), 20 + (rand() % 660), sf::Color(134, 91, 111)));
+			enemy.push_back(enemy(this, 20 + (rand() % 1220), 20 + (rand() % 660), sf::Color(134, 91, 111)));
 		}*/
 	}
 	void StartMenu() {

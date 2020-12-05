@@ -37,12 +37,6 @@ public:
 		SetCoordinate(_sprite.getPosition());
 		radius = 16;
 	}
-	bool CheckType(Entity * type) {
-		if (dynamic_cast<Entity*>(type)) {
-			return true;
-		}
-		return false;
-	}
 	static float getMag(sf::Vector2f& vec) {
 		return sqrt(vec.x * vec.x + vec.y * vec.y);
 	}
