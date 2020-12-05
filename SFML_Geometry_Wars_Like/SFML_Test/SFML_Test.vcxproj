@@ -156,17 +156,20 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Ennemy.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="FastEnnemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HotReloadShader.cpp" />
     <ClCompile Include="MenuObject.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SFML_Geometry_Wars_Like.cpp" />
+    <ClCompile Include="SlowEnnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.hpp" />
     <ClInclude Include="Ennemy.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="FastEnnemy.hpp" />
     <ClInclude Include="FloatingText.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="HotReloadShader.hpp" />
@@ -174,6 +177,7 @@
     <ClInclude Include="MenuObject.hpp" />
     <ClInclude Include="ParticleSystem.hpp" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="SlowEnnemy.hpp" />
     <ClInclude Include="Stars.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

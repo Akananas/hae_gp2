@@ -32,12 +32,6 @@ public:
 		canMove = false;
 		spawnTime = 0;
 	}
-	bool CheckType(Entity* type) {
-		if (dynamic_cast<Ennemy*>(type)) {
-			return true;
-		}
-		return false;
-	}
 	bool getDamage(float dmg) {
 		hp -= dmg;
 		if (hp <= 0) {

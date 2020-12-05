@@ -13,6 +13,8 @@
 #include "MenuObject.hpp"
 #include "Stars.hpp"
 #include "Ennemy.hpp"
+#include "FastEnnemy.hpp"
+#include "SlowEnnemy.hpp"
 #include "FloatingText.hpp"
 
 
@@ -26,7 +28,8 @@ public:
 	sf::RectangleShape  bg;
 	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
-	std::vector<Ennemy> ennemy;
+	std::vector<FastEnnemy> fastEnnemy;
+	std::vector<SlowEnnemy> slowEnnemy;
 	std::vector<Bullet> bullet;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
