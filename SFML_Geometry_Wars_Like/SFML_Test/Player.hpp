@@ -42,8 +42,9 @@ public:
 	void UpdateEntity(double dt) {
 		if (isAlive) {
 			Entity::UpdateEntity(dt);
-			dx *= 0.5;
-			dy *= 0.5;
+			float friction = 1.0f / (1 + 7.5f * float(dt));
+			dx *= friction;
+			dy *= friction;
 		}
 		else {
 			SpawnPlayer(dt);

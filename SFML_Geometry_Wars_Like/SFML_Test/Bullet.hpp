@@ -2,6 +2,7 @@
 #include "Entity.hpp"
 class Bullet : public Entity {
 public:
+	sf::Color explosionColor = sf::Color(247, 249, 118);
 	Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir) {
 		dx = dir.x;
 		dy = dir.y;
@@ -11,6 +12,7 @@ public:
 		SetPosition(spawnPos);
 		radius = 8;
 		game = g;
+		explosionColor = sf::Color(247, 249, 118);
 	}
 	void UpdateEntity(double dt);
 

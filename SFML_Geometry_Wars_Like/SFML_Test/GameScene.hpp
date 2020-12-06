@@ -1,0 +1,108 @@
+#pragma once
+#include "Scene.hpp"
+class GameScene :
+    public Scene
+{
+public:
+	std::vector<Enemy*> enemy;
+	float levelTimer = 0;
+	float nextSpawnTimer = 0;
+	GameScene(Game* g) {
+		game = g;
+	}
+	void InitScene() {
+		nextSpawnTimer = 0;
+		levelTimer = 0;
+	}
+
+	void UpdateScene(double dt) {
+		if (levelTimer > 10) {
+			levelTimer = 0;
+			game->UpgradeLevel();
+		}
+		if (nextSpawnTimer >= 0.5 / (float)game->level) {
+			sf::Vector2f playerPos = game->player.GetPosition();
+			sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
+			sf::Vector2f newPos(playerPos - spawnPos);
+			while (Entity::getMag(newPos) < 250) {
+				spawnPos = sf::Vector2f(20 + (rand() % 1220), 20 + (rand() % 660));
+				newPos = playerPos - spawnPos;
+			}
+			int spawnRate = rand() % 100;
+			if (spawnRate < 50) {
+				SlowEnemy* en = new SlowEnemy(game, game->level, spawnPos, sf::Color(134, 91, 111));
+				enemy.push_back(en);
+			}
+			else {
+				FastEnemy* en = new FastEnemy(game, game->level, spawnPos, sf::Color(59, 148, 204));
+				enemy.push_back(en);
+			}
+			nextSpawnTimer = 0;
+		}
+		sf::Vector2i playerPosCase = game->player.GetPositionCase();
+		for (int i = enemy.size() - 1; i >= 0; i--) {
+			enemy[i]->UpdateEntity(dt, playerPosCase);
+			if (game->player.overlaps(*enemy[i]) && enemy[i]->canHurtPlayer()) {
+				game->player.KillPlayer();
+				for (Enemy* en : enemy) {
+					delete en;
+					en = nullptr;
+				}
+				enemy.clear();
+				game->bullet.clear();
+				game->particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, game->player.GetPosition(), false, 250, 5));
+				game->StartMenu();
+				return;
+			}
+		}
+		nextSpawnTimer += dt;
+		levelTimer += dt;
+
+		for (int i = game->bullet.size() - 1; i >= 0; i--) {
+			game->bullet[i].UpdateEntity(dt);
+			for (int j = enemy.size() - 1; j >= 0; j--) {
+				if (game->bullet[i].overlaps(*enemy[j])) {
+					game->bullet[i].destroyed = true;
+					game->bullet[i].explosionColor = enemy[j]->sprite.getFillColor();
+					if (enemy[j]->getDamage(game->player.damage)) {
+						delete enemy[j];
+						enemy[j] = nullptr;
+						enemy.erase(enemy.begin() + j);
+						game->money += 5 * game->level;
+						game->score += 100 * game->level;
+						game->explosionSound.play();
+					}
+					else {
+						game->hitSound.play();
+					}
+				}
+			}
+		}
+	}
+	void ProcessInput() {
+
+	}
+	int BombDamage(float& bombRa) {
+		int bombChain = 0;
+		for (int i = enemy.size() - 1; i >= 0; i--) {
+			sf::Vector2f dis = enemy[i]->GetPosition() - game->player.GetPosition();
+			float mag = Entity::getMag(dis);
+			if (mag <= bombRa) {
+				game->particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), enemy[i]->GetPosition(), false, 350, 2.5f));
+				enemy.erase(enemy.begin() + i);
+				game->money += 5 + bombChain;
+				game->score += 50 * (bombChain + 1);
+				bombChain++;
+			}
+		}
+		return bombChain;
+	}
+private:
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+		for (int i = enemy.size() - 1; i >= 0; i--) {
+			target.draw(*enemy[i],states);
+		}
+	}
+};
+

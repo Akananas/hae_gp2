@@ -1,5 +1,7 @@
 #include "Game.hpp"
 #include "HotReloadShader.hpp"
+#include "MenuScene.hpp"
+#include "GameScene.hpp"
 
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
@@ -52,7 +54,6 @@ Game::Game(sf::RenderWindow* win) {
 	bg.setTexture(&tex);
 	bg.setSize(sf::Vector2f(1280, 720));
 	player = Player(this);
-	CreateMenu();
 	StartMenu();
 	int cols = 1280 / Entity::GRID_SIZE;
 	int lastLine = 720 / Entity::GRID_SIZE - 1;
@@ -74,22 +75,12 @@ void Game::processInput(sf::Event event) {
 			StartGame();
 		}
 		if (event.key.code == sf::Keyboard::E) {
-			if (player.BombAvailable() && playing) {
+			if (player.BombAvailable() && dynamic_cast<GameScene*>(curScene)) {
 				particleManager.push_back(ParticleSystem(1000, sf::Color(247, 249, 118), player.GetPosition(), false, 500, 1.5));
 				bombSound.play();
 				float bombRa = player.bombRadius;
-				int bombChain = 0;
-				for (int i = enemy.size() - 1; i >= 0; i--) {
-					sf::Vector2f dis = enemy[i]->GetPosition() - player.GetPosition();
-					float mag = Entity::getMag(dis);
-					if (mag <= bombRa) {
-						particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), enemy[i]->GetPosition(), false, 350, 2.5f));
-						enemy.erase(enemy.begin() + i);
-						money += 5 + bombChain;
-						score += 50 * (bombChain + 1);
-						bombChain++;
-					}
-				}
+				
+				int bombChain = dynamic_cast<GameScene*>(curScene)->BombDamage(bombRa);
 				if (bombChain > 1) {
 					FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), moneyFont, player.GetPosition(), sf::Color(255, 166, 158));
 					floatingText.push_back(bombText);
@@ -117,7 +108,7 @@ void Game::pollInput(double dt) {
 		player.dy = 0.5f;
 		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50,0.5));
 	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && shootCooldown >= player.attackSpeed && (playing || !playing && bullet.size() == 0)) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && shootCooldown >= player.attackSpeed && player.isAlive) {
 		sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
 		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
 		sf::Vector2f dir = mouseWorld - player.GetPosition();
@@ -136,61 +127,6 @@ void Game::Update(double deltaTime) {
 	}
 	if (player.isAlive) {
 		pollInput(deltaTime);
-		if (playing) {
-			if (levelTimer > 10) {
-				levelTimer = 0;
-				level++;
-				levelText.setString("Level: " + to_string(level));
-			}
-			if (nextSpawnTimer >= 0.5 / (float)level) {
-				sf::Vector2f playerPos = player.GetPosition();
-				sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
-				sf::Vector2f newPos(playerPos - spawnPos);
-				while (Entity::getMag(newPos) < 250) {
-					spawnPos = sf::Vector2f(20 + (rand() % 1220), 20 + (rand() % 660));
-					newPos = playerPos - spawnPos;
-				}
-				int spawnRate = rand() % 100;
-				if (spawnRate < 50) {
-					SlowEnemy *en = new SlowEnemy(this, level, spawnPos, sf::Color(134, 91, 111));
-					enemy.push_back(en);
-				}
-				else {
-					FastEnemy *en = new FastEnemy(this, level, spawnPos, sf::Color(59, 148, 204));
-					enemy.push_back(en);
-				}
-				nextSpawnTimer = 0;
-			}
-			sf::Vector2i playerPosCase = player.GetPositionCase();
-			for (int i = enemy.size() - 1; i >= 0; i--) {
-				enemy[i]->UpdateEntity(deltaTime, playerPosCase);
-				if (player.overlaps(*enemy[i]) && enemy[i]->canHurtPlayer()) {
-					player.KillPlayer();
-					for (int j = 0; j < menuObject.size(); j++) {
-						menuObject[j].StartSpawn();
-					}
-					StartMenu();
-					for (Enemy* en : enemy) {
-						delete en;
-						en = nullptr;
-					}
-					enemy.clear();
-					bullet.clear();
-					particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, player.GetPosition(), false, 250, 5));
-					break;
-				}
-			}
-			nextSpawnTimer += deltaTime;
-			levelTimer += deltaTime;
-		}
-	}
-	if (!playing) {
-		for (int i = menuObject.size() - 1; i >= 0; i--){
-			menuObject[i].UpdateEntity(deltaTime);
-			if (player.overlaps(menuObject[i])) {
-				player.Pushback(menuObject[i]);
-			}
-		}
 	}
 	player.UpdateEntity(deltaTime);
 	stars.UpdateStars(deltaTime, player.GetSpeed());
@@ -202,47 +138,18 @@ void Game::Update(double deltaTime) {
 			particleManager[i].UpdateParticle(deltaTime);
 		}
 	}
-	for (int i = bullet.size() - 1; i >= 0; i--) {
-		sf::Color explosionColor(sf::Color(247, 249, 118));
-		bullet[i].UpdateEntity(deltaTime);
-		if (playing) {
-			for (int j = enemy.size() - 1; j >= 0; j--) {
-				if (bullet[i].overlaps(*enemy[j])) {
-					bullet[i].destroyed = true;
-					explosionColor = enemy[j]->sprite.getFillColor();
-					if (enemy[j]->getDamage(player.damage)) {
-						delete enemy[j];
-						enemy[j] = nullptr;
-						enemy.erase(enemy.begin() + j);
-						money += 5 * level;
-						score += 100 * level;
-						explosionSound.play();
-					}
-					else {
-						hitSound.play();
-					}
-				}
-			}
-		}
-		else {
-			for (int j = menuObject.size() - 1; j >= 0; j--) {
-				if (bullet[i].overlaps(menuObject[j])) {
-					bullet[i].destroyed = true;
-					explosionColor = menuObject[j].sprite.getFillColor();
-					SwitchMenu(menuObject[j].ReturnVal(), j);
-				}
-			}
-		}
-		if (bullet[i].destroyed) {
-			sf::Vector2f bulPos = sf::Vector2f(bullet[i].GetPositionCase() * Entity::GRID_SIZE);
-			particleManager.push_back(ParticleSystem(200,explosionColor,bulPos, false,250,1.5f));
-			bullet.erase(bullet.begin() + i);
-		}
-	}
+	curScene->UpdateScene(deltaTime);
 	for (int i = floatingText.size() - 1; i >= 0; i--) {
 		floatingText[i].UpdateText(deltaTime);
 		if (floatingText[i].destroyed) {
 			floatingText.erase(floatingText.begin() + i);
+		}
+	}
+	for (int i = bullet.size() - 1; i >= 0; i--) {
+		if (bullet[i].destroyed) {
+			sf::Vector2f bulPos = sf::Vector2f(bullet[i].GetPositionCase() * Entity::GRID_SIZE);
+			particleManager.push_back(ParticleSystem(200, bullet[i].explosionColor, bulPos, false, 250, 1.5f));
+			bullet.erase(bullet.begin() + i);
 		}
 	}
 	scoreText.setString("SCORE: " + to_string(score));
@@ -258,18 +165,34 @@ bool Game::isWall(float cx, float cy) {
 	}
 	return false;
 }
-void Game::CreateMenu() {
-	MenuObject start(StartState, sf::Color(71, 191, 255), sf::Vector2f(100, 120), moneyFont, false);
-	MenuObject powerUp(PowerUpState, sf::Color(134, 91, 111), sf::Vector2f(260, 120), moneyFont, true);
-	MenuObject attackSpeedUp(AttackSpeedState, sf::Color(143, 57, 133), sf::Vector2f(420, 120), moneyFont, true);
-	MenuObject BombBuy(BombState, sf::Color(118, 5, 72), sf::Vector2f(580, 120), moneyFont, true, 50);
-	menuObject.push_back(start);
-	menuObject.push_back(powerUp);
-	menuObject.push_back(attackSpeedUp);
-	menuObject.push_back(BombBuy);
+
+void Game::StartGame() {
+	delete curScene;
+	curScene = nullptr;
+	GameScene* gScene = new GameScene(this);
+	curScene = gScene;
+	curScene->InitScene();
+	level = 1;
+	player.KillPlayer();
+	levelText.setString("Level: " + std::to_string(level));
 }
-void Game::SwitchMenu(MenuState val, int& index) {
-	switch (val) {
+
+void Game::UpgradeLevel() {
+	level++;
+	levelText.setString("Level: " + std::to_string(level));
+}
+
+void Game::StartMenu() {
+	delete curScene;
+	curScene = nullptr;
+	MenuScene *menu = new MenuScene(this);
+	curScene = menu;
+	curScene->InitScene();
+	player.SetPosition(sf::Vector2f(640, 360));
+}
+
+void Game::SwitchMenu(MenuObject& val, int& index) {
+	switch (val.ReturnVal()) {
 	case StartState:
 		StartGame();
 		break;
@@ -278,8 +201,8 @@ void Game::SwitchMenu(MenuState val, int& index) {
 			player.damage += 1;
 			money -= (5 * player.damageLevel);
 			player.damageLevel++;
-			menuObject[index].SetPrice(5 * player.damageLevel);
-			FloatingText text("Damage Up", moneyFont, player.GetPosition(), menuObject[index].GetColor());
+			val.SetPrice(5 * player.damageLevel);
+			FloatingText text("Damage Up", moneyFont, player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
 		}
@@ -289,8 +212,8 @@ void Game::SwitchMenu(MenuState val, int& index) {
 			player.attackSpeed -= 0.025 * pow(0.85, player.attackSpeedLevel);
 			money -= (5 * player.attackSpeedLevel);
 			player.attackSpeedLevel++;
-			menuObject[index].SetPrice(5 * player.attackSpeedLevel);
-			FloatingText text("Attack Speed Up",moneyFont,player.GetPosition(), menuObject[index].GetColor());
+			val.SetPrice(5 * player.attackSpeedLevel);
+			FloatingText text("Attack Speed Up",moneyFont,player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
 
@@ -299,7 +222,7 @@ void Game::SwitchMenu(MenuState val, int& index) {
 		if (money - 50 >= 0 && player.bomb < 5) {
 			player.bomb++;
 			money -= 50;
-			FloatingText text("+1 Bomb", moneyFont, player.GetPosition(), menuObject[index].GetColor());
+			FloatingText text("+1 Bomb", moneyFont, player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
 
@@ -324,16 +247,7 @@ void Game::drawUI() {
 void Game::drawGame() {
 	win->draw(stars);
 	win->draw(player);
-	if (playing) {
-		for (int i = 0; i < enemy.size(); i++) {
-			win->draw(*enemy[i]);
-		}
-	}
-	else {
-		for (int i = 0; i < menuObject.size(); i++) {
-			win->draw(menuObject[i]);
-		}
-	}
+	win->draw(*curScene);
 	for (sf::RectangleShape& w : wallsRender) {
 		win->draw(w);
 	}

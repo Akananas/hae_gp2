@@ -16,10 +16,12 @@
 #include "FastEnemy.hpp"
 #include "SlowEnemy.hpp"
 #include "FloatingText.hpp"
+#include "Scene.hpp"
 
 
 class HotReloadShader;
-class enemy;
+class Enemy;
+class Scene;
 class Game {
 public:
 
@@ -28,17 +30,13 @@ public:
 	sf::RectangleShape  bg;
 	HotReloadShader *bgShader = nullptr;
 	sf::Texture			tex;
-	std::vector<Enemy*> enemy;
 	std::vector<Bullet> bullet;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
 	std::vector<ParticleSystem> particleManager;
-	std::vector<MenuObject> menuObject;
 	std::vector<FloatingText> floatingText;
 	sf::View curView;
 	int level = 1;
-	float levelTimer = 0;
-	float nextSpawnTimer = 0;
 	int money = 0;
 	int score = 0;
 	float shootCooldown = 0.2f;
@@ -58,12 +56,11 @@ public:
 	sf::Sound explosionSound;
 	sf::SoundBuffer bombSoundBuffer;
 	sf::Sound bombSound;
-	bool playing = false;
+	Scene* curScene = nullptr;
 
 	Game(sf::RenderWindow* win);
 	~Game() {
 		delete bgShader;
-		delete win;
 	}
 
 
@@ -87,23 +84,11 @@ public:
 		win->setView(curView);
 	}
 	bool isWall(float cx, float cy);
-	void StartGame() {
-		level = 1;
-		levelTimer = 0;
-		playing = true;
-		player.KillPlayer();
-		levelText.setString("Level: " + std::to_string(level));
-		/*for (int i = 0; i < 20; i++) {
-			enemy.push_back(enemy(this, 20 + (rand() % 1220), 20 + (rand() % 660), sf::Color(134, 91, 111)));
-		}*/
-	}
-	void StartMenu() {
-		playing = false;
-		player.SetPosition(sf::Vector2f(640, 360));
-	}
-	void CreateMenu();
+	void StartGame();
+	void UpgradeLevel();
+	void StartMenu();
 	void AddMoney(int _money) {
 		money += _money;
 	}
-	void SwitchMenu(MenuState val, int& index);
+	void SwitchMenu(MenuObject& val, int& index);
 };

@@ -158,10 +158,13 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FastEnemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="HotReloadShader.cpp" />
     <ClCompile Include="MenuObject.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SFML_Geometry_Wars_Like.cpp" />
     <ClCompile Include="SlowEnemy.cpp" />
   </ItemGroup>
@@ -172,11 +175,14 @@
     <ClInclude Include="FastEnemy.hpp" />
     <ClInclude Include="FloatingText.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="GameScene.hpp" />
     <ClInclude Include="HotReloadShader.hpp" />
     <ClInclude Include="Lib.hpp" />
     <ClInclude Include="MenuObject.hpp" />
+    <ClInclude Include="MenuScene.hpp" />
     <ClInclude Include="ParticleSystem.hpp" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="Scene.hpp" />
     <ClInclude Include="SlowEnemy.hpp" />
     <ClInclude Include="Stars.hpp" />
   </ItemGroup>
