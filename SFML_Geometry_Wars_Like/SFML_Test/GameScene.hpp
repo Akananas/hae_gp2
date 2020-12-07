@@ -79,8 +79,26 @@ public:
 			}
 		}
 	}
-	void ProcessInput() {
-
+	void ProcessInput(sf::Event& event) {
+		if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Space) {
+				game->StartMenu();
+				return;
+			}
+			if (event.key.code == sf::Keyboard::E) {
+				if (game->player.BombAvailable()) {
+					game->particleManager.push_back(ParticleSystem(1000, sf::Color(247, 249, 118), game->player.GetPosition(), false, 500, 1.5));
+					game->bombSound.play();
+					float bombRa = game->player.bombRadius;
+					int bombChain = BombDamage(bombRa);
+					if (bombChain > 1) {
+						FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), game->moneyFont, game->player.GetPosition(), sf::Color(255, 166, 158));
+						game->floatingText.push_back(bombText);
+					}
+					game->player.bomb--;
+				}
+			}
+		}
 	}
 	int BombDamage(float& bombRa) {
 		int bombChain = 0;

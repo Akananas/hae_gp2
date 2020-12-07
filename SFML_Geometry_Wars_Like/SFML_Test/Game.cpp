@@ -70,25 +70,7 @@ Game::Game(sf::RenderWindow* win) {
 static float g_time = 0.0;
 
 void Game::processInput(sf::Event event) {
-	if (event.type == sf::Event::KeyPressed) {
-		if (event.key.code == sf::Keyboard::Space) {
-			StartGame();
-		}
-		if (event.key.code == sf::Keyboard::E) {
-			if (player.BombAvailable() && dynamic_cast<GameScene*>(curScene)) {
-				particleManager.push_back(ParticleSystem(1000, sf::Color(247, 249, 118), player.GetPosition(), false, 500, 1.5));
-				bombSound.play();
-				float bombRa = player.bombRadius;
-				
-				int bombChain = dynamic_cast<GameScene*>(curScene)->BombDamage(bombRa);
-				if (bombChain > 1) {
-					FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), moneyFont, player.GetPosition(), sf::Color(255, 166, 158));
-					floatingText.push_back(bombText);
-				}
-				player.bomb--;
-			}
-		}
-	}
+	curScene->ProcessInput(event);
 }
 
 void Game::pollInput(double dt) {
