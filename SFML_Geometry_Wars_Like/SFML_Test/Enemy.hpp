@@ -7,7 +7,7 @@ public:
 	float speed = 5.0;
 	bool canMove = false;
 	float spawnTime = 0;
-	Enemy() {
+	/*Enemy() {
 		hp = 5;
 	}
 	Enemy(Game* g, int level, float x, float y, sf::Color _col) {
@@ -31,7 +31,7 @@ public:
 		SetPosition(spawn);
 		canMove = false;
 		spawnTime = 0;
-	}
+	}*/
 	bool getDamage(float dmg) {
 		hp -= dmg;
 		if (hp <= 0) {

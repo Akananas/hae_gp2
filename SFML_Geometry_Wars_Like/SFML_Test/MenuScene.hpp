@@ -8,13 +8,7 @@ public:
 	void InitScene();;
 
 	void UpdateScene(double dt);
-	void ProcessInput(sf::Event& event) {
-		if (event.type == sf::Event::KeyPressed) {
-			if (event.key.code == sf::Keyboard::Space) {
-				game->StartGame();
-			}
-		}
-	}
+	void ProcessInput(sf::Event& event);
 
 	void CreateMenu();
 private:

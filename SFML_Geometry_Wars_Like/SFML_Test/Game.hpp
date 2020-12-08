@@ -45,6 +45,7 @@ public:
 	sf::Text moneyText;
 	sf::Text scoreText;
 	sf::Text levelText;
+	sf::Text bombText;
 	sf::Text fpsText;
 	sf::SoundBuffer attackSoundBuffer;
 	sf::Sound attackSound;
@@ -63,32 +64,22 @@ public:
 		delete bgShader;
 	}
 
-
-
 	void processInput(sf::Event event);
 
 	void pollInput(double dt);
 
 	void Update(double deltaTime);
-	void cacheWall() {
-		wallsRender.clear();
-		for (sf::Vector2i& w : walls) {
-			CreateWall(w);
-		}
-	}
+
+	void cacheWall();
 	void CreateWall(sf::Vector2i& w);
 	void drawGame();
 	void drawUI();
-	void PlayerView() {
-		curView.setCenter(player.GetPosition());
-		win->setView(curView);
-	}
+	void PlayerView();
 	bool isWall(float cx, float cy);
 	void StartGame();
 	void UpgradeLevel();
 	void StartMenu();
-	void AddMoney(int _money) {
-		money += _money;
-	}
+	void AddMoney(int _money);
 	void SwitchMenu(MenuObject& val, int& index);
+	void UpdateBombText();
 };

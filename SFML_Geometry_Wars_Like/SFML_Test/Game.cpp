@@ -33,10 +33,17 @@ Game::Game(sf::RenderWindow* win) {
 	moneyText.setCharacterSize(24);
 	moneyText.setPosition(1200, 20);
 	moneyText.setFillColor(sf::Color::White);
+
 	scoreText.setFont(moneyFont);
 	scoreText.setCharacterSize(24);
 	scoreText.setPosition(sf::Vector2f(640 , 20));
 	scoreText.setFillColor(sf::Color::White);
+
+	bombText.setFont(moneyFont);
+	bombText.setCharacterSize(24);
+	bombText.setPosition(sf::Vector2f(640, 50));
+	bombText.setFillColor(sf::Color::White);
+	UpdateBombText();
 
 	levelText.setFont(moneyFont);
 	levelText.setCharacterSize(24);
@@ -46,6 +53,7 @@ Game::Game(sf::RenderWindow* win) {
 	fpsText.setFont(moneyFont);
 	fpsText.setCharacterSize(24);
 	fpsText.setPosition(sf::Vector2f(60, 20));
+
 	bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
 	bool isOk = tex.loadFromFile("../res/bg.jpg");
 	if (!isOk) {
@@ -90,7 +98,10 @@ void Game::pollInput(double dt) {
 		player.dy = 0.5f;
 		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50,0.5));
 	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && shootCooldown >= player.attackSpeed && player.isAlive) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && player.isAlive && shootCooldown >= player.attackSpeed &&
+		(dynamic_cast<GameScene*>(curScene)
+		|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)){
+
 		sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
 		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
 		sf::Vector2f dir = mouseWorld - player.GetPosition();
@@ -154,9 +165,10 @@ void Game::StartGame() {
 	GameScene* gScene = new GameScene(this);
 	curScene = gScene;
 	curScene->InitScene();
-	level = 1;
 	player.KillPlayer();
-	levelText.setString("Level: " + std::to_string(level));
+	score = 0;
+	level = 0;
+	UpgradeLevel();
 }
 
 void Game::UpgradeLevel() {
@@ -171,6 +183,10 @@ void Game::StartMenu() {
 	curScene = menu;
 	curScene->InitScene();
 	player.SetPosition(sf::Vector2f(640, 360));
+}
+
+void Game::AddMoney(int _money) {
+	money += _money;
 }
 
 void Game::SwitchMenu(MenuObject& val, int& index) {
@@ -213,6 +229,15 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 		break;
 	}
 }
+void Game::UpdateBombText() {
+	bombText.setString("Bomb: " + to_string(player.bomb));
+}
+void Game::cacheWall() {
+	wallsRender.clear();
+	for (sf::Vector2i& w : walls) {
+		CreateWall(w);
+	}
+}
 void Game::CreateWall(sf::Vector2i& w) {
 	sf::RectangleShape rect(sf::Vector2f(16, 16));
 	rect.setPosition(w.x * Entity::GRID_SIZE, w.y * Entity::GRID_SIZE);
@@ -225,6 +250,11 @@ void Game::drawUI() {
 	win->draw(scoreText);
 	win->draw(levelText);
 	win->draw(fpsText);
+	win->draw(bombText);
+}
+void Game::PlayerView() {
+	curView.setCenter(player.GetPosition());
+	win->setView(curView);
 }
 void Game::drawGame() {
 	win->draw(stars);

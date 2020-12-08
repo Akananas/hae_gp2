@@ -32,11 +32,19 @@ void MenuScene::UpdateScene(double dt) {
 	}
 }
 
+void MenuScene::ProcessInput(sf::Event& event) {
+	if (event.type == sf::Event::KeyPressed) {
+		if (event.key.code == sf::Keyboard::Space) {
+			game->StartGame();
+		}
+	}
+}
+
 void MenuScene::CreateMenu() {
-	MenuObject start(StartState, sf::Color(71, 191, 255), sf::Vector2f(100, 120), game->moneyFont, false);
-	MenuObject powerUp(PowerUpState, sf::Color(134, 91, 111), sf::Vector2f(260, 120), game->moneyFont, true);
-	MenuObject attackSpeedUp(AttackSpeedState, sf::Color(143, 57, 133), sf::Vector2f(420, 120), game->moneyFont, true);
-	MenuObject BombBuy(BombState, sf::Color(118, 5, 72), sf::Vector2f(580, 120), game->moneyFont, true, 50);
+	MenuObject start(StartState, sf::Color(71, 191, 255), sf::Vector2f(640, 620), game->moneyFont, false);
+	MenuObject powerUp(PowerUpState, sf::Color(134, 91, 111), sf::Vector2f(320, 120), game->moneyFont, true);
+	MenuObject attackSpeedUp(AttackSpeedState, sf::Color(143, 57, 133), sf::Vector2f(640, 120), game->moneyFont, true);
+	MenuObject BombBuy(BombState, sf::Color(118, 5, 72), sf::Vector2f(910, 120), game->moneyFont, true, 50);
 	menuObject.push_back(start);
 	menuObject.push_back(powerUp);
 	menuObject.push_back(attackSpeedUp);
