@@ -3,17 +3,7 @@
 class Bullet : public Entity {
 public:
 	sf::Color explosionColor = sf::Color(247, 249, 118);
-	Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir) {
-		dx = dir.x;
-		dy = dir.y;
-		sprite.setSize(sf::Vector2f(8, 8));
-		sprite.setOrigin(sf::Vector2f(4, 4));
-		sprite.setFillColor(sf::Color(247, 249, 118));
-		SetPosition(spawnPos);
-		radius = 8;
-		game = g;
-		explosionColor = sf::Color(247, 249, 118);
-	}
+	Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir);
 	void UpdateEntity(double dt);
 
 	void MoveY();

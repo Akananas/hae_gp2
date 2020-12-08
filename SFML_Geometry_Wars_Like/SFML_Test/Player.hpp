@@ -27,39 +27,10 @@ public:
 		attackSpeed = 0.2f;
 		spawnTimer = 0;
 	}
-	bool CheckType(Entity* type) {
-		if (dynamic_cast<Player*>(type)) {
-			return true;
-		}
-		return false;
-	}
-	bool BombAvailable() {
-		if (bomb > 0) {
-			return true;
-		}
-		return false;
-	}
-	void UpdateEntity(double dt) {
-		if (isAlive) {
-			Entity::UpdateEntity(dt);
-			float friction = 1.0f / (1 + 7.5f * float(dt));
-			dx *= friction;
-			dy *= friction;
-		}
-		else {
-			SpawnPlayer(dt);
-		}
-	}
-	void SpawnPlayer(double dt) {
-		if (spawnTimer >= 0.75) {
-			isAlive = true;
+	bool BombAvailable();
 
-		}
-		else {
-			spawnTimer += dt;
-			sprite.setScale(sf::Vector2f(spawnTimer / 0.75, spawnTimer / 0.75));
-		}
-	}
+	void UpdateEntity(double dt);
+	void SpawnPlayer(double dt);
 	void KillPlayer() {
 		dx = 0;
 		dy = 0;

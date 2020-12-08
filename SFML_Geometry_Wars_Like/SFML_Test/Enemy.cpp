@@ -1,5 +1,17 @@
 #include "Enemy.hpp"
 
+bool Enemy::getDamage(float dmg) {
+	hp -= dmg;
+	if (hp <= 0) {
+		destroyed = true;
+	}
+	return destroyed;
+}
+
+bool Enemy::canHurtPlayer() {
+	return canMove;
+}
+
 void Enemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 	if (canMove) {
 		sf::Vector2i curPos(cx, cy);

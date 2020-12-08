@@ -23,7 +23,7 @@ public:
 	}
 	void UpdateStars(double& dt, sf::Vector2f vel) {
 		for (std::size_t i = 0; i < _stars.size(); i++) {
-			starsVertex[i].position += speed * (float)Entity::GRID_SIZE * vel * _stars[i].velMul * (float)dt;
+			starsVertex[i].position -= speed * (float)Entity::GRID_SIZE * vel * _stars[i].velMul * (float)dt;
 		}
 	}
 private:
@@ -35,7 +35,7 @@ private:
 	struct Star {
 		float velMul;
 	};
-	float speed = 25;
+	float speed = 5;
 	std::vector<Star> _stars;
 	sf::VertexArray starsVertex;
 };

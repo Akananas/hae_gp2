@@ -82,21 +82,24 @@ void Game::processInput(sf::Event event) {
 }
 
 void Game::pollInput(double dt) {
+	bool keyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) ||
+					  sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
+					  sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ||
+					  sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
 		player.dx = -0.5f;
-		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 		player.dx = 0.5f;
-		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
 		player.dy = -0.5f;
-		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
 		player.dy = 0.5f;
-		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50,0.5));
+	}
+	if (keyPressed) {
+		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && player.isAlive && shootCooldown >= player.attackSpeed &&
 		(dynamic_cast<GameScene*>(curScene)
@@ -149,7 +152,19 @@ void Game::Update(double deltaTime) {
 	moneyText.setString(to_string(money));
 	fpsText.setString("FPS: " + std::to_string((int)(1 / deltaTime)));
 }
-
+void Game::cacheWall() {
+	wallsRender.clear();
+	for (sf::Vector2i& w : walls) {
+		CreateWall(w);
+	}
+}
+void Game::CreateWall(sf::Vector2i& w) {
+	sf::RectangleShape rect(sf::Vector2f(16, 16));
+	rect.setPosition(w.x * Entity::GRID_SIZE, w.y * Entity::GRID_SIZE);
+	//rect.setFillColor(sf::Color(0, 51, 79));
+	rect.setFillColor(sf::Color(1, 141, 104));
+	wallsRender.push_back(rect);
+}
 bool Game::isWall(float cx, float cy) {
 	for (sf::Vector2i& w : walls) {
 		if (cx == w.x && cy == w.y) {
@@ -159,6 +174,14 @@ bool Game::isWall(float cx, float cy) {
 	return false;
 }
 
+void Game::StartMenu() {
+	delete curScene;
+	curScene = nullptr;
+	MenuScene* menu = new MenuScene(this);
+	curScene = menu;
+	curScene->InitScene();
+	player.KillPlayer();
+}
 void Game::StartGame() {
 	delete curScene;
 	curScene = nullptr;
@@ -169,24 +192,6 @@ void Game::StartGame() {
 	score = 0;
 	level = 0;
 	UpgradeLevel();
-}
-
-void Game::UpgradeLevel() {
-	level++;
-	levelText.setString("Level: " + std::to_string(level));
-}
-
-void Game::StartMenu() {
-	delete curScene;
-	curScene = nullptr;
-	MenuScene *menu = new MenuScene(this);
-	curScene = menu;
-	curScene->InitScene();
-	player.SetPosition(sf::Vector2f(640, 360));
-}
-
-void Game::AddMoney(int _money) {
-	money += _money;
 }
 
 void Game::SwitchMenu(MenuObject& val, int& index) {
@@ -223,7 +228,7 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 			FloatingText text("+1 Bomb", moneyFont, player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
-
+			UpdateBombText();
 		}
 	default:
 		break;
@@ -232,26 +237,14 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 void Game::UpdateBombText() {
 	bombText.setString("Bomb: " + to_string(player.bomb));
 }
-void Game::cacheWall() {
-	wallsRender.clear();
-	for (sf::Vector2i& w : walls) {
-		CreateWall(w);
-	}
+void Game::AddMoney(int _money) {
+	money += _money;
 }
-void Game::CreateWall(sf::Vector2i& w) {
-	sf::RectangleShape rect(sf::Vector2f(16, 16));
-	rect.setPosition(w.x * Entity::GRID_SIZE, w.y * Entity::GRID_SIZE);
-	//rect.setFillColor(sf::Color(0, 51, 79));
-	rect.setFillColor(sf::Color(1, 141, 104));
-	wallsRender.push_back(rect);
+void Game::UpgradeLevel() {
+	level++;
+	levelText.setString("Level: " + std::to_string(level));
 }
-void Game::drawUI() {
-	win->draw(moneyText);
-	win->draw(scoreText);
-	win->draw(levelText);
-	win->draw(fpsText);
-	win->draw(bombText);
-}
+
 void Game::PlayerView() {
 	curView.setCenter(player.GetPosition());
 	win->setView(curView);
@@ -272,5 +265,12 @@ void Game::drawGame() {
 	for (FloatingText& _text : floatingText) {
 		win->draw(_text);
 	}
+}
 
+void Game::drawUI() {
+	win->draw(moneyText);
+	win->draw(scoreText);
+	win->draw(levelText);
+	win->draw(fpsText);
+	win->draw(bombText);
 }

@@ -60,6 +60,7 @@ public:
 	Scene* curScene = nullptr;
 
 	Game(sf::RenderWindow* win);
+
 	~Game() {
 		delete bgShader;
 	}
@@ -72,14 +73,17 @@ public:
 
 	void cacheWall();
 	void CreateWall(sf::Vector2i& w);
-	void drawGame();
-	void drawUI();
-	void PlayerView();
 	bool isWall(float cx, float cy);
-	void StartGame();
-	void UpgradeLevel();
+
 	void StartMenu();
-	void AddMoney(int _money);
+	void StartGame();
+
 	void SwitchMenu(MenuObject& val, int& index);
 	void UpdateBombText();
+	void AddMoney(int _money);
+	void UpgradeLevel();
+
+	void PlayerView();
+	void drawGame();
+	void drawUI();
 };

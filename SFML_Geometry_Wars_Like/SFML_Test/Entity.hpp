@@ -60,6 +60,9 @@ public:
 	sf::Vector2f GetSpeed() {
 		return sf::Vector2f(dx, dy);
 	}
+	sf::Color GetColor() {
+		return sprite.getFillColor();
+	}
 	void SetCoordinate(float x, float y) {
 		xx = x;
 		yy = y;
