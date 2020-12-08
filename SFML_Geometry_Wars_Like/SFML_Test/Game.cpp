@@ -6,6 +6,9 @@
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	curView = win->getView();
+	if (!cursor.loadFromFile("../res/crossair_white.png")) {
+		std::cout << "ERROR NO FONT" << std::endl;
+	}
 	if (!moneyFont.loadFromFile("../res/Squares Bold Free.otf")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
@@ -29,6 +32,11 @@ Game::Game(sf::RenderWindow* win) {
 		bombSound.setBuffer(bombSoundBuffer);
 		bombSound.setVolume(15);
 	}
+	curSave = ReadSaveFile();
+	money = curSave.savedMoney;
+	highScore = curSave.Highscore;
+	maxLevel = curSave.MaxLevel;
+
 	moneyText.setFont(moneyFont);
 	moneyText.setCharacterSize(24);
 	moneyText.setPosition(1200, 20);
@@ -39,12 +47,6 @@ Game::Game(sf::RenderWindow* win) {
 	scoreText.setPosition(sf::Vector2f(640 , 20));
 	scoreText.setFillColor(sf::Color::White);
 
-	bombText.setFont(moneyFont);
-	bombText.setCharacterSize(24);
-	bombText.setPosition(sf::Vector2f(640, 50));
-	bombText.setFillColor(sf::Color::White);
-	UpdateBombText();
-
 	levelText.setFont(moneyFont);
 	levelText.setCharacterSize(24);
 	levelText.setString("Level: " + to_string(level));
@@ -54,7 +56,19 @@ Game::Game(sf::RenderWindow* win) {
 	fpsText.setCharacterSize(24);
 	fpsText.setPosition(sf::Vector2f(60, 20));
 
+	cursorPos.setSize(sf::Vector2f(32, 32));
+	cursorPos.setOrigin(sf::Vector2f(16, 16));
+	cursorPos.setTexture(&cursor);
+
 	player = Player(this);
+	player.LoadSave(curSave.savedDamageLevel, curSave.savedAttackSpeedLevel, curSave.savedBomb);
+
+	bombText.setFont(moneyFont);
+	bombText.setCharacterSize(24);
+	bombText.setPosition(sf::Vector2f(640, 50));
+	bombText.setFillColor(sf::Color::White);
+	UpdateBombText();
+
 	StartMenu();
 	for (int i = 0; i < cols; ++i) {
 		walls.push_back(sf::Vector2i(i, lastLine - 1));
@@ -140,7 +154,11 @@ void Game::Update(double deltaTime) {
 	}
 	scoreText.setString("SCORE: " + to_string(score));
 	moneyText.setString(to_string(money));
+	sf::FloatRect textBounds = moneyText.getLocalBounds();
+	moneyText.setPosition(sf::Vector2f(1200 - textBounds.width / 2.0, 20));
 	fpsText.setString("FPS: " + std::to_string((int)(1 / deltaTime)));
+	cursorPos.setPosition(sf::Vector2f(sf::Mouse::getPosition(*win)));
+
 }
 void Game::cacheWall() {
 	wallsRender.clear();
@@ -263,4 +281,5 @@ void Game::drawUI() {
 	win->draw(levelText);
 	win->draw(fpsText);
 	win->draw(bombText);
+	win->draw(cursorPos);
 }

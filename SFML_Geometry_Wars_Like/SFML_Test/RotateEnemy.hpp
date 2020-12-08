@@ -14,7 +14,7 @@ public:
 		SetPosition(spawn);
 		canMove = false;
 		spawnTime = 0;
-		speed = 1.5;
+		speed = 1;
 	}
 
 	void UpdateEntity(double dt, sf::Vector2i& playerPos) override {
@@ -23,7 +23,7 @@ public:
 				MoveX();
 				MoveY();
 				SetSpriteCoor();
-				float friction = 1.0f / (1 + 1.f * float(dt));
+				float friction = 1.0f / (1 + 0.5f * float(dt));
 				dx *= friction;
 				dy *= friction;
 				if (abs(dx) < 0.1 && abs(dy) < 0.1) {
@@ -43,7 +43,7 @@ public:
 			}
 			else if (rotating == true && rotatingTimer <= 2.5) {
 				rotatingTimer += dt;
-				sprite.rotate(10 * rotatingTimer / dt);
+				sprite.rotate(0.25 * rotatingTimer / dt);
 			}
 		}
 		else {

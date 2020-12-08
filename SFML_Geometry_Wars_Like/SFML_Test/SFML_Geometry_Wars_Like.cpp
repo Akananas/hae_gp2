@@ -87,9 +87,9 @@ static void blur(float dx, sf::Texture* source, sf::Shader* _blurShader, sf::Ren
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280 , 720), "Tortue");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
-    //window.setMouseCursorVisible(false);
+    sf::RenderWindow window(sf::VideoMode(1280 , 720), "Projet semestre");//Creer une fenetre de taille 200x200 et la nomme "SFML works!"
 	Game newGame(&window);
+	window.setMouseCursorVisible(false);
 
 	ImGui::SFML::Init(window);
 
@@ -133,8 +133,10 @@ int main()
 		while (window.pollEvent(event))//Execute les events
 		{
 			ImGui::SFML::ProcessEvent(event);
-			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))//Si on essaye de fermer la fenetre
+			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { //Si on essaye de fermer la fenetre
+				newGame.SaveGame();
 				window.close();//Ferme la fenetre
+			}
 			newGame.processInput(event);
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());

@@ -34,8 +34,10 @@ public:
 	std::vector<FloatingText> floatingText;
 	sf::View curView;
 	int level = 1;
+	int maxLevel = 1;
 	int money = 0;
 	int score = 0;
+	int highScore = 0;
 	float shootCooldown = 0.2f;
 	Stars stars;
 	sf::Font moneyFont;
@@ -54,7 +56,8 @@ public:
 	sf::Sound explosionSound;
 	sf::SoundBuffer bombSoundBuffer;
 	sf::Sound bombSound;
-
+	sf::Texture cursor;
+	sf::RectangleShape cursorPos;
 	Scene* curScene = nullptr;
 
 	Game(sf::RenderWindow* win);
@@ -80,4 +83,41 @@ public:
 	void PlayerView();
 	void drawGame();
 	void drawUI();
+
+	void CheckHighscore() {
+		if (score > highScore) {
+			highScore = score;
+		}
+		if (level > maxLevel) {
+			maxLevel = level;
+		}
+	}
+	struct SaveFile {
+		int Highscore = 0;
+		int MaxLevel = 0;
+		int savedMoney = 0;
+		int savedBomb = 3;
+		int savedDamageLevel = 1;
+		int savedAttackSpeedLevel = 1;
+	};
+
+	SaveFile curSave;
+
+	SaveFile ReadSaveFile() {
+		SaveFile saveFile;
+		FILE *save = nullptr;
+		save = fopen("../res/SaveData.txt", "r");
+		if(save){
+			fscanf(save, "%d %d %d %d %d %d", &saveFile.Highscore, &saveFile.MaxLevel, &saveFile.savedMoney, &saveFile.savedBomb, &saveFile.savedDamageLevel, &saveFile.savedAttackSpeedLevel);
+			fclose(save);
+		}
+		return saveFile;
+	}
+
+	void SaveGame() {
+		FILE* save = nullptr;
+		save = fopen("../res/SaveData.txt", "w");
+		fprintf(save, "%d %d %d %d %d %d", highScore, maxLevel, money, player.bomb, player.damageLevel, player.attackSpeedLevel);
+		fclose(save);
+	}
 };

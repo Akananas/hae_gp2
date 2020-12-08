@@ -1,42 +1,32 @@
 #pragma once
 #include "Entity.hpp"
-
+struct SaveFile;
 class Player :public Entity {
 public:
 	float damage =  1;
-	float damageLevel =  1;
+	int damageLevel =  1;
 	int bomb = 3;
 	float bombRadius = 250;
 	float attackSpeed = 0.2;
-	float attackSpeedLevel = 1;
-	int life = 0;
+	int attackSpeedLevel = 1;
 	bool isAlive = false;
 	double spawnTimer = 0;
 	sf::Vector2f baseSize = sf::Vector2f(32, 32);
 	Player() {}
-	Player(Game* g) {
-		sprite.setSize(baseSize);
-		sprite.setOrigin(sf::Vector2f(16, 16));
-		sprite.setFillColor(sf::Color(
-			200, 200, 200
-		));
-		radius = 16;
-		game = g;
-		damage = 1;
-		life = 3;
-		attackSpeed = 0.2f;
-		spawnTimer = 0;
-	}
+	Player(Game* g);
 	bool BombAvailable();
 
 	void UpdateEntity(double dt);
 	void SpawnPlayer(double dt);
-	void KillPlayer() {
-		dx = 0;
-		dy = 0;
-		spawnTimer = 0;
-		isAlive = false;
-		SetPosition(sf::Vector2f(640, 360));
+	void KillPlayer();
+	void LoadSave(int& _dmgLvl, int& _asLvl, int& savedBomb) {
+		damageLevel = _dmgLvl;
+		damage += damageLevel;
+		attackSpeedLevel = _asLvl;
+		for (int i = 1; i <= attackSpeedLevel; i++) {
+			attackSpeed -= 0.025 * pow(0.85, attackSpeedLevel);
+		}
+		bomb = savedBomb;
 	}
 };
 
