@@ -19,12 +19,16 @@ void GameScene::UpdateScene(double dt) {
 			newPos = playerPos - spawnPos;
 		}
 		int spawnRate = rand() % 100;
-		if (spawnRate < 50) {
+		if (spawnRate < 33) {
 			SlowEnemy* en = new SlowEnemy(game, game->level, spawnPos, sf::Color(134, 91, 111));
 			enemy.push_back(en);
 		}
-		else {
+		else if (spawnRate < 66){
 			FastEnemy* en = new FastEnemy(game, game->level, spawnPos, sf::Color(59, 148, 204));
+			enemy.push_back(en);
+		}
+		else {
+			RotateEnemy* en = new RotateEnemy(game, game->level, spawnPos, sf::Color(177, 73, 209));
 			enemy.push_back(en);
 		}
 		nextSpawnTimer = 0;

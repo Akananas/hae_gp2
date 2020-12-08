@@ -1,6 +1,19 @@
 #include "Entity.hpp"
 #include "Game.hpp"
 
+void Entity::SetCoordinate(float x, float y) {
+	xx = x;
+	yy = y;
+	cx = xx / GRID_SIZE;
+	cy = yy / GRID_SIZE;
+	rx = (xx - cx * GRID_SIZE) / GRID_SIZE;
+	ry = (yy - cy * GRID_SIZE) / GRID_SIZE;
+}
+
+void Entity::SetCoordinate(sf::Vector2f pos) {
+	SetCoordinate(pos.x, pos.y);
+}
+
 void Entity::MoveX() {
 	rx += dx;
 	if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
@@ -41,6 +54,12 @@ void Entity::MoveY() {
 	}
 }
 
+void Entity::SetSpriteCoor() {
+	xx = (cx + rx) * GRID_SIZE;
+	yy = (cy + ry) * GRID_SIZE;
+	sprite.setPosition(sf::Vector2f(xx, yy));
+}
+
 bool Entity::hasCollision(int nextX, int nextY) {
 	return game->isWall(nextX,nextY);
 }
@@ -51,6 +70,11 @@ void Entity::Pushback(Entity e) {
 	float repelPower = (radius + e.radius - dist) / (radius + e.radius);
 	dx -= cos(ang) * repelPower * force;
 	dy -= sin(ang) * repelPower * force;
+}
+void Entity::UpdateEntity(double dt) {
+	MoveX();
+	MoveY();
+	SetSpriteCoor();
 }
 bool Entity::overlaps(Entity e) {
 	float dist = sqrt((e.xx - xx) * (e.xx - xx) + (e.yy - yy) * (e.yy - yy));

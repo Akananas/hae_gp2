@@ -6,15 +6,14 @@
 #include <sys/stat.h>
 #include <ctime>
 #include <vector>
-#include "Entity.hpp"
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "ParticleSystem.hpp"
 #include "MenuObject.hpp"
 #include "Stars.hpp"
-#include "Enemy.hpp"
 #include "FastEnemy.hpp"
 #include "SlowEnemy.hpp"
+#include "RotateEnemy.hpp"
 #include "FloatingText.hpp"
 #include "Scene.hpp"
 
@@ -24,12 +23,10 @@ class Enemy;
 class Scene;
 class Game {
 public:
-
+	static const int cols = 1280 / Entity::GRID_SIZE;
+	static const int lastLine = 720 / Entity::GRID_SIZE;
 	sf::RenderWindow* win = nullptr;
 	Player player;
-	sf::RectangleShape  bg;
-	HotReloadShader *bgShader = nullptr;
-	sf::Texture			tex;
 	std::vector<Bullet> bullet;
 	std::vector<sf::Vector2i> walls;
 	std::vector<sf::RectangleShape> wallsRender;
@@ -57,13 +54,10 @@ public:
 	sf::Sound explosionSound;
 	sf::SoundBuffer bombSoundBuffer;
 	sf::Sound bombSound;
+
 	Scene* curScene = nullptr;
 
 	Game(sf::RenderWindow* win);
-
-	~Game() {
-		delete bgShader;
-	}
 
 	void processInput(sf::Event event);
 

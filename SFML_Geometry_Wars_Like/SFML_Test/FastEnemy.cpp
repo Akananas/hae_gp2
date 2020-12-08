@@ -10,7 +10,7 @@ FastEnemy::FastEnemy(Game* g, int level, float x, float y, sf::Color _col) {
 	SetPosition(x, y);
 	canMove = false;
 	spawnTime = 0;
-	speed = 10.0;
+	speed = 15.0;
 }
 
 FastEnemy::FastEnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
@@ -23,5 +23,5 @@ FastEnemy::FastEnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
 	SetPosition(spawn);
 	canMove = false;
 	spawnTime = 0;
-	speed = 10.0;
+	speed = 15.0;
 }

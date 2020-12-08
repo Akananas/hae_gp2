@@ -10,7 +10,7 @@ public:
 
 	bool getDamage(float dmg);
 	bool canHurtPlayer();
-	void UpdateEntity(double dt, sf::Vector2i& playerPos);
-
+	virtual void UpdateEntity(double dt, sf::Vector2i& playerPos);
+	void MoveEnemy(double& dt, sf::Vector2i& playerPos);
 };
 

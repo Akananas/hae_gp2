@@ -31,12 +31,6 @@ public:
 		radius = 16;
 		game = g;
 	}
-
-	Entity(sf::RectangleShape _sprite) {
-		sprite = _sprite;
-		SetCoordinate(_sprite.getPosition());
-		radius = 16;
-	}
 	static float getMag(sf::Vector2f& vec) {
 		return sqrt(vec.x * vec.x + vec.y * vec.y);
 	}
@@ -44,8 +38,7 @@ public:
 		return sf::Vector2f(vec.x / getMag(vec), vec.y / getMag(vec));
 	}
 	void SetPosition(sf::Vector2f pos) {
-		sprite.setPosition(pos.x, pos.y);
-		SetCoordinate(pos.x, pos.y);
+		SetPosition(pos.x, pos.y);
 	}
 	void SetPosition(int x, int y) {
 		sprite.setPosition(sf::Vector2f(x, y));
@@ -63,43 +56,23 @@ public:
 	sf::Color GetColor() {
 		return sprite.getFillColor();
 	}
-	void SetCoordinate(float x, float y) {
-		xx = x;
-		yy = y;
-		cx = xx / GRID_SIZE;
-		cy = yy / GRID_SIZE;
-		rx = (xx - cx * GRID_SIZE) / GRID_SIZE;
-		ry = (yy - cy * GRID_SIZE) / GRID_SIZE;
-	}
-	void SetCoordinate(sf::Vector2f pos) {
-		xx = pos.x;
-		yy = pos.y;
-		cx = xx / GRID_SIZE;
-		cy = yy / GRID_SIZE;
-		rx = (xx - cx * GRID_SIZE) / GRID_SIZE;
-		ry = (yy - cy * GRID_SIZE) / GRID_SIZE;
-	}
+
+	void SetCoordinate(float x, float y);
+	void SetCoordinate(sf::Vector2f pos);
+
 	sf::Vector2f ConvertCoor(sf::Vector2f pos) {
 		return sf::Vector2f(pos.x / GRID_SIZE, pos.y / GRID_SIZE);
 	}
 	void MoveX();
 	void MoveY();
-	void SetSpriteCoor() {
-		xx = (cx + rx) * GRID_SIZE;
-		yy = (cy + ry) * GRID_SIZE;
-		sprite.setPosition(sf::Vector2f(xx, yy));
-	}
+	void SetSpriteCoor();
 	bool hasCollision(int nextX, int nextY);
 
 	bool overlaps(Entity e);
 
 	void Pushback(Entity e);
 
-	virtual void UpdateEntity(double dt) {
-		MoveX();
-		MoveY();
-		SetSpriteCoor();
-	}
+	virtual void UpdateEntity(double dt);
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{

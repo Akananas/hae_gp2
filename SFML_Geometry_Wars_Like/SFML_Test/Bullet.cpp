@@ -3,11 +3,11 @@
 Bullet::Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir) {
 	dx = dir.x;
 	dy = dir.y;
-	sprite.setSize(sf::Vector2f(8, 8));
-	sprite.setOrigin(sf::Vector2f(4, 4));
+	sprite.setSize(sf::Vector2f(16, 16));
+	sprite.setOrigin(sf::Vector2f(8, 8));
 	sprite.setFillColor(sf::Color(247, 249, 118));
 	SetPosition(spawnPos);
-	radius = 8;
+	radius = 16;
 	game = g;
 	explosionColor = sf::Color(247, 249, 118);
 }

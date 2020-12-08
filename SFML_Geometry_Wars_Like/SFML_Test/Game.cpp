@@ -54,22 +54,13 @@ Game::Game(sf::RenderWindow* win) {
 	fpsText.setCharacterSize(24);
 	fpsText.setPosition(sf::Vector2f(60, 20));
 
-	bg = sf::RectangleShape(sf::Vector2f(win->getSize().x, win->getSize().y));
-	bool isOk = tex.loadFromFile("../res/bg.jpg");
-	if (!isOk) {
-		printf("ERR : LOAD FAILED\n");
-	}
-	bg.setTexture(&tex);
-	bg.setSize(sf::Vector2f(1280, 720));
 	player = Player(this);
 	StartMenu();
-	int cols = 1280 / Entity::GRID_SIZE;
-	int lastLine = 720 / Entity::GRID_SIZE - 1;
 	for (int i = 0; i < cols; ++i) {
-		walls.push_back(sf::Vector2i(i, lastLine));
+		walls.push_back(sf::Vector2i(i, lastLine - 1));
 		walls.push_back(sf::Vector2i(i, 0));
 	}
-	for (int i = 0; i < lastLine; ++i) {
+	for (int i = 0; i < lastLine - 1; ++i) {
 		walls.push_back(sf::Vector2i(0, i));
 		walls.push_back(sf::Vector2i(cols - 1, i));
 	}
@@ -117,7 +108,6 @@ void Game::pollInput(double dt) {
 
 void Game::Update(double deltaTime) {
 	g_time += deltaTime;
-	if (bgShader) bgShader->update(deltaTime);
 	if (shootCooldown < player.attackSpeed) {
 		shootCooldown += deltaTime;
 	}

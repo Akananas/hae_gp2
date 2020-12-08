@@ -12,15 +12,6 @@ public:
 			starsVertex[i].position = sf::Vector2f(-640 + rand() % 2560, -360 + rand() % 1440);
 		}
 	}
-	Stars(unsigned int count) :
-		_stars(count),
-		starsVertex(sf::Points, count)
-	{
-		for (std::size_t i = 0; i < _stars.size(); i++) {
-			_stars[i].velMul = 1 + rand() % 3;
-			starsVertex[i].position = sf::Vector2f(-1280 + rand() % 3840, -720 + rand() % 2160);
-		}
-	}
 	void UpdateStars(double& dt, sf::Vector2f vel) {
 		for (std::size_t i = 0; i < _stars.size(); i++) {
 			starsVertex[i].position -= speed * (float)Entity::GRID_SIZE * vel * _stars[i].velMul * (float)dt;
