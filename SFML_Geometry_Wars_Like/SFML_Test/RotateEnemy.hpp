@@ -3,12 +3,17 @@
 class RotateEnemy : public Enemy {
 public:
 	bool rotating = false;
+	bool changeColor = false;
+	sf::Color readyColor = sf::Color(217, 53, 39);
+	sf::Color normalColor;
 	float rotatingTimer = 0;
+	float colorTimer = 0;
 	RotateEnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
 		this->game = g;
 		sprite.setSize(sf::Vector2f(32, 32));
 		sprite.setOrigin(sf::Vector2f(16, 16));
 		sprite.setFillColor(_col);
+		normalColor = _col;
 		radius = 16;
 		hp = 1 * level;
 		SetPosition(spawn);
@@ -17,47 +22,7 @@ public:
 		speed = 1;
 	}
 
-	void UpdateEntity(double dt, sf::Vector2i& playerPos) override {
-		if (canMove) {
-			if (rotating == false && rotatingTimer > 2.5) {
-				MoveX();
-				MoveY();
-				SetSpriteCoor();
-				float friction = 1.0f / (1 + 0.5f * float(dt));
-				dx *= friction;
-				dy *= friction;
-				if (abs(dx) < 0.1 && abs(dy) < 0.1) {
-					rotatingTimer = 0;
-					rotating = true;
-					dx = 0;
-					dy = 0;
-				}
-			}
-			else if (rotating == true && rotatingTimer > 2.5) {
-				rotating = false;
-				sf::Vector2i curPos(cx, cy);
-				sf::Vector2f dir(playerPos - curPos);
-				dir = normalized(dir);
-				dx = dir.x * speed;
-				dy = dir.y * speed;
-			}
-			else if (rotating == true && rotatingTimer <= 2.5) {
-				rotatingTimer += dt;
-				sprite.rotate(0.25 * rotatingTimer / dt);
-			}
-		}
-		else {
-			if (spawnTime > 0.35) {
-				canMove = true;
-				rotating = true;
-				rotatingTimer = 0;
-			}
-			else {
-				spawnTime += dt;
-				sprite.setScale(sf::Vector2f(spawnTime / 0.35, spawnTime / 0.35));
-			}
-		}
-	}
+	void UpdateEntity(double dt, sf::Vector2i& playerPos) override;
 
 	void MoveX() {
 		rx += dx;
