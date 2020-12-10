@@ -37,10 +37,11 @@ private:
 	};
 	void ChangeSize(int index, float ratio) {
 		float val = 4.0 * ratio;
+		float angle = atan(m_particles[index].velocity.x / m_particles[index].velocity.y);
 		sf::Vector2f basePos = m_vertices[index].position;
-		m_vertices[index + 1].position = basePos + sf::Vector2f(val, 0);
-		m_vertices[index + 2].position = basePos + sf::Vector2f(val, val);
-		m_vertices[index + 3].position = basePos + sf::Vector2f(0, val);
+		m_vertices[index + 1].position = basePos + sf::Vector2f(val * cos(angle), 0);
+		m_vertices[index + 2].position = basePos + sf::Vector2f(val * cos(angle) , val * sin(angle));
+		m_vertices[index + 3].position = basePos + sf::Vector2f(0 , val * sin(angle));
 	}
 	void resetParticle(std::size_t index, sf::Vector2f pos, float angle, float speed);
 
