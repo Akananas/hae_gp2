@@ -227,8 +227,8 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 			FloatingText text("Attack Speed Up",moneyFont,player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
-
 		}
+		break;
 	case BombState:
 		if (money - 50 >= 0 && player.bomb < 5) {
 			player.bomb++;
@@ -238,6 +238,7 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 			powerUpSound.play();
 			UpdateBombText();
 		}
+		break;
 	default:
 		break;
 	}
