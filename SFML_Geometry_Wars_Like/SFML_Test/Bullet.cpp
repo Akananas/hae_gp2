@@ -1,13 +1,15 @@
 #include "Bullet.hpp"
 
-Bullet::Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir) {
+Bullet::Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir, float playerDamage) {
 	dx = dir.x;
 	dy = dir.y;
-	sprite.setSize(sf::Vector2f(16, 16));
-	sprite.setOrigin(sf::Vector2f(8, 8));
+	float size = 12 + playerDamage / 5.0;
+	float origin = size / 2.0;
+	sprite.setSize(sf::Vector2f(size, size));
+	sprite.setOrigin(sf::Vector2f(origin, origin));
 	sprite.setFillColor(sf::Color(247, 249, 118));
 	SetPosition(spawnPos);
-	radius = 16;
+	radius = size;
 	game = g;
 	explosionColor = sf::Color(247, 249, 118);
 }

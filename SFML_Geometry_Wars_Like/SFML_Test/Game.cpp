@@ -114,7 +114,7 @@ void Game::pollInput(double dt) {
 		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
 		sf::Vector2f dir = mouseWorld - player.GetPosition();
 		sf::Vector2f normalized(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
-		bullet.push_back(Bullet(this, player.GetPosition(), normalized));
+		bullet.push_back(Bullet(this, player.GetPosition(), normalized, player.damageLevel));
 		shootCooldown = 0;
 		attackSound.play();
 	}
