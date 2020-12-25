@@ -114,7 +114,14 @@ void Game::pollInput(double dt) {
 		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
 		sf::Vector2f dir = mouseWorld - player.GetPosition();
 		sf::Vector2f normalized(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
-		bullet.push_back(Bullet(this, player.GetPosition(), normalized, player.damageLevel));
+		if (dynamic_cast<MenuScene*>(curScene)) {
+			bullet.push_back(Bullet(this, player.GetPosition(), normalized, player.damageLevel));
+		}
+		else {
+			for (int i = 0; i < player.bulletNum; i++) {
+				bullet.push_back(Bullet(this, player.GetPosition() + sf::Vector2f(rand() % 48, rand() % 48), normalized, player.damageLevel));
+			}
+		}
 		shootCooldown = 0;
 		attackSound.play();
 	}
@@ -220,7 +227,7 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 		break;
 	case AttackSpeedState:
 		if (money - (5 * player.attackSpeedLevel) >= 0) {
-			player.attackSpeed -= 0.025 * pow(0.85, player.attackSpeedLevel);
+			player.UpAttackSpeed();
 			money -= (5 * player.attackSpeedLevel);
 			player.attackSpeedLevel++;
 			val.SetPrice(5 * player.attackSpeedLevel);
