@@ -118,8 +118,8 @@ void Game::pollInput(double dt) {
 			bullet.push_back(Bullet(this, player.GetPosition(), normalized, player.damageLevel));
 		}
 		else {
-			for (int i = 0; i < player.bulletNum; i++) {
-				bullet.push_back(Bullet(this, player.GetPosition() + sf::Vector2f(rand() % 48, rand() % 48), normalized, player.damageLevel));
+			for (int i = -player.bulletNum/2; i < (player.bulletNum + 1) / 2; i++) {
+				bullet.push_back(Bullet(this, player.GetPosition() + sf::Vector2f(16 * normalized.y * i, 16 * normalized.x * -i), normalized, player.damageLevel));
 			}
 		}
 		shootCooldown = 0;
