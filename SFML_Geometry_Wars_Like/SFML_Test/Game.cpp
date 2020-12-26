@@ -9,7 +9,7 @@ Game::Game(sf::RenderWindow* win) {
 	if (!cursor.loadFromFile("../res/crossair_white.png")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
-	if (!moneyFont.loadFromFile("../res/Squares Bold Free.otf")) {
+	if (!gameFont.loadFromFile("../res/Squares Bold Free.otf")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
 	if (hitSoundBuffer.loadFromFile("../res/Hit_Hurt7.wav")) {
@@ -37,22 +37,22 @@ Game::Game(sf::RenderWindow* win) {
 	highScore = curSave.Highscore;
 	maxLevel = curSave.MaxLevel;
 
-	moneyText.setFont(moneyFont);
+	moneyText.setFont(gameFont);
 	moneyText.setCharacterSize(24);
 	moneyText.setPosition(1200, 20);
 	moneyText.setFillColor(sf::Color::White);
 
-	scoreText.setFont(moneyFont);
+	scoreText.setFont(gameFont);
 	scoreText.setCharacterSize(24);
 	scoreText.setPosition(sf::Vector2f(640 , 20));
 	scoreText.setFillColor(sf::Color::White);
 
-	levelText.setFont(moneyFont);
+	levelText.setFont(gameFont);
 	levelText.setCharacterSize(24);
 	levelText.setString("Level: " + to_string(level));
 	levelText.setPosition(sf::Vector2f(340, 20));
 
-	fpsText.setFont(moneyFont);
+	fpsText.setFont(gameFont);
 	fpsText.setCharacterSize(24);
 	fpsText.setPosition(sf::Vector2f(60, 20));
 
@@ -63,7 +63,7 @@ Game::Game(sf::RenderWindow* win) {
 	player = Player(this);
 	player.LoadSave(curSave.savedDamageLevel, curSave.savedAttackSpeedLevel, curSave.savedBomb);
 
-	bombText.setFont(moneyFont);
+	bombText.setFont(gameFont);
 	bombText.setCharacterSize(24);
 	bombText.setPosition(sf::Vector2f(640, 50));
 	bombText.setFillColor(sf::Color::White);
@@ -109,21 +109,7 @@ void Game::pollInput(double dt) {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && player.isAlive && shootCooldown >= player.attackSpeed &&
 		(dynamic_cast<GameScene*>(curScene)
 		|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)){
-
-		sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
-		sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
-		sf::Vector2f dir = mouseWorld - player.GetPosition();
-		sf::Vector2f normalized(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
-		if (dynamic_cast<MenuScene*>(curScene)) {
-			bullet.push_back(Bullet(this, player.GetPosition(), normalized, player.damageLevel));
-		}
-		else {
-			for (int i = -player.bulletNum/2; i < (player.bulletNum + 1) / 2; i++) {
-				bullet.push_back(Bullet(this, player.GetPosition() + sf::Vector2f(16 * normalized.y * i, 16 * normalized.x * -i), normalized, player.damageLevel));
-			}
-		}
-		shootCooldown = 0;
-		attackSound.play();
+		Shoot();
 	}
 }
 
@@ -176,7 +162,6 @@ void Game::cacheWall() {
 void Game::CreateWall(sf::Vector2i& w) {
 	sf::RectangleShape rect(sf::Vector2f(16, 16));
 	rect.setPosition(w.x * Entity::GRID_SIZE, w.y * Entity::GRID_SIZE);
-	//rect.setFillColor(sf::Color(0, 51, 79));
 	rect.setFillColor(sf::Color(1, 141, 104));
 	wallsRender.push_back(rect);
 }
@@ -220,7 +205,7 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 			money -= (5 * player.damageLevel);
 			player.damageLevel++;
 			val.SetPrice(5 * player.damageLevel);
-			FloatingText text("Damage Up", moneyFont, player.GetPosition(), val.GetColor());
+			FloatingText text("Damage Up", gameFont, player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
 		}
@@ -231,7 +216,7 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 			money -= (5 * player.attackSpeedLevel);
 			player.attackSpeedLevel++;
 			val.SetPrice(5 * player.attackSpeedLevel);
-			FloatingText text("Attack Speed Up",moneyFont,player.GetPosition(), val.GetColor());
+			FloatingText text("Attack Speed Up",gameFont,player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
 		}
@@ -240,7 +225,7 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 		if (money - 50 >= 0 && player.bomb < 5) {
 			player.bomb++;
 			money -= 50;
-			FloatingText text("+1 Bomb", moneyFont, player.GetPosition(), val.GetColor());
+			FloatingText text("+1 Bomb", gameFont, player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
 			UpdateBombText();
@@ -290,4 +275,30 @@ void Game::drawUI() {
 	win->draw(fpsText);
 	win->draw(bombText);
 	win->draw(cursorPos);
+}
+
+void Game::Shoot() {
+	sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
+	sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
+	sf::Vector2f dir = mouseWorld - player.GetPosition();
+	sf::Vector2f normalized(dir.x / sqrt(dir.x * dir.x + dir.y * dir.y), dir.y / sqrt(dir.x * dir.x + dir.y * dir.y));
+	if (dynamic_cast<MenuScene*>(curScene)) {
+		bullet.push_back(Bullet(this, player.GetPosition(), normalized, player.damageLevel));
+	}
+	else {
+		for (int i = -player.bulletNum / 2; i < (player.bulletNum + 1) / 2; i++) {
+			bullet.push_back(Bullet(this, player.GetPosition() + sf::Vector2f(16 * normalized.y * i, 16 * normalized.x * -i), normalized, player.damageLevel));
+		}
+	}
+	shootCooldown = 0;
+	attackSound.play();
+}
+
+void Game::CheckHighscore() {
+	if (score > highScore) {
+		highScore = score;
+	}
+	if (level > maxLevel) {
+		maxLevel = level;
+	}
 }

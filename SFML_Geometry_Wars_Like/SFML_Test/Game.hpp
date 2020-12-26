@@ -40,7 +40,7 @@ public:
 	int highScore = 0;
 	float shootCooldown = 0.2f;
 	Stars stars;
-	sf::Font moneyFont;
+	sf::Font gameFont;
 	sf::Text moneyText;
 	sf::Text scoreText;
 	sf::Text levelText;
@@ -83,15 +83,9 @@ public:
 	void PlayerView();
 	void drawGame();
 	void drawUI();
+	void Shoot();
+	void CheckHighscore();
 
-	void CheckHighscore() {
-		if (score > highScore) {
-			highScore = score;
-		}
-		if (level > maxLevel) {
-			maxLevel = level;
-		}
-	}
 	struct SaveFile {
 		int Highscore = 0;
 		int MaxLevel = 0;

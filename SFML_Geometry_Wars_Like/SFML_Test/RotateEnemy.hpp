@@ -24,44 +24,8 @@ public:
 
 	void UpdateEntity(double dt, sf::Vector2i& playerPos) override;
 
-	void MoveX() {
-		rx += dx;
-		if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
-			rx = 0.7;
-			dx = -dx; // stop movement
-		}
-		if (hasCollision(cx - radius / GRID_SIZE, cy) && rx <= 0.3) {
-			rx = 0.3;
-			dx = -dx;
-		}
-		while (rx > 1) {
-			rx--;
-			cx++;
-		}
-		while (rx < 0) {
-			rx++;
-			cx--;
-		}
-	}
+	void MoveX();
 
-	void MoveY() {
-		ry += dy;
-		if (hasCollision(cx, cy + radius / GRID_SIZE) && ry >= 0.7) {
-			ry = 0.7;
-			dy = -dy;
-		}
-		if (hasCollision(cx, cy - radius / GRID_SIZE) && ry <= 0.3) {
-			ry = 0.3;
-			dy = -dy;
-		}
-		while (ry > 1) {
-			ry--;
-			cy++;
-		}
-		while (ry < 0) {
-			ry++;
-			cy--;
-		}
-	}
+	void MoveY();
 };
 

@@ -2,6 +2,7 @@
 
 void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 	if (canMove) {
+		// Moving
 		if (rotating == false && rotatingTimer > 2.5) {
 			MoveX();
 			MoveY();
@@ -17,6 +18,7 @@ void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 				sprite.setFillColor(normalColor);
 			}
 		}
+		//Stop rotation
 		else if (rotating == true && rotatingTimer > 2.5) {
 			rotating = false;
 			sf::Vector2i curPos(cx, cy);
@@ -27,14 +29,17 @@ void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 			sprite.setFillColor(readyColor);
 			changeColor = false;
 		}
+		//Rotate
 		else if (rotating == true && rotatingTimer <= 2.5) {
 			rotatingTimer += dt;
 			sprite.rotate(1080 * dt * rotatingTimer / 2.6);
+			//Start changing color
 			if (!changeColor && rotatingTimer  >= 2) {
 				changeColor = true;
 				colorTimer = 0;
 			}
 		}
+		//Change color
 		if (colorTimer >= 0.1 && changeColor) {
 			if (sprite.getFillColor() != readyColor) {
 				sprite.setFillColor(readyColor);
@@ -48,6 +53,7 @@ void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 			colorTimer += dt;
 		}
 	}
+	//Spawning
 	else {
 		if (spawnTime > 0.35) {
 			canMove = true;
@@ -58,5 +64,45 @@ void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 			spawnTime += dt;
 			sprite.setScale(sf::Vector2f(spawnTime / 0.35, spawnTime / 0.35));
 		}
+	}
+}
+
+inline void RotateEnemy::MoveX() {
+	rx += dx;
+	if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
+		rx = 0.7;
+		dx = -dx; 
+	}
+	if (hasCollision(cx - radius / GRID_SIZE, cy) && rx <= 0.3) {
+		rx = 0.3;
+		dx = -dx;
+	}
+	while (rx > 1) {
+		rx--;
+		cx++;
+	}
+	while (rx < 0) {
+		rx++;
+		cx--;
+	}
+}
+
+inline void RotateEnemy::MoveY() {
+	ry += dy;
+	if (hasCollision(cx, cy + radius / GRID_SIZE) && ry >= 0.7) {
+		ry = 0.7;
+		dy = -dy;
+	}
+	if (hasCollision(cx, cy - radius / GRID_SIZE) && ry <= 0.3) {
+		ry = 0.3;
+		dy = -dy;
+	}
+	while (ry > 1) {
+		ry--;
+		cy++;
+	}
+	while (ry < 0) {
+		ry++;
+		cy--;
 	}
 }

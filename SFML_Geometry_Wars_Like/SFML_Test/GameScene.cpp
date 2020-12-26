@@ -88,7 +88,7 @@ void GameScene::ProcessInput(sf::Event& event) {
 				float bombRa = game->player.bombRadius;
 				int bombChain = BombDamage(bombRa);
 				if (bombChain > 1) {
-					FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), game->moneyFont, game->player.GetPosition(), sf::Color(255, 166, 158));
+					FloatingText bombText("Bomb Chain: " + std::to_string(bombChain), game->gameFont, game->player.GetPosition(), sf::Color(255, 166, 158));
 					game->floatingText.push_back(bombText);
 				}
 				game->player.bomb--;
