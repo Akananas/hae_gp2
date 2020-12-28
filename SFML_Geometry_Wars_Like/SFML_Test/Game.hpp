@@ -58,6 +58,7 @@ public:
 	sf::Sound bombSound;
 	sf::Texture cursor;
 	sf::RectangleShape cursorPos;
+	HotReloadShader* chargeAttack = nullptr;
 	Scene* curScene = nullptr;
 
 	Game(sf::RenderWindow* win);

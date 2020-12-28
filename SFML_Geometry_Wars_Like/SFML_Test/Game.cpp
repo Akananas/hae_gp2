@@ -32,6 +32,7 @@ Game::Game(sf::RenderWindow* win) {
 		bombSound.setBuffer(bombSoundBuffer);
 		bombSound.setVolume(15);
 	}
+	chargeAttack = new HotReloadShader("../res/simple.vert", "../res/player.frag");
 	curSave = ReadSaveFile();
 	money = curSave.savedMoney;
 	highScore = curSave.Highscore;
@@ -115,6 +116,7 @@ void Game::pollInput(double dt) {
 
 void Game::Update(double deltaTime) {
 	g_time += deltaTime;
+	if (chargeAttack) chargeAttack->update(deltaTime);
 	if (shootCooldown < player.attackSpeed) {
 		shootCooldown += deltaTime;
 	}
@@ -252,7 +254,15 @@ void Game::PlayerView() {
 }
 void Game::drawGame() {
 	win->draw(stars);
-	win->draw(player);
+	{
+		sf::RenderStates states = sf::RenderStates::Default;
+		sf::Shader* sh = &chargeAttack->sh;
+		states.shader = sh;
+		sh->setUniform("texture", sf::Shader::CurrentTexture);
+		sh->setUniform("time", g_time);
+		sh->setUniform("maxTime", 0.5f);
+		win->draw(player,states);
+	}
 	win->draw(*curScene);
 	for (sf::RectangleShape& w : wallsRender) {
 		win->draw(w);
