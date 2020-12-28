@@ -59,6 +59,7 @@ public:
 	sf::Texture cursor;
 	sf::RectangleShape cursorPos;
 	HotReloadShader* chargeAttack = nullptr;
+	float shootTimer = 0.0f;
 	Scene* curScene = nullptr;
 
 	Game(sf::RenderWindow* win);

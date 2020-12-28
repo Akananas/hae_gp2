@@ -6,6 +6,7 @@ Player::Player(Game* g) {
 	sprite.setFillColor(sf::Color(
 		200, 200, 200
 	));
+	sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(1,1)));
 	radius = 16;
 	game = g;
 	damage = 1;
