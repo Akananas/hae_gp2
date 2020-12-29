@@ -4,6 +4,7 @@ Bullet::Bullet(Game* g, sf::Vector2f spawnPos, sf::Vector2f dir, float playerDam
 	dx = dir.x;
 	dy = dir.y;
 	float size = 12 + playerDamage / 5.0;
+	damage = playerDamage;
 	float origin = size / 2.0;
 	sprite.setSize(sf::Vector2f(size, size));
 	sprite.setOrigin(sf::Vector2f(origin, origin));

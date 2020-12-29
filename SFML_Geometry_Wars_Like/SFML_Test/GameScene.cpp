@@ -59,7 +59,7 @@ void GameScene::UpdateScene(double dt) {
 			if (game->bullet[i].overlaps(*enemy[j])) {
 				game->bullet[i].destroyed = true;
 				game->bullet[i].explosionColor = enemy[j]->sprite.getFillColor();
-				if (enemy[j]->getDamage(game->player.damage)) {
+				if (enemy[j]->getDamage(game->bullet[i].damage)) {
 					delete enemy[j];
 					enemy[j] = nullptr;
 					enemy.erase(enemy.begin() + j);
