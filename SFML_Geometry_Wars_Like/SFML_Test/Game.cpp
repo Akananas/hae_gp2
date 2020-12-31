@@ -33,6 +33,9 @@ Game::Game(sf::RenderWindow* win) {
 		bombSound.setVolume(15);
 	}
 	chargeAttack = new HotReloadShader("../res/player.vert", "../res/player.frag");
+	shockwave = new HotReloadShader("../res/simple.vert", "../res/displace.frag");
+	winTex.create(win->getSize().x, win->getSize().y);
+	noise.loadFromFile("../res/noise.png");
 	curSave = ReadSaveFile();
 	money = curSave.savedMoney;
 	highScore = curSave.Highscore;
@@ -120,6 +123,13 @@ void Game::Update(double deltaTime) {
 		shootTimer += deltaTime;
 	}
 	if (chargeAttack) chargeAttack->update(deltaTime);
+	if (shockwave) shockwave->update(deltaTime);
+	if (respawnTimer > 10) {
+		respawn = false;
+	}
+	else if (respawn) {
+		respawnTimer += deltaTime;
+	}
 	if (shootCooldown < player.attackSpeed) {
 		shootCooldown += deltaTime;
 	}
@@ -278,6 +288,22 @@ void Game::drawGame() {
 	}
 	for (FloatingText& _text : floatingText) {
 		win->draw(_text);
+	}
+	if (respawn) {
+		{
+			winTex.update(*win);
+			sf::Sprite sp(winTex);
+			sf::RenderStates states = sf::RenderStates::Default;
+			sf::Shader* sh = &shockwave->sh;
+			states.shader = sh;
+			sh->setUniform("texture", winTex);
+			sh->setUniform("noise", noise);
+			sh->setUniform("time", respawnTimer);
+			sh->setUniform("maxTime", 0.5f);
+			sh->setUniform("center", sf::Vector2f(0.5f, 0.5f));
+			win->setView(win->getDefaultView());
+			win->draw(sp, states);
+		}
 	}
 }
 

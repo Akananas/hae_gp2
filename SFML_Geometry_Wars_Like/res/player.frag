@@ -18,5 +18,4 @@ void main()
 		pixel.g = 0.4;
 	}
     gl_FragColor = gl_Color * pixel;
-
 }

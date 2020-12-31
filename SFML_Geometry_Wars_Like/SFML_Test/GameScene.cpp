@@ -46,6 +46,7 @@ void GameScene::UpdateScene(double dt) {
 			game->bullet.clear();
 			game->particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, game->player.GetPosition(), false, 250, 5));
 			game->CheckHighscore();
+			game->StartRespawn();
 			game->StartMenu();
 			return;
 		}

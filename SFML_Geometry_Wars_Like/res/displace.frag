@@ -1,30 +1,22 @@
-
+#version 120
 uniform sampler2D 	texture;
-uniform sampler2D 	texture2;
-
-uniform float 		time;
-
-uniform vec2		uvTranslateDisp;		
-uniform vec2		uvScaleDisp;		
-
+uniform sampler2D 	noise;
+uniform float 		time;	
+uniform float 		maxTime;	
+uniform vec2 center;
 void main()
 {
-	vec2 uv = gl_TexCoord[0].xy;
-	vec2 ouv = uv;
-	float dispAmount = 0.0 + mod(time*0.1,1) * 1;
-	
-	uvScaleDisp*=3;
-	uvScaleDisp -=  mod(time*0.1,0.33)*3;
-	uvTranslateDisp.x = - mod(time*0.1,1);
-	uvTranslateDisp.y = - mod(time*0.2,1);
-	vec2 dir = texture2D(texture2,uv*uvScaleDisp+uvTranslateDisp);
-	uv.x += (dir.x * 2.0 - 1.0) * dispAmount;
-	uv.y += (dir.y * 2.0 - 1.0) * dispAmount;
-    // récupère le pixel dans la texture
-    //vec4 pixel = 0.5 * texture2D(texture, ouv) + 0.5 * texture2D(texture2,ouv);
+	vec2 uv = gl_TexCoord[0].xy /(1280/720);
+	float ratioTime = mod(time,10) / maxTime;
 	vec4 pixel = texture2D(texture, uv);
 	
-    // et multiplication avec la couleur pour obtenir le pixel final
+	vec2 distanceVector = uv - center;
+	float dist = sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
+	if(ratioTime <10){
+		if(dist < ratioTime ){
+			vec4 noisePixel = texture2D(noise, uv) / 10;
+			pixel.rgb += (1 + dist)/ratioTime * noisePixel.rgb;
+		}
+	}
     gl_FragColor = gl_Color * pixel;
-
 }

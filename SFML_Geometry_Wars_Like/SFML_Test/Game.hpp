@@ -59,6 +59,12 @@ public:
 	sf::Texture cursor;
 	sf::RectangleShape cursorPos;
 	HotReloadShader* chargeAttack = nullptr;
+
+	HotReloadShader* shockwave = nullptr;
+	sf::Texture winTex;
+	sf::Texture noise;
+	bool respawn;
+	float respawnTimer = 0.0f;
 	float shootTimer = 0.0f;
 	Scene* curScene = nullptr;
 
@@ -76,6 +82,10 @@ public:
 
 	void StartMenu();
 	void StartGame();
+	void StartRespawn() {
+		respawn = true;
+		respawnTimer = 0;
+	}
 
 	void SwitchMenu(MenuObject& val, int& index);
 	void UpdateBombText();
