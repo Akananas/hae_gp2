@@ -47,17 +47,17 @@ void ParticleSystem::UpdateParticle(double dt)
 		// update the alpha (transparency) of the particle according to its lifetime
 		float ratio = p.lifetime / m_lifetime;
 		m_vertices[i].color.a = static_cast<sf::Uint8>(ratio * 255);
-		if (i % 4 == 0 || i == 0) {
+		if (i % 4 == 3) {
 			if (m_vertices[i].position.x >= 1268 || m_vertices[i].position.x <= 16) {
 				p.velocity.x = -p.velocity.x;
 
-				for (int j = i + 1; j < i + 4; j++) {
+				for(int j = i - 1; j > i - 4; j--) {
 					m_particles[j].velocity.x = -m_particles[j].velocity.x;
 				}
 			}
 			if (m_vertices[i].position.y >= 708 || m_vertices[i].position.y <= 16) {
 				p.velocity.y = -p.velocity.y;
-				for (int j = i + 1; j < i + 4; j++) {
+				for (int j = i - 1; j > i - 4; j--) {
 					m_particles[j].velocity.y = -m_particles[j].velocity.y;
 				}
 			}

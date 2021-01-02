@@ -327,7 +327,7 @@ void Game::Shoot() {
 	else {
 		for (int i = -player.bulletNum / 2; i < (player.bulletNum + 1) / 2; i++) {
 			sf::Vector2f spawnPos(player.GetPosition() + sf::Vector2f(16 * normalized.y * i, 16 * normalized.x * -i));
-			bullet.push_back(Bullet(this, spawnPos, normalized, player.damageLevel * 2 * shootTimer / 1.5f));
+			bullet.push_back(Bullet(this, spawnPos, normalized, player.damageLevel * (1 + shootTimer / 1.5f)));
 			if (spawnPos.x > cols * Entity::GRID_SIZE || spawnPos.y > lastLine * Entity::GRID_SIZE || spawnPos.x < 0 || spawnPos.y < 0) {
 				bullet[bullet.size() - 1].destroyed = true;
 			}
