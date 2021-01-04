@@ -33,7 +33,7 @@ Game::Game(sf::RenderWindow* win) {
 		bombSound.setVolume(15);
 	}
 	chargeAttack = new HotReloadShader("../res/player.vert", "../res/player.frag");
-	shockwave = new HotReloadShader("../res/simple.vert", "../res/displace.frag");
+	shockwave = new HotReloadShader("../res/simple.vert", "../res/shockwave.frag");
 	winTex.create(win->getSize().x, win->getSize().y);
 	noise.loadFromFile("../res/noise.png");
 	curSave = ReadSaveFile();
