@@ -39,7 +39,7 @@ public:
 			}
 		}
 		else if (attackSpeed > 0.05) {
-			attackSpeed -= pow(0.005, curLevel - 60);
+			attackSpeed -= pow(0.015, curLevel - 60);
 		}
 	}
 };

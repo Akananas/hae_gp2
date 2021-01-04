@@ -25,6 +25,7 @@ void MenuScene::UpdateScene(double dt) {
 		for (int j = menuObject.size() - 1; j >= 0; j--) {
 			if (game->bullet[i].overlaps(menuObject[j])) {
 				game->bullet[i].destroyed = true;
+				game->bullet[i].hitPos = menuObject[j].GetPosition();
 				game->bullet[i].explosionColor = menuObject[j].sprite.getFillColor();
 				game->SwitchMenu(menuObject[j], j);
 			}

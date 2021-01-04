@@ -1,8 +1,6 @@
 #include "Enemy.hpp"
-#include <iostream> 
 bool Enemy::getDamage(float dmg) {
 	hp -= dmg;
-	std::cout << hp << " " << dmg << std::endl;
 	if (hp <= 0) {
 		destroyed = true;
 	}

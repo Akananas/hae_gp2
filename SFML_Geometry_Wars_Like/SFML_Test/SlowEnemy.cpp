@@ -1,5 +1,5 @@
 #include "SlowEnemy.hpp"
-
+#include <iostream>
 SlowEnemy::SlowEnemy(Game* g, int level, float x, float y, sf::Color _col) {
 	this->game = g;
 	sprite.setSize(sf::Vector2f(32, 32));

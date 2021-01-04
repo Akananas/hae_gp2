@@ -155,8 +155,7 @@ void Game::Update(double deltaTime) {
 	}
 	for (int i = bullet.size() - 1; i >= 0; i--) {
 		if (bullet[i].destroyed) {
-			sf::Vector2f bulPos = sf::Vector2f(bullet[i].GetPositionCase() * Entity::GRID_SIZE);
-			particleManager.push_back(ParticleSystem(200, bullet[i].explosionColor, bulPos, false, 250, 1.5f));
+			particleManager.push_back(ParticleSystem(200, bullet[i].explosionColor, bullet[i].hitPos, false, 250, 1.5f));
 			bullet.erase(bullet.begin() + i);
 		}
 	}
