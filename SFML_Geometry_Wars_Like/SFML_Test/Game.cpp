@@ -124,7 +124,7 @@ void Game::Update(double deltaTime) {
 	}
 	if (chargeAttack) chargeAttack->update(deltaTime);
 	if (shockwave) shockwave->update(deltaTime);
-	if (respawnTimer > 10) {
+	if (respawnTimer > 1.f) {
 		respawn = false;
 	}
 	else if (respawn) {
