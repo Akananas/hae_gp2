@@ -159,13 +159,17 @@ void Game::Update(double deltaTime) {
 			bullet.erase(bullet.begin() + i);
 		}
 	}
+	//Update text
+	UpdateText(deltaTime);
+	cursorPos.setPosition(sf::Vector2f(sf::Mouse::getPosition(*win)));
+
+}
+void Game::UpdateText(double deltaTime) {
 	scoreText.setString("SCORE: " + to_string(score));
 	moneyText.setString(to_string(money));
 	sf::FloatRect textBounds = moneyText.getLocalBounds();
 	moneyText.setPosition(sf::Vector2f(1200 - textBounds.width / 2.0, 20));
 	fpsText.setString("FPS: " + std::to_string((int)(1 / deltaTime)));
-	cursorPos.setPosition(sf::Vector2f(sf::Mouse::getPosition(*win)));
-
 }
 void Game::cacheWall() {
 	wallsRender.clear();

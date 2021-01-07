@@ -75,7 +75,7 @@ public:
 	void pollInput(double dt);
 
 	void Update(double deltaTime);
-
+	void UpdateText(double deltaTime);
 	void cacheWall();
 	void CreateWall(sf::Vector2i& w);
 	bool isWall(float cx, float cy);
@@ -97,7 +97,6 @@ public:
 	void drawUI();
 	void Shoot();
 	void CheckHighscore();
-
 	struct SaveFile {
 		int Highscore = 0;
 		int MaxLevel = 0;
