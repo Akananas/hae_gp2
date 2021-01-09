@@ -91,29 +91,31 @@ void Game::processInput(sf::Event event) {
 }
 
 void Game::pollInput(double dt) {
-	bool keyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) ||
-					  sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
-					  sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ||
-					  sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-		player.dx = -0.5f;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-		player.dx = 0.5f;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
-		player.dy = -0.5f;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-		player.dy = 0.5f;
-	}
-	if (keyPressed) {
-		particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
-	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && player.isAlive && shootCooldown >= player.attackSpeed &&
-		(dynamic_cast<GameScene*>(curScene)
-		|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)){
-		Shoot();
+	if (win->hasFocus()) {
+		bool keyPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+			player.dx = -0.5f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+			player.dx = 0.5f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
+			player.dy = -0.5f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+			player.dy = 0.5f;
+		}
+		if (keyPressed) {
+			particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && player.isAlive && shootCooldown >= player.attackSpeed &&
+			(dynamic_cast<GameScene*>(curScene)
+				|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)) {
+			Shoot();
+		}
 	}
 }
 
