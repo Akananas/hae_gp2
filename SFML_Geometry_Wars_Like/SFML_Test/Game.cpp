@@ -72,7 +72,8 @@ Game::Game(sf::RenderWindow* win) {
 	bombText.setPosition(sf::Vector2f(640, 50));
 	bombText.setFillColor(sf::Color::White);
 	UpdateBombText();
-
+	testButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, this));
+	testButton.SetTexture();
 	StartMenu();
 	for (int i = 0; i < cols; ++i) {
 		walls.push_back(sf::Vector2i(i, lastLine - 1));
@@ -111,10 +112,14 @@ void Game::pollInput(double dt) {
 		if (keyPressed) {
 			particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
 		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && player.isAlive && shootCooldown >= player.attackSpeed &&
-			(dynamic_cast<GameScene*>(curScene)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
+			if (testButton.isHovering) {
+				testButton.mouseClick();
+			}
+			else if (player.isAlive && shootCooldown >= player.attackSpeed && (dynamic_cast<GameScene*>(curScene)
 				|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)) {
-			Shoot();
+				Shoot();
+			}
 		}
 	}
 }
@@ -162,6 +167,7 @@ void Game::Update(double deltaTime) {
 		}
 	}
 	//Update text
+	testButton.UpdateButton(sf::Vector2f(sf::Mouse::getPosition(*win)));
 	UpdateText(deltaTime);
 	cursorPos.setPosition(sf::Vector2f(sf::Mouse::getPosition(*win)));
 
@@ -318,6 +324,7 @@ void Game::drawUI() {
 	win->draw(levelText);
 	win->draw(fpsText);
 	win->draw(bombText);
+	win->draw(testButton);
 	win->draw(cursorPos);
 }
 
