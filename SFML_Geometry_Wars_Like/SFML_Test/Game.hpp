@@ -16,7 +16,7 @@
 #include "RotateEnemy.hpp"
 #include "FloatingText.hpp"
 #include "Scene.hpp"
-#include "Button.hpp"
+#include "HUD.hpp"
 
 
 class HotReloadShader;
@@ -68,7 +68,7 @@ public:
 	float respawnTimer = 0.0f;
 	float shootTimer = 0.0f;
 	Scene* curScene = nullptr;
-	Button testButton;
+	HUD hud;
 	Game(sf::RenderWindow* win);
 
 	void processInput(sf::Event event);
