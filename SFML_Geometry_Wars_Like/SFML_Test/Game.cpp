@@ -6,9 +6,6 @@
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	curView = win->getView();
-	if (!cursor.loadFromFile("../res/crossair_white.png")) {
-		std::cout << "ERROR NO FONT" << std::endl;
-	}
 	if (!gameFont.loadFromFile("../res/Squares Bold Free.otf")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
@@ -37,42 +34,17 @@ Game::Game(sf::RenderWindow* win) {
 	winTex.create(win->getSize().x, win->getSize().y);
 	noise.loadFromFile("../res/noise.png");
 	curSave = ReadSaveFile();
-	money = curSave.savedMoney;
+	textVal.money = curSave.savedMoney;
 	highScore = curSave.Highscore;
 	maxLevel = curSave.MaxLevel;
 
-	moneyText.setFont(gameFont);
-	moneyText.setCharacterSize(24);
-	moneyText.setPosition(1200, 20);
-	moneyText.setFillColor(sf::Color::White);
-
-	scoreText.setFont(gameFont);
-	scoreText.setCharacterSize(24);
-	scoreText.setPosition(sf::Vector2f(640 , 20));
-	scoreText.setFillColor(sf::Color::White);
-
-	levelText.setFont(gameFont);
-	levelText.setCharacterSize(24);
-	levelText.setString("Level: " + to_string(level));
-	levelText.setPosition(sf::Vector2f(340, 20));
-
-	fpsText.setFont(gameFont);
-	fpsText.setCharacterSize(24);
-	fpsText.setPosition(sf::Vector2f(60, 20));
-
-	cursorPos.setSize(sf::Vector2f(32, 32));
-	cursorPos.setOrigin(sf::Vector2f(16, 16));
-	cursorPos.setTexture(&cursor);
 
 	player = Player(this);
 	player.LoadSave(curSave.savedDamageLevel, curSave.savedAttackSpeedLevel, curSave.savedBomb);
 
-	bombText.setFont(gameFont);
-	bombText.setCharacterSize(24);
-	bombText.setPosition(sf::Vector2f(640, 50));
-	bombText.setFillColor(sf::Color::White);
-	UpdateBombText();
 	hud = HUD(this);
+	hud.UpdateBombText(&player.bomb);
+
 	StartMenu();
 	for (int i = 0; i < cols; ++i) {
 		walls.push_back(sf::Vector2i(i, lastLine - 1));
@@ -166,17 +138,7 @@ void Game::Update(double deltaTime) {
 		}
 	}
 	//Update text
-	hud.Update(sf::Vector2f(sf::Mouse::getPosition(*win)));
-	UpdateText(deltaTime);
-	cursorPos.setPosition(sf::Vector2f(sf::Mouse::getPosition(*win)));
-
-}
-void Game::UpdateText(double deltaTime) {
-	scoreText.setString("SCORE: " + to_string(score));
-	moneyText.setString(to_string(money));
-	sf::FloatRect textBounds = moneyText.getLocalBounds();
-	moneyText.setPosition(sf::Vector2f(1200 - textBounds.width / 2.0, 20));
-	fpsText.setString("FPS: " + std::to_string((int)(1 / deltaTime)));
+	hud.Update(sf::Vector2f(sf::Mouse::getPosition(*win)), deltaTime);
 }
 void Game::cacheWall() {
 	wallsRender.clear();
@@ -214,8 +176,8 @@ void Game::StartGame() {
 	curScene = gScene;
 	curScene->InitScene();
 	player.KillPlayer();
-	score = 0;
-	level = 0;
+	textVal.score = 0;
+	textVal.level = 0;
 	UpgradeLevel();
 }
 
@@ -225,9 +187,9 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 		StartGame();
 		break;
 	case PowerUpState:
-		if (money - (5 * player.damageLevel) >= 0) {
+		if (textVal.money - (5 * player.damageLevel) >= 0) {
 			player.damage += 1;
-			money -= (5 * player.damageLevel);
+			textVal.money -= (5 * player.damageLevel);
 			player.damageLevel++;
 			val.SetPrice(5 * player.damageLevel);
 			FloatingText text("Damage Up", gameFont, player.GetPosition(), val.GetColor());
@@ -236,9 +198,9 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 		}
 		break;
 	case AttackSpeedState:
-		if (money - (5 * player.attackSpeedLevel) >= 0) {
+		if (textVal.money - (5 * player.attackSpeedLevel) >= 0) {
 			player.UpAttackSpeed();
-			money -= (5 * player.attackSpeedLevel);
+			textVal.money -= (5 * player.attackSpeedLevel);
 			player.attackSpeedLevel++;
 			val.SetPrice(5 * player.attackSpeedLevel);
 			FloatingText text("Attack Speed Up",gameFont,player.GetPosition(), val.GetColor());
@@ -247,28 +209,26 @@ void Game::SwitchMenu(MenuObject& val, int& index) {
 		}
 		break;
 	case BombState:
-		if (money - 50 >= 0 && player.bomb < 5) {
+		if (textVal.money - 50 >= 0 && player.bomb < 5) {
 			player.bomb++;
-			money -= 50;
+			textVal.money -= 50;
 			FloatingText text("+1 Bomb", gameFont, player.GetPosition(), val.GetColor());
 			floatingText.push_back(text);
 			powerUpSound.play();
-			UpdateBombText();
+			hud.UpdateBombText(&player.bomb);
 		}
 		break;
 	default:
 		break;
 	}
 }
-void Game::UpdateBombText() {
-	bombText.setString("Bomb: " + to_string(player.bomb));
-}
+
 void Game::AddMoney(int _money) {
-	money += _money;
+	textVal.money += _money;
 }
 void Game::UpgradeLevel() {
-	level++;
-	levelText.setString("Level: " + std::to_string(level));
+	textVal.level++;
+	hud.LevelUp();
 }
 
 void Game::PlayerView() {
@@ -318,13 +278,7 @@ void Game::drawGame() {
 }
 
 void Game::drawUI() {
-	win->draw(moneyText);
-	win->draw(scoreText);
-	win->draw(levelText);
-	win->draw(fpsText);
-	win->draw(bombText);
 	win->draw(hud);
-	win->draw(cursorPos);
 }
 
 void Game::Shoot() {
@@ -350,10 +304,10 @@ void Game::Shoot() {
 }
 
 void Game::CheckHighscore() {
-	if (score > highScore) {
-		highScore = score;
+	if (textVal.score > highScore) {
+		highScore = textVal.score;
 	}
-	if (level > maxLevel) {
-		maxLevel = level;
+	if (textVal.level > maxLevel) {
+		maxLevel = textVal.level;
 	}
 }

@@ -1,14 +1,14 @@
 #pragma once
 #include "Scene.hpp"
-class GameScene :
-    public Scene
-{
+class GameScene : public Scene {
 public:
 	std::vector<Enemy*> enemy;
+	TextValue* val = nullptr;
 	float levelTimer = 0;
 	float nextSpawnTimer = 0;
 	GameScene(Game* g) {
 		game = g;
+		val = &game->textVal;
 	}
 	void InitScene();
 	void UpdateScene(double dt);

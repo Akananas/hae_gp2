@@ -18,7 +18,11 @@
 #include "Scene.hpp"
 #include "HUD.hpp"
 
-
+struct TextValue {
+	int level = 1;
+	int money = 0;
+	int score = 0;
+};
 class HotReloadShader;
 class Enemy;
 class Scene;
@@ -34,19 +38,12 @@ public:
 	std::vector<ParticleSystem> particleManager;
 	std::vector<FloatingText> floatingText;
 	sf::View curView;
-	int level = 1;
-	int maxLevel = 1;
-	int money = 0;
-	int score = 0;
 	int highScore = 0;
+	int maxLevel = 1;
+
 	float shootCooldown = 0.2f;
 	Stars stars;
 	sf::Font gameFont;
-	sf::Text moneyText;
-	sf::Text scoreText;
-	sf::Text levelText;
-	sf::Text bombText;
-	sf::Text fpsText;
 	sf::SoundBuffer attackSoundBuffer;
 	sf::Sound attackSound;
 	sf::SoundBuffer powerUpSoundBuffer;
@@ -57,10 +54,9 @@ public:
 	sf::Sound explosionSound;
 	sf::SoundBuffer bombSoundBuffer;
 	sf::Sound bombSound;
-	sf::Texture cursor;
-	sf::RectangleShape cursorPos;
-	HotReloadShader* chargeAttack = nullptr;
 
+	HotReloadShader* chargeAttack = nullptr;
+	TextValue textVal;
 	HotReloadShader* shockwave = nullptr;
 	sf::Texture winTex;
 	sf::Texture noise;
@@ -76,7 +72,6 @@ public:
 	void pollInput(double dt);
 
 	void Update(double deltaTime);
-	void UpdateText(double deltaTime);
 	void cacheWall();
 	void CreateWall(sf::Vector2i& w);
 	bool isWall(float cx, float cy);
@@ -89,7 +84,6 @@ public:
 	}
 
 	void SwitchMenu(MenuObject& val, int& index);
-	void UpdateBombText();
 	void AddMoney(int _money);
 	void UpgradeLevel();
 
@@ -123,7 +117,7 @@ public:
 	void SaveGame() {
 		FILE* save = nullptr;
 		save = fopen("../res/SaveData.txt", "w");
-		fprintf(save, "%d %d %d %d %d %d", highScore, maxLevel, money, player.bomb, player.damageLevel, player.attackSpeedLevel);
+		fprintf(save, "%d %d %d %d %d %d", highScore, maxLevel, textVal.money, player.bomb, player.damageLevel, player.attackSpeedLevel);
 		fclose(save);
 	}
 };

@@ -10,7 +10,7 @@ void GameScene::UpdateScene(double dt) {
 		levelTimer = 0;
 		game->UpgradeLevel();
 	}
-	if (nextSpawnTimer >= 0.5f / ((float)game->level * 0.25f)) {
+	if (nextSpawnTimer >= 0.5f / ((float)val->level * 0.25f)) {
 		sf::Vector2f playerPos = game->player.GetPosition();
 		sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
 		sf::Vector2f newPos(playerPos - spawnPos);
@@ -20,15 +20,15 @@ void GameScene::UpdateScene(double dt) {
 		}
 		int spawnRate = rand() % 100;
 		if (spawnRate < 33) {
-			SlowEnemy* en = new SlowEnemy(game, game->level, spawnPos, sf::Color(134, 91, 111));
+			SlowEnemy* en = new SlowEnemy(game, val->level, spawnPos, sf::Color(134, 91, 111));
 			enemy.push_back(en);
 		}
 		else if (spawnRate < 66){
-			FastEnemy* en = new FastEnemy(game, game->level, spawnPos, sf::Color(59, 148, 204));
+			FastEnemy* en = new FastEnemy(game, val->level, spawnPos, sf::Color(59, 148, 204));
 			enemy.push_back(en);
 		}
 		else {
-			RotateEnemy* en = new RotateEnemy(game, game->level, spawnPos, sf::Color(177, 73, 209));
+			RotateEnemy* en = new RotateEnemy(game, val->level, spawnPos, sf::Color(177, 73, 209));
 			enemy.push_back(en);
 		}
 		nextSpawnTimer = 0;
@@ -65,8 +65,8 @@ void GameScene::UpdateScene(double dt) {
 					delete enemy[j];
 					enemy[j] = nullptr;
 					enemy.erase(enemy.begin() + j);
-					game->money += 5 * game->level;
-					game->score += 100 * game->level;
+					val->money += 5 * val->level;
+					val->score += 100 * val->level;
 					game->explosionSound.play();
 				}
 				else {
@@ -94,7 +94,7 @@ void GameScene::ProcessInput(sf::Event& event) {
 					game->floatingText.push_back(bombText);
 				}
 				game->player.bomb--;
-				game->UpdateBombText();
+				game->hud.UpdateBombText(&game->player.bomb);
 			}
 		}
 	}
@@ -108,8 +108,8 @@ int GameScene::BombDamage(float& bombRa) {
 		if (mag <= bombRa) {
 			game->particleManager.push_back(ParticleSystem(400, sf::Color(118, 5, 72), enemy[i]->GetPosition(), false, 350, 2.5f));
 			enemy.erase(enemy.begin() + i);
-			game->money += 5 + bombChain;
-			game->score += 50 * (bombChain + 1);
+			val->money += 5 + bombChain;
+			val->score += 50 * (bombChain + 1);
 			bombChain++;
 		}
 	}
