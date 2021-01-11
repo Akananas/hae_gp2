@@ -5,8 +5,13 @@ HUD::HUD(Game* g) {
 	game = g;
 	val = &game->textVal;
 	font = &game->gameFont;
-	testButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
-	testButton.SetTexture();
+	optionOpen = false;
+	//optionButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
+	optionButton = Button("../res/Option/", sf::Vector2f(40, 40), true);
+	optionButton.SetTexture();
+	closeButton = Button("../res/Close/", sf::Vector2f(40, 40), false);
+	closeButton.SetTexture();
+	buttonList.push_back(&optionButton);
 	if (!cursor.loadFromFile("../res/crossair_white.png")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
@@ -41,8 +46,8 @@ HUD::HUD(Game* g) {
 
 void HUD::Update(sf::Vector2f mousePos, double dt) {
 	cursorPos.setTexture(&cursor);
-
-	testButton.UpdateButton(mousePos);
+	optionButton.UpdateButton(mousePos);
+	closeButton.UpdateButton(mousePos);
 	cursorPos.setPosition(mousePos);
 	scoreText.setString("SCORE: " + std::to_string(val->score));
 	moneyText.setString(std::to_string(val->money));

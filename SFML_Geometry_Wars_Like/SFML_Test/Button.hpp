@@ -1,6 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include <functional>
+class HUD;
 class Button : public sf::Drawable{
 public:
 	sf::Texture idleTex;
@@ -8,16 +9,21 @@ public:
 	sf::Texture clickedTex;
 	sf::RectangleShape buttonShape;
 	bool isHovering = false;
-	std::function<void()> onClick;
+	bool isVisible = false;
 	Button(){}
-	Button(std::string path, sf::Vector2f pos, std::function<void()> function);
+	Button(std::string path, sf::Vector2f pos, bool isVis);
 	void SetTexture();
 	void UpdateButton(sf::Vector2f mousePos);
-	void mouseHover(bool hovering);
-
-	void mouseClick() {
-		buttonShape.setTexture(&clickedTex);
-		onClick();
+	void mouseHover(bool hovering) {
+		if (isVisible) {
+			if (hovering) {
+				buttonShape.setTexture(&hoverTex);
+			}
+			else {
+				buttonShape.setTexture(&idleTex);
+			}
+			isHovering = hovering;
+		}
 	}
 
 private:

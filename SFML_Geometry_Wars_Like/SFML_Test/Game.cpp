@@ -59,6 +59,9 @@ Game::Game(sf::RenderWindow* win) {
 static float g_time = 0.0;
 
 void Game::processInput(sf::Event event) {
+	if (event.type == sf::Event::MouseButtonPressed) {
+		hud.CheckButton();
+	}
 	curScene->ProcessInput(event);
 }
 
@@ -84,10 +87,8 @@ void Game::pollInput(double dt) {
 			particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));
 		}
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
-			if (Button* b = hud.CheckButton()) {
-				b->mouseClick();
-			}
-			else if (player.isAlive && shootCooldown >= player.attackSpeed && (dynamic_cast<GameScene*>(curScene)
+			if (!hud.ButtonHovered()
+					&& player.isAlive && shootCooldown >= player.attackSpeed && (dynamic_cast<GameScene*>(curScene)
 				|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)) {
 				Shoot();
 			}

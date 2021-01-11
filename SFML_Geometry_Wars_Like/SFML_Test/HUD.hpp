@@ -15,21 +15,45 @@ public:
 	sf::Text levelText;
 	sf::Text bombText;
 	sf::Text fpsText;
+	bool optionOpen =false;
+
 	sf::RectangleShape cursorPos;
-	Button testButton;
+	Button optionButton;
+	Button closeButton;
+	std::vector<Button*> buttonList;
 	HUD(){}
 	HUD(Game* g);
 
-	Button* CheckButton() {
-		if (testButton.isHovering) {
-			return &testButton;
+	void CheckButton() {
+		if (optionButton.isHovering || closeButton.isHovering) {
+			OptionMenu();
 		}
-		return nullptr;
 	}
 
 	void Update(sf::Vector2f mousePos, double dt);
 	void UpdateBombText(int* bomb);
 	void LevelUp();
+	bool ButtonHovered() {
+		if (optionButton.isHovering) {
+			return true;
+		}
+		if (closeButton.isHovering ) {
+			return true;
+		}
+		return false;
+	}
+	void OptionMenu() {
+		if (optionOpen) {
+			optionOpen = false;
+			optionButton.isVisible = true;
+			closeButton.isVisible = false;
+		}
+		else {
+			optionOpen = true;
+			closeButton.isVisible = true;
+			optionButton.isVisible = false;
+		}
+	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
@@ -38,7 +62,12 @@ private:
 		target.draw(scoreText, states);
 		target.draw(levelText, states);
 		target.draw(bombText, states);
-		target.draw(testButton, states);
+		if (optionOpen) {
+			target.draw(closeButton, states);
+		}
+		else {
+			target.draw(optionButton, states);
+		}
 		target.draw(cursorPos, states);
 
 	}
