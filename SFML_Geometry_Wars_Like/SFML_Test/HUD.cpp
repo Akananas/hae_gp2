@@ -8,12 +8,11 @@ HUD::HUD(Game* g) {
 	optionOpen = false;
 	//optionButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
 	optionButton = Button("../res/Option/", sf::Vector2f(40, 40), true);
-	optionButton.SetTexture();
 	closeButton = Button("../res/Close/", sf::Vector2f(40, 40), false);
-	closeButton.SetTexture();
-	buttonList.push_back(&optionButton);
-	if (!cursor.loadFromFile("../res/crossair_white.png")) {
-		std::cout << "ERROR NO FONT" << std::endl;
+	if (cursor.loadFromFile("../res/crossair_white.png")) {
+		cursorPos.setSize(sf::Vector2f(32, 32));
+		cursorPos.setOrigin(16, 16);
+		cursorPos.setTexture(&cursor);
 	}
 	moneyText.setFont(*font);
 	moneyText.setCharacterSize(24);
@@ -34,18 +33,17 @@ HUD::HUD(Game* g) {
 	fpsText.setCharacterSize(24);
 	fpsText.setPosition(sf::Vector2f(60, 20));
 
-	cursorPos.setSize(sf::Vector2f(32, 32));
-	cursorPos.setOrigin(sf::Vector2f(16, 16));
+
 
 
 	bombText.setFont(*font);
 	bombText.setCharacterSize(24);
 	bombText.setPosition(sf::Vector2f(640, 50));
 	bombText.setFillColor(sf::Color::White);
-}
+
+};
 
 void HUD::Update(sf::Vector2f mousePos, double dt) {
-	cursorPos.setTexture(&cursor);
 	optionButton.UpdateButton(mousePos);
 	closeButton.UpdateButton(mousePos);
 	cursorPos.setPosition(mousePos);

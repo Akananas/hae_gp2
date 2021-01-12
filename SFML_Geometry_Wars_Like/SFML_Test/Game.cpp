@@ -43,6 +43,7 @@ Game::Game(sf::RenderWindow* win) {
 	player.LoadSave(curSave.savedDamageLevel, curSave.savedAttackSpeedLevel, curSave.savedBomb);
 
 	hud = HUD(this);
+	hud.SetCursorTexture();
 	hud.UpdateBombText(&player.bomb);
 
 	StartMenu();
@@ -103,7 +104,7 @@ void Game::Update(double deltaTime) {
 	}
 	if (chargeAttack) chargeAttack->update(deltaTime);
 	if (shockwave) shockwave->update(deltaTime);
-	if (respawnTimer > 1.f) {
+	if (respawnTimer > 1.f && respawn) {
 		respawn = false;
 	}
 	else if (respawn) {
@@ -311,4 +312,22 @@ void Game::CheckHighscore() {
 	if (textVal.level > maxLevel) {
 		maxLevel = textVal.level;
 	}
+}
+
+SaveFile Game::ReadSaveFile() {
+	SaveFile saveFile;
+	FILE* save = nullptr;
+	save = fopen("../res/SaveData.txt", "r");
+	if (save) {
+		fscanf(save, "%d %d %d %d %d %d", &saveFile.Highscore, &saveFile.MaxLevel, &saveFile.savedMoney, &saveFile.savedBomb, &saveFile.savedDamageLevel, &saveFile.savedAttackSpeedLevel);
+		fclose(save);
+	}
+	return saveFile;
+}
+
+void Game::SaveGame() {
+	FILE* save = nullptr;
+	save = fopen("../res/SaveData.txt", "w");
+	fprintf(save, "%d %d %d %d %d %d", highScore, maxLevel, textVal.money, player.bomb, player.damageLevel, player.attackSpeedLevel);
+	fclose(save);
 }

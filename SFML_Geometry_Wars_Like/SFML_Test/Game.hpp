@@ -17,7 +17,14 @@
 #include "FloatingText.hpp"
 #include "Scene.hpp"
 #include "HUD.hpp"
-
+struct SaveFile {
+	int Highscore = 0;
+	int MaxLevel = 0;
+	int savedMoney = 0;
+	int savedBomb = 3;
+	int savedDamageLevel = 1;
+	int savedAttackSpeedLevel = 1;
+};
 struct TextValue {
 	int level = 1;
 	int money = 0;
@@ -92,32 +99,11 @@ public:
 	void drawUI();
 	void Shoot();
 	void CheckHighscore();
-	struct SaveFile {
-		int Highscore = 0;
-		int MaxLevel = 0;
-		int savedMoney = 0;
-		int savedBomb = 3;
-		int savedDamageLevel = 1;
-		int savedAttackSpeedLevel = 1;
-	};
+
 
 	SaveFile curSave;
 
-	SaveFile ReadSaveFile() {
-		SaveFile saveFile;
-		FILE *save = nullptr;
-		save = fopen("../res/SaveData.txt", "r");
-		if(save){
-			fscanf(save, "%d %d %d %d %d %d", &saveFile.Highscore, &saveFile.MaxLevel, &saveFile.savedMoney, &saveFile.savedBomb, &saveFile.savedDamageLevel, &saveFile.savedAttackSpeedLevel);
-			fclose(save);
-		}
-		return saveFile;
-	}
+	SaveFile ReadSaveFile();
 
-	void SaveGame() {
-		FILE* save = nullptr;
-		save = fopen("../res/SaveData.txt", "w");
-		fprintf(save, "%d %d %d %d %d %d", highScore, maxLevel, textVal.money, player.bomb, player.damageLevel, player.attackSpeedLevel);
-		fclose(save);
-	}
+	void SaveGame();
 };

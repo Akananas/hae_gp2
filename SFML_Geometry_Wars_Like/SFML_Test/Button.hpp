@@ -1,18 +1,15 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include <functional>
-class HUD;
 class Button : public sf::Drawable{
 public:
 	sf::Texture idleTex;
 	sf::Texture hoverTex;
-	sf::Texture clickedTex;
 	sf::RectangleShape buttonShape;
 	bool isHovering = false;
 	bool isVisible = false;
 	Button(){}
 	Button(std::string path, sf::Vector2f pos, bool isVis);
-	void SetTexture();
 	void UpdateButton(sf::Vector2f mousePos);
 	void mouseHover(bool hovering) {
 		if (isVisible) {

@@ -16,11 +16,9 @@ public:
 	sf::Text bombText;
 	sf::Text fpsText;
 	bool optionOpen =false;
-
 	sf::RectangleShape cursorPos;
 	Button optionButton;
 	Button closeButton;
-	std::vector<Button*> buttonList;
 	HUD(){}
 	HUD(Game* g);
 
@@ -53,6 +51,10 @@ public:
 			closeButton.isVisible = true;
 			optionButton.isVisible = false;
 		}
+	}
+
+	void SetCursorTexture() {
+		cursorPos.setTexture(&cursor);
 	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
