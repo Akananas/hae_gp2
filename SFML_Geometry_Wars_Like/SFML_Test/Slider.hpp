@@ -4,12 +4,14 @@ enum SliderEffect {
 	Music,
 	SFX
 };
-class Slider{
+class Slider : public sf::Drawable{
 public:
 	SliderEffect sliderEffect;
 	sf::RectangleShape background;
 	sf::RectangleShape moveableShape;
-	int minPosX, maxPosX;
+	int minPosX, maxPosX = 0;
+	bool isVisible = false;
+	bool hovering = false;
 	Slider(SliderEffect _se, sf::Vector2f pos) {
 		sliderEffect = _se;
 		background.setSize(sf::Vector2f(256, 36));
@@ -33,6 +35,20 @@ public:
 			moveableShape.setPosition(sf::Vector2f(mousePos.x, moveableShape.getPosition().y));
 		}
 		return (moveableShape.getPosition().x - minPosX) / (256 - 36);
+	}
+	void UpdateSlider(sf::Vector2f mousePos) {
+		if (moveableShape.getGlobalBounds().contains(mousePos) && isVisible) {
+			hovering = true;;
+		}
+		else {
+			hovering = false;
+		}
+	}
+private:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+		target.draw(background, states);
+		target.draw(moveableShape, states);
 	}
 };
 
