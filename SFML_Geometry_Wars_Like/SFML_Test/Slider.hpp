@@ -9,11 +9,12 @@ public:
 	SliderEffect sliderEffect;
 	sf::RectangleShape background;
 	sf::RectangleShape moveableShape;
+	sf::Text sliderName;
 	int minPosX, maxPosX = 0;
 	bool isVisible = false;
 	bool hovering = false;
 	Slider(){}
-	Slider(SliderEffect _se, sf::Vector2f pos) {
+	Slider(SliderEffect _se, sf::Vector2f pos, sf::Font* font, std::string _textString) {
 		sliderEffect = _se;
 		background.setSize(sf::Vector2f(256, 36));
 		background.setOrigin(128, 18);
@@ -25,6 +26,11 @@ public:
 		maxPosX = background.getPosition().x + (256 / 2) - 18;
 		moveableShape.setPosition(sf::Vector2f(maxPosX, pos.y));
 		moveableShape.setFillColor(sf::Color::Red);
+		sliderName.setFont(*font);
+		sliderName.setCharacterSize(18);
+		sliderName.setString(_textString);
+		sf::FloatRect textBounds = sliderName.getLocalBounds();
+		sliderName.setPosition(sf::Vector2f(pos.x - textBounds.width / 2.0, pos.y - 56));
 	}
 
 	float DragSlider(sf::Vector2f mousePos) {
@@ -58,6 +64,7 @@ private:
 	{
 		target.draw(background, states);
 		target.draw(moveableShape, states);
+		target.draw(sliderName, states);
 	}
 };
 

@@ -6,7 +6,8 @@ HUD::HUD(Game* g) {
 	val = &game->textVal;
 	font = &game->gameFont;
 	optionOpen = false;
-	sfxSlider = Slider(SFX, sf::Vector2f(640, 440));
+	sfxSlider = Slider(SFX, sf::Vector2f(640, 440), font, "SFX volume");
+	musicSlider = Slider(Music, sf::Vector2f(640, 340), font, "Music volume");
 	//optionButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
 	optionButton = Button("../res/Option/", sf::Vector2f(40, 40), true);
 	closeButton = Button("../res/Close/", sf::Vector2f(40, 40), false);
@@ -51,6 +52,7 @@ void HUD::Update(sf::Vector2f mousePos, double dt) {
 	optionButton.UpdateButton(mousePos);
 	closeButton.UpdateButton(mousePos);
 	sfxSlider.UpdateSlider(mousePos);
+	musicSlider.UpdateSlider(mousePos);
 	cursorPos.setPosition(mousePos);
 	scoreText.setString("SCORE: " + std::to_string(val->score));
 	moneyText.setString(std::to_string(val->money));
@@ -69,6 +71,9 @@ void HUD::LevelUp() {
 
 void HUD::CheckSlider() {
 	if (sfxSlider.isClickable()) {
-		game->ChangeVolume(sfxSlider.DragSlider(sf::Vector2f(sf::Mouse::getPosition(*game->win))));
+		game->ChangeVolume(sfxSlider.DragSlider(sf::Vector2f(sf::Mouse::getPosition(*game->win))), SFX);
+	}
+	else if (musicSlider.isClickable()) {
+		game->ChangeVolume(musicSlider.DragSlider(sf::Vector2f(sf::Mouse::getPosition(*game->win))), Music);
 	}
 }

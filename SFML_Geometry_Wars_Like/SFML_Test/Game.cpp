@@ -6,6 +6,11 @@
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	curView = win->getView();
+	if (bgm.openFromFile("../res/Speedier Than Photons.wav")) {
+		bgm.setLoop(true);
+		bgm.setVolume(15);
+		bgm.play();
+	}
 	if (!gameFont.loadFromFile("../res/Squares Bold Free.otf")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}

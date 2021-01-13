@@ -21,6 +21,7 @@ public:
 	Button optionButton;
 	Button closeButton;
 	Slider sfxSlider;
+	Slider musicSlider;
 	HUD(){}
 	HUD(Game* g);
 
@@ -31,7 +32,8 @@ public:
 	void LevelUp();
 	void CheckSlider();
 	bool ButtonHovered() {
-		if (optionButton.isClickable() || closeButton.isClickable() || sfxSlider.isClickable()) {
+		if (optionButton.isClickable() || closeButton.isClickable() 
+			|| sfxSlider.isClickable() || musicSlider.isClickable()) {
 			return true;
 		}
 		return false;
@@ -42,13 +44,14 @@ public:
 			optionButton.isVisible = true;
 			closeButton.isVisible = false;
 			sfxSlider.isVisible = false;
+			musicSlider.isVisible = false;
 		}
 		else {
 			optionOpen = true;
 			closeButton.isVisible = true;
 			optionButton.isVisible = false;
 			sfxSlider.isVisible = true;
-
+			musicSlider.isVisible = true;
 		}
 	}
 
@@ -66,6 +69,7 @@ private:
 		if (optionOpen) {
 			target.draw(closeButton, states);
 			target.draw(sfxSlider, states);
+			target.draw(musicSlider, states);
 		}
 		else {
 			target.draw(optionButton, states);

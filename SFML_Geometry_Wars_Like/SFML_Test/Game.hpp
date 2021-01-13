@@ -61,7 +61,7 @@ public:
 	sf::Sound explosionSound;
 	sf::SoundBuffer bombSoundBuffer;
 	sf::Sound bombSound;
-
+	sf::Music bgm;
 	HotReloadShader* chargeAttack = nullptr;
 	TextValue textVal;
 	HotReloadShader* shockwave = nullptr;
@@ -93,12 +93,17 @@ public:
 	void SwitchMenu(MenuObject& val, int& index);
 	void AddMoney(int _money);
 	void UpgradeLevel();
-	void ChangeVolume(float val) {
-		attackSound.setVolume(5 * val);
-		hitSound.setVolume(15 * val);
-		explosionSound.setVolume(15 * val);
-		bombSound.setVolume(15 * val);
-		powerUpSound.setVolume(15 * val);
+	void ChangeVolume(float val, SliderEffect effect) {
+		if (effect == SFX) {
+			attackSound.setVolume(5 * val);
+			hitSound.setVolume(15 * val);
+			explosionSound.setVolume(15 * val);
+			bombSound.setVolume(15 * val);
+			powerUpSound.setVolume(15 * val);
+		}
+		else if (effect == Music) {
+			bgm.setVolume(15 * val);
+		}
 	}
 	void PlayerView();
 	void drawGame();
