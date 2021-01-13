@@ -93,7 +93,13 @@ public:
 	void SwitchMenu(MenuObject& val, int& index);
 	void AddMoney(int _money);
 	void UpgradeLevel();
-
+	void ChangeVolume(float val) {
+		attackSound.setVolume(5 * val);
+		hitSound.setVolume(15 * val);
+		explosionSound.setVolume(15 * val);
+		bombSound.setVolume(15 * val);
+		powerUpSound.setVolume(15 * val);
+	}
 	void PlayerView();
 	void drawGame();
 	void drawUI();

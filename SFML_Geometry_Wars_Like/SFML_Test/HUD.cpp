@@ -6,6 +6,7 @@ HUD::HUD(Game* g) {
 	val = &game->textVal;
 	font = &game->gameFont;
 	optionOpen = false;
+	sfxSlider = Slider(SFX, sf::Vector2f(640, 440));
 	//optionButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
 	optionButton = Button("../res/Option/", sf::Vector2f(40, 40), true);
 	closeButton = Button("../res/Close/", sf::Vector2f(40, 40), false);
@@ -33,19 +34,23 @@ HUD::HUD(Game* g) {
 	fpsText.setCharacterSize(24);
 	fpsText.setPosition(sf::Vector2f(60, 20));
 
-
-
-
 	bombText.setFont(*font);
 	bombText.setCharacterSize(24);
 	bombText.setPosition(sf::Vector2f(640, 50));
 	bombText.setFillColor(sf::Color::White);
 
-};
+}
+void HUD::CheckButton() {
+	if (optionButton.isClickable() || closeButton.isClickable()) {
+		OptionMenu();
+	}
+}
+;
 
 void HUD::Update(sf::Vector2f mousePos, double dt) {
 	optionButton.UpdateButton(mousePos);
 	closeButton.UpdateButton(mousePos);
+	sfxSlider.UpdateSlider(mousePos);
 	cursorPos.setPosition(mousePos);
 	scoreText.setString("SCORE: " + std::to_string(val->score));
 	moneyText.setString(std::to_string(val->money));
@@ -60,4 +65,10 @@ void HUD::UpdateBombText(int* bomb) {
 
 void HUD::LevelUp() {
 	levelText.setString("Level: " + std::to_string(val->level));
+}
+
+void HUD::CheckSlider() {
+	if (sfxSlider.isClickable()) {
+		game->ChangeVolume(sfxSlider.DragSlider(sf::Vector2f(sf::Mouse::getPosition(*game->win))));
+	}
 }

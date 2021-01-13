@@ -12,6 +12,7 @@ public:
 	int minPosX, maxPosX = 0;
 	bool isVisible = false;
 	bool hovering = false;
+	Slider(){}
 	Slider(SliderEffect _se, sf::Vector2f pos) {
 		sliderEffect = _se;
 		background.setSize(sf::Vector2f(256, 36));
@@ -22,9 +23,11 @@ public:
 		moveableShape.setOrigin(18, 18);
 		minPosX = background.getPosition().x - (256 / 2) + 18;
 		maxPosX = background.getPosition().x + (256 / 2) - 18;
+		moveableShape.setPosition(sf::Vector2f(maxPosX, pos.y));
+		moveableShape.setFillColor(sf::Color::Red);
 	}
 
-	float DragSlider(sf::Vector2f & mousePos) {
+	float DragSlider(sf::Vector2f mousePos) {
 		if (mousePos.x > maxPosX) {
 			moveableShape.setPosition(sf::Vector2f(maxPosX, moveableShape.getPosition().y));
 		}
@@ -36,13 +39,19 @@ public:
 		}
 		return (moveableShape.getPosition().x - minPosX) / (256 - 36);
 	}
-	void UpdateSlider(sf::Vector2f mousePos) {
+	void UpdateSlider(sf::Vector2f& mousePos) {
 		if (moveableShape.getGlobalBounds().contains(mousePos) && isVisible) {
 			hovering = true;;
 		}
 		else {
 			hovering = false;
 		}
+	}
+	bool isClickable() {
+		if (hovering && isVisible) {
+			return true;
+		}
+		return false;
 	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const

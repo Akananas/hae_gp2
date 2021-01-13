@@ -93,6 +93,9 @@ void Game::pollInput(double dt) {
 				|| dynamic_cast<MenuScene*>(curScene) && bullet.size() == 0)) {
 				Shoot();
 			}
+			else {
+				hud.CheckSlider();
+			}
 		}
 	}
 }

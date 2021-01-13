@@ -22,7 +22,12 @@ public:
 			isHovering = hovering;
 		}
 	}
-
+	bool isClickable() {
+		if (isHovering && isVisible) {
+			return true;
+		}
+		return false;
+	}
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{

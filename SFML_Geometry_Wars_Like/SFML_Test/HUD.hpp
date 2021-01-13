@@ -1,5 +1,6 @@
 #pragma once
 #include "Button.hpp"
+#include "Slider.hpp"
 #include "SFML/Graphics.hpp"
 class Game;
 class TextValue;
@@ -19,23 +20,18 @@ public:
 	sf::RectangleShape cursorPos;
 	Button optionButton;
 	Button closeButton;
+	Slider sfxSlider;
 	HUD(){}
 	HUD(Game* g);
 
-	void CheckButton() {
-		if (optionButton.isHovering || closeButton.isHovering) {
-			OptionMenu();
-		}
-	}
+	void CheckButton();
 
 	void Update(sf::Vector2f mousePos, double dt);
 	void UpdateBombText(int* bomb);
 	void LevelUp();
+	void CheckSlider();
 	bool ButtonHovered() {
-		if (optionButton.isHovering) {
-			return true;
-		}
-		if (closeButton.isHovering ) {
+		if (optionButton.isClickable() || closeButton.isClickable() || sfxSlider.isClickable()) {
 			return true;
 		}
 		return false;
@@ -45,11 +41,14 @@ public:
 			optionOpen = false;
 			optionButton.isVisible = true;
 			closeButton.isVisible = false;
+			sfxSlider.isVisible = false;
 		}
 		else {
 			optionOpen = true;
 			closeButton.isVisible = true;
 			optionButton.isVisible = false;
+			sfxSlider.isVisible = true;
+
 		}
 	}
 
@@ -66,6 +65,7 @@ private:
 		target.draw(bombText, states);
 		if (optionOpen) {
 			target.draw(closeButton, states);
+			target.draw(sfxSlider, states);
 		}
 		else {
 			target.draw(optionButton, states);
