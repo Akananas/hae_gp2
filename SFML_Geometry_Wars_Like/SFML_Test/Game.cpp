@@ -50,7 +50,8 @@ Game::Game(sf::RenderWindow* win) {
 	hud = HUD(this);
 	hud.SetCursorTexture();
 	hud.UpdateBombText(&player.bomb);
-
+	ChangeVolume(curSave.sfxVolume, SFX);
+	ChangeVolume(curSave.musicVolume, Music);
 	StartMenu();
 	for (int i = 0; i < cols; ++i) {
 		walls.push_back(sf::Vector2i(i, lastLine - 1));
@@ -327,7 +328,7 @@ SaveFile Game::ReadSaveFile() {
 	FILE* save = nullptr;
 	save = fopen("../res/SaveData.txt", "r");
 	if (save) {
-		fscanf(save, "%d %d %d %d %d %d", &saveFile.Highscore, &saveFile.MaxLevel, &saveFile.savedMoney, &saveFile.savedBomb, &saveFile.savedDamageLevel, &saveFile.savedAttackSpeedLevel);
+		fscanf(save, "%d %d %d %d %d %d %f %f", &saveFile.Highscore, &saveFile.MaxLevel, &saveFile.savedMoney, &saveFile.savedBomb, &saveFile.savedDamageLevel, &saveFile.savedAttackSpeedLevel, &saveFile.sfxVolume, &saveFile.musicVolume);
 		fclose(save);
 	}
 	return saveFile;
@@ -336,6 +337,6 @@ SaveFile Game::ReadSaveFile() {
 void Game::SaveGame() {
 	FILE* save = nullptr;
 	save = fopen("../res/SaveData.txt", "w");
-	fprintf(save, "%d %d %d %d %d %d", highScore, maxLevel, textVal.money, player.bomb, player.damageLevel, player.attackSpeedLevel);
+	fprintf(save, "%d %d %d %d %d %d %f %f", highScore, maxLevel, textVal.money, player.bomb, player.damageLevel, player.attackSpeedLevel, hud.sfxSlider.GetValue(), hud.musicSlider.GetValue());
 	fclose(save);
 }

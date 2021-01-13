@@ -14,7 +14,7 @@ public:
 	bool isVisible = false;
 	bool hovering = false;
 	Slider(){}
-	Slider(SliderEffect _se, sf::Vector2f pos, sf::Font* font, std::string _textString) {
+	Slider(SliderEffect _se, sf::Vector2f pos, sf::Font* font, std::string _textString, float val) {
 		sliderEffect = _se;
 		background.setSize(sf::Vector2f(256, 36));
 		background.setOrigin(128, 18);
@@ -24,7 +24,7 @@ public:
 		moveableShape.setOrigin(18, 18);
 		minPosX = background.getPosition().x - (256 / 2) + 18;
 		maxPosX = background.getPosition().x + (256 / 2) - 18;
-		moveableShape.setPosition(sf::Vector2f(maxPosX, pos.y));
+		moveableShape.setPosition(sf::Vector2f(minPosX + val * (maxPosX - minPosX), pos.y));
 		moveableShape.setFillColor(sf::Color::Red);
 		sliderName.setFont(*font);
 		sliderName.setCharacterSize(18);
@@ -32,7 +32,9 @@ public:
 		sf::FloatRect textBounds = sliderName.getLocalBounds();
 		sliderName.setPosition(sf::Vector2f(pos.x - textBounds.width / 2.0, pos.y - 56));
 	}
-
+	float GetValue() {
+		return (moveableShape.getPosition().x - minPosX) / (256 - 36);
+	}
 	float DragSlider(sf::Vector2f mousePos) {
 		if (mousePos.x > maxPosX) {
 			moveableShape.setPosition(sf::Vector2f(maxPosX, moveableShape.getPosition().y));
@@ -43,7 +45,7 @@ public:
 		else {
 			moveableShape.setPosition(sf::Vector2f(mousePos.x, moveableShape.getPosition().y));
 		}
-		return (moveableShape.getPosition().x - minPosX) / (256 - 36);
+		return GetValue();
 	}
 	void UpdateSlider(sf::Vector2f& mousePos) {
 		if (moveableShape.getGlobalBounds().contains(mousePos) && isVisible) {

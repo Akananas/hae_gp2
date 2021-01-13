@@ -24,6 +24,8 @@ struct SaveFile {
 	int savedBomb = 3;
 	int savedDamageLevel = 1;
 	int savedAttackSpeedLevel = 1;
+	float sfxVolume = 1.f;
+	float musicVolume = 1.f;
 };
 struct TextValue {
 	int level = 1;

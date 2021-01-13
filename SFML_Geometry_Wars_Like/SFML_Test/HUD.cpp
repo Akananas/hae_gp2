@@ -6,8 +6,8 @@ HUD::HUD(Game* g) {
 	val = &game->textVal;
 	font = &game->gameFont;
 	optionOpen = false;
-	sfxSlider = Slider(SFX, sf::Vector2f(640, 440), font, "SFX volume");
-	musicSlider = Slider(Music, sf::Vector2f(640, 340), font, "Music volume");
+	sfxSlider = Slider(SFX, sf::Vector2f(640, 440), font, "SFX volume", game->curSave.sfxVolume);
+	musicSlider = Slider(Music, sf::Vector2f(640, 340), font, "Music volume", game->curSave.musicVolume);
 	//optionButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
 	optionButton = Button("../res/Option/", sf::Vector2f(40, 40), true);
 	closeButton = Button("../res/Close/", sf::Vector2f(40, 40), false);
