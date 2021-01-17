@@ -1,5 +1,9 @@
 #pragma once
 #include "Scene.hpp"
+#include "FastEnemy.hpp"
+#include "SlowEnemy.hpp"
+#include "RotateEnemy.hpp"
+#include "Boss.hpp"
 class GameScene : public Scene {
 public:
 	std::vector<Enemy*> enemy;

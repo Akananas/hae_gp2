@@ -9,6 +9,20 @@ void GameScene::UpdateScene(double dt) {
 	if (levelTimer > 10) {
 		levelTimer = 0;
 		game->UpgradeLevel();
+		if (val->level%5 == 0) {
+			//Spawn boss
+			for (int i = 0; i < val->level / 5; i++) {
+				sf::Vector2f playerPos = game->player.GetPosition();
+				sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
+				sf::Vector2f newPos(playerPos - spawnPos);
+				while (Entity::getMag(newPos) < 250) {
+					spawnPos = sf::Vector2f(20 + (rand() % 1220), 20 + (rand() % 660));
+					newPos = playerPos - spawnPos;
+				}
+				Boss* boss = new Boss(game, val->level, spawnPos);
+				enemy.push_back(boss);
+			}
+		}
 	}
 	if (nextSpawnTimer >= 0.5f / ((float)val->level * 0.25f)) {
 		sf::Vector2f playerPos = game->player.GetPosition();

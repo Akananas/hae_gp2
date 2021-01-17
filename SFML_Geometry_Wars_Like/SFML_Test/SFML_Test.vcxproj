@@ -153,6 +153,7 @@
     <ClCompile Include="..\libs\imgui-1.79\imgui_demo.cpp" />
     <ClCompile Include="..\libs\imgui-1.79\imgui_draw.cpp" />
     <ClCompile Include="..\libs\imgui-1.79\imgui_widgets.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="SlowEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boss.hpp" />
     <ClInclude Include="Bullet.hpp" />
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="Enemy.hpp" />
