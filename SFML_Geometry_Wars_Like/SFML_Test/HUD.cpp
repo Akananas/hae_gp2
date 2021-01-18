@@ -9,12 +9,18 @@ HUD::HUD(Game* g) {
 	sfxSlider = Slider(SFX, sf::Vector2f(640, 440), font, "SFX volume", game->curSave.sfxVolume);
 	musicSlider = Slider(Music, sf::Vector2f(640, 340), font, "Music volume", game->curSave.musicVolume);
 	//optionButton = Button("../res/Option/", sf::Vector2f(40, 40), std::bind(&Game::StartGame, game));
-	optionButton = Button("../res/Option/", sf::Vector2f(40, 40), true);
-	closeButton = Button("../res/Close/", sf::Vector2f(40, 40), false);
+	optionButton = Button("../res/Option/", sf::Vector2f(30, 35), true);
+	closeButton = Button("../res/Close/", sf::Vector2f(30, 35), false);
 	if (cursor.loadFromFile("../res/crossair_white.png")) {
 		cursorPos.setSize(sf::Vector2f(32, 32));
 		cursorPos.setOrigin(16, 16);
 		cursorPos.setTexture(&cursor);
+	}
+	if (bombTex.loadFromFile("../res/buttonBomb.png")) {
+		bombButton.setSize(sf::Vector2f(35, 38));
+		bombButton.setOrigin(18, 19);
+		bombButton.setPosition(580, 677);
+		bombButton.setTexture(&bombTex);
 	}
 	moneyText.setFont(*font);
 	moneyText.setCharacterSize(24);
@@ -37,7 +43,7 @@ HUD::HUD(Game* g) {
 
 	bombText.setFont(*font);
 	bombText.setCharacterSize(24);
-	bombText.setPosition(sf::Vector2f(640, 50));
+	bombText.setPosition(sf::Vector2f(610, 660));
 	bombText.setFillColor(sf::Color::White);
 
 }

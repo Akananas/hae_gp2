@@ -48,7 +48,7 @@ Game::Game(sf::RenderWindow* win) {
 	player.LoadSave(curSave.savedDamageLevel, curSave.savedAttackSpeedLevel, curSave.savedBomb);
 
 	hud = HUD(this);
-	hud.SetCursorTexture();
+	hud.SetTexture();
 	hud.UpdateBombText(&player.bomb);
 	ChangeVolume(curSave.sfxVolume, SFX);
 	ChangeVolume(curSave.musicVolume, Music);
