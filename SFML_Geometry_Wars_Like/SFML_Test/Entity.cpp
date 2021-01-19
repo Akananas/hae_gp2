@@ -14,8 +14,8 @@ void Entity::SetCoordinate(sf::Vector2f pos) {
 	SetCoordinate(pos.x, pos.y);
 }
 
-void Entity::MoveX() {
-	rx += dx;
+void Entity::MoveX(double dt) {
+	rx += dx * dt;
 	if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
 		rx = 0.7;
 		dx = 0; // stop movement
@@ -34,8 +34,8 @@ void Entity::MoveX() {
 	}
 }
 
-void Entity::MoveY() {
-	ry += dy;
+void Entity::MoveY(double dt) {
+	ry += dy * dt;
 	if (hasCollision(cx, cy + radius / GRID_SIZE) && ry >= 0.7) {
 		ry = 0.7;
 		dy = 0;
@@ -72,8 +72,8 @@ void Entity::Pushback(Entity e) {
 	dy -= sin(ang) * repelPower * force;
 }
 void Entity::UpdateEntity(double dt) {
-	MoveX();
-	MoveY();
+	MoveX(dt);
+	MoveY(dt);
 	SetSpriteCoor();
 }
 bool Entity::overlaps(Entity e) {

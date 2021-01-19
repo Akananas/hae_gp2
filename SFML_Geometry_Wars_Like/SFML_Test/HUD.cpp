@@ -25,12 +25,12 @@ HUD::HUD(Game* g) {
 	}
 	coinsIcon.setSize(sf::Vector2f(38, 35));
 	coinsIcon.setOrigin(19, 18);
-	coinsIcon.setPosition(1140, 35);
+	coinsIcon.setPosition(1130, 35);
 	coinsIcon.setTexture(&game->coinsTex);
 
 	moneyText.setFont(*font);
 	moneyText.setCharacterSize(24);
-	moneyText.setPosition(1200, 20);
+	moneyText.setPosition(1160, 20);
 	moneyText.setFillColor(sf::Color::White);
 
 	scoreText.setFont(*font);
@@ -81,8 +81,8 @@ void HUD::Update(sf::Vector2f mousePos, double dt) {
 	cursorPos.setPosition(mousePos);
 	scoreText.setString("SCORE: " + std::to_string(val->score));
 	moneyText.setString(std::to_string(val->money));
-	sf::FloatRect textBounds = moneyText.getLocalBounds();
-	moneyText.setPosition(sf::Vector2f(1200 - textBounds.width / 2.0, 20));
+	/*sf::FloatRect textBounds = moneyText.getLocalBounds();
+	moneyText.setPosition(sf::Vector2f(1200 - textBounds.width / 2.0, 20));*/
 	fpsText.setString("FPS: " + std::to_string((int)(1 / dt)));
 }
 

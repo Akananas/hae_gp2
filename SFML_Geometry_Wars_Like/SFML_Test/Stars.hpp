@@ -18,7 +18,7 @@ private:
 	struct Star {
 		float velMul;
 	};
-	float speed = 5;
+	float speed = 0.05f;
 	std::vector<Star> _stars;
 	sf::VertexArray starsVertex;
 };

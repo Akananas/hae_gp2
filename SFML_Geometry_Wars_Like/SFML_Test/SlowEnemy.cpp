@@ -10,7 +10,7 @@ SlowEnemy::SlowEnemy(Game* g, int level, float x, float y, sf::Color _col) {
 	SetPosition(x, y);
 	canMove = false;
 	spawnTime = 0;
-	speed = 5.0;
+	speed = 15.0;
 }
 
 SlowEnemy::SlowEnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
@@ -23,5 +23,5 @@ SlowEnemy::SlowEnemy(Game* g, int level, sf::Vector2f spawn, sf::Color _col) {
 	SetPosition(spawn);
 	canMove = false;
 	spawnTime = 0;
-	speed = 5.0;
+	speed = 15.0;
 }

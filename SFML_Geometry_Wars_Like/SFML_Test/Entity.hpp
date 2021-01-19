@@ -63,8 +63,8 @@ public:
 	sf::Vector2f ConvertCoor(sf::Vector2f pos) {
 		return sf::Vector2f(pos.x / GRID_SIZE, pos.y / GRID_SIZE);
 	}
-	void MoveX();
-	void MoveY();
+	void MoveX(double dt);
+	void MoveY(double dt);
 	void SetSpriteCoor();
 	bool hasCollision(int nextX, int nextY);
 

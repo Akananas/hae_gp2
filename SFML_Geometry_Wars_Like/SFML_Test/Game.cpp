@@ -78,16 +78,16 @@ void Game::pollInput(double dt) {
 			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) ||
 			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-			player.dx = -0.5f;
+			player.dx = -35.f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-			player.dx = 0.5f;
+			player.dx = 35.f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
-			player.dy = -0.5f;
+			player.dy = -35.f;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-			player.dy = 0.5f;
+			player.dy = 35.f;
 		}
 		if (keyPressed) {
 			particleManager.push_back(ParticleSystem(8, sf::Color(86, 61, 245), player.GetPosition(), false, 50, 0.5));

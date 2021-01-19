@@ -19,13 +19,13 @@ public:
 		SetPosition(spawn);
 		canMove = false;
 		spawnTime = 0;
-		speed = 1;
+		speed = 80;
 	}
 
 	void UpdateEntity(double dt, sf::Vector2i& playerPos) override;
 
-	void MoveX();
+	void MoveX(double dt);
 
-	void MoveY();
+	void MoveY(double dt);
 };
 

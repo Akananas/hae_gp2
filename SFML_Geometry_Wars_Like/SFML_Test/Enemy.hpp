@@ -4,7 +4,7 @@
 class Enemy : public Entity{
 public:
 	float hp = 5;
-	float speed = 5.0;
+	float speed = 35.0;
 	bool canMove = false;
 	float spawnTime = 0;
 

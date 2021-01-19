@@ -142,14 +142,6 @@ int main()
 
 		ImGui::Begin("Settings"); // begin window
 		ImGui::SetWindowSize(ImVec2(200, 100));
-											   // Background color edit
-		/*if (ImGui::ColorEdit3("Color", color)) {
-			// this code gets called if color value changes, so
-			// the background color is upgraded automatically!
-			bgColor.r = static_cast<sf::Uint8>(color[0] * 255.f);
-			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
-			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
-		}*/
 		ImGui::SliderFloat("Blur Width", &blurWidth, 0.0f, 80.0f);
 		ImGui::SliderInt("Money", &_money, 0, 10000);
 		if (ImGui::Button("Add Money")) {
@@ -158,7 +150,6 @@ int main()
 		ImGui::End(); // end window
 
 		newGame.Update(dt);
-		//window.clear(bgColor); // fill background with color
 		window.clear(); // fill background with color
 		//Draw gameobjects
 		newGame.drawGame();
@@ -185,7 +176,6 @@ int main()
 			sp.setColor(c);
 
 			window.draw(sp, rs);
-
 
 		}
 		ImGui::SFML::Render(window);

@@ -4,8 +4,8 @@ void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 	if (canMove) {
 		// Moving
 		if (rotating == false && rotatingTimer > 2.5) {
-			MoveX();
-			MoveY();
+			MoveX(dt);
+			MoveY(dt);
 			SetSpriteCoor();
 			float friction = 1.0f / (1 + 0.5f * float(dt));
 			dx *= friction;
@@ -67,8 +67,8 @@ void RotateEnemy::UpdateEntity(double dt, sf::Vector2i& playerPos) {
 	}
 }
 
-inline void RotateEnemy::MoveX() {
-	rx += dx;
+inline void RotateEnemy::MoveX(double dt) {
+	rx += dx * dt;
 	if (hasCollision(cx + radius / GRID_SIZE, cy) && rx >= 0.7) {
 		rx = 0.7;
 		dx = -dx; 
@@ -87,8 +87,8 @@ inline void RotateEnemy::MoveX() {
 	}
 }
 
-inline void RotateEnemy::MoveY() {
-	ry += dy;
+inline void RotateEnemy::MoveY(double dt) {
+	ry += dy * dt;
 	if (hasCollision(cx, cy + radius / GRID_SIZE) && ry >= 0.7) {
 		ry = 0.7;
 		dy = -dy;
