@@ -5,8 +5,6 @@
 #include <SFML/Graphics.hpp> //Inclut le header Graphics.hpp du dossier SFML
 #include "Game.hpp"
 #include "Lib.hpp"
-#include <imgui.h>
-#include <imgui-SFML.h>
 
 static sf::Shader* bloomShader = nullptr;
 static sf::Shader* blurShader = nullptr;
@@ -91,7 +89,6 @@ int main()
 	Game newGame(&window);
 	window.setMouseCursorVisible(false);
 
-	ImGui::SFML::Init(window);
 
 	double frameStart = 0.0;
 	double frameEnd = 0.0;
@@ -132,22 +129,12 @@ int main()
         sf::Event event;//Creer une variable qui va contenir les inputs de l'utilisateur
 		while (window.pollEvent(event))//Execute les events
 		{
-			ImGui::SFML::ProcessEvent(event);
 			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { //Si on essaye de fermer la fenetre
 				newGame.CloseGame();
 			}
 			newGame.processInput(event);
 		}
-		ImGui::SFML::Update(window, deltaClock.restart());
 
-		ImGui::Begin("Settings"); // begin window
-		ImGui::SetWindowSize(ImVec2(200, 100));
-		ImGui::SliderFloat("Blur Width", &blurWidth, 0.0f, 80.0f);
-		ImGui::SliderInt("Money", &_money, 0, 10000);
-		if (ImGui::Button("Add Money")) {
-			newGame.AddMoney(_money);
-		}
-		ImGui::End(); // end window
 
 		newGame.Update(dt);
 		window.clear(); // fill background with color
@@ -178,12 +165,9 @@ int main()
 			window.draw(sp, rs);
 
 		}
-		ImGui::SFML::Render(window);
 		window.display();
 		frameEnd = Lib::getTimeStamp();
     }
-
-	ImGui::SFML::Shutdown();
     return 0;
 }
 

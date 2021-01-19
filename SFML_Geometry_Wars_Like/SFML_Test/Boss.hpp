@@ -12,7 +12,7 @@ public:
 			SetPosition(spawn);
 			canMove = false;
 			spawnTime = 0;
-			speed = 3.0;
+			speed = 10;
 	}
 };
 
