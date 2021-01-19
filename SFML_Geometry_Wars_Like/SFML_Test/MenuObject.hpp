@@ -46,7 +46,7 @@ private:
             textEffect.setString("Start");
             break;
         case PowerUpState:
-            textEffect.setString("Power Up");
+            textEffect.setString("Damage Up");
             break;
         case AttackSpeedState:
             textEffect.setString("Attack Speed");

@@ -192,6 +192,14 @@ void Game::StartGame() {
 	UpgradeLevel();
 }
 
+void Game::EndGame() {
+	bullet.clear();
+	particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan,player.GetPosition(), false, 250, 5));
+	CheckHighscore();
+	StartRespawn();
+	StartMenu();
+}
+
 void Game::SwitchMenu(MenuObject& val, int& index) {
 	switch (val.ReturnVal()) {
 	case StartState:

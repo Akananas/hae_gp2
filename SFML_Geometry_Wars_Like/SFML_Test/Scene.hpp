@@ -10,9 +10,6 @@ public:
 	virtual void UpdateScene(double dt) = 0;
 	virtual void ProcessInput(sf::Event& event) = 0;
 private:
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		
-	}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 };
 

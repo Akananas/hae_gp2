@@ -42,18 +42,10 @@ public:
 	}
 	void OptionMenu() {
 		if (optionOpen) {
-			optionOpen = false;
-			optionButton.isVisible = true;
-			closeButton.isVisible = false;
-			sfxSlider.isVisible = false;
-			musicSlider.isVisible = false;
+			ChangeMenuVisibility(false);
 		}
 		else {
-			optionOpen = true;
-			closeButton.isVisible = true;
-			optionButton.isVisible = false;
-			sfxSlider.isVisible = true;
-			musicSlider.isVisible = true;
+			ChangeMenuVisibility(true);
 		}
 	}
 
@@ -62,6 +54,13 @@ public:
 		bombButton.setTexture(&bombTex);
 	}
 private:
+	void ChangeMenuVisibility(bool val) {
+		optionOpen = val;
+		closeButton.isVisible = val;
+		sfxSlider.isVisible = val;
+		musicSlider.isVisible = val;
+		optionButton.isVisible = !val;
+	}
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(fpsText, states);

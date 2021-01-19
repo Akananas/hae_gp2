@@ -88,7 +88,7 @@ public:
 		respawn = true;
 		respawnTimer = 0;
 	}
-
+	void EndGame();
 	void SwitchMenu(MenuObject& val, int& index);
 	void AddMoney(int _money);
 	void UpgradeLevel();

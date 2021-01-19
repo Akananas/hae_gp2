@@ -19,6 +19,7 @@ public:
 	void ProcessInput(sf::Event& event);
 	int BombDamage(float& bombRa);
 private:
+	sf::Vector2f FindSpawn();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		for (int i = enemy.size() - 1; i >= 0; i--) {

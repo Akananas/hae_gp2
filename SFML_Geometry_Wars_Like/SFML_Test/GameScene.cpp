@@ -12,26 +12,14 @@ void GameScene::UpdateScene(double dt) {
 		if (val->level%5 == 0) {
 			//Spawn boss
 			for (int i = 0; i < val->level / 5; i++) {
-				sf::Vector2f playerPos = game->player.GetPosition();
-				sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
-				sf::Vector2f newPos(playerPos - spawnPos);
-				while (Entity::getMag(newPos) < 250) {
-					spawnPos = sf::Vector2f(20 + (rand() % 1220), 20 + (rand() % 660));
-					newPos = playerPos - spawnPos;
-				}
+				sf::Vector2f spawnPos(FindSpawn());
 				Boss* boss = new Boss(game, val->level, spawnPos);
 				enemy.push_back(boss);
 			}
 		}
 	}
 	if (nextSpawnTimer >= 0.5f / ((float)val->level * 0.25f)) {
-		sf::Vector2f playerPos = game->player.GetPosition();
-		sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
-		sf::Vector2f newPos(playerPos - spawnPos);
-		while (Entity::getMag(newPos) < 250) {
-			spawnPos = sf::Vector2f(20 + (rand() % 1220), 20 + (rand() % 660));
-			newPos = playerPos - spawnPos;
-		}
+		sf::Vector2f spawnPos(FindSpawn());
 		int spawnRate = rand() % 100;
 		if (spawnRate < 33) {
 			SlowEnemy* en = new SlowEnemy(game, val->level, spawnPos, sf::Color(134, 91, 111));
@@ -48,8 +36,10 @@ void GameScene::UpdateScene(double dt) {
 		nextSpawnTimer = 0;
 	}
 	sf::Vector2i playerPosCase = game->player.GetPositionCase();
+	//Update enemies
 	for (int i = enemy.size() - 1; i >= 0; i--) {
 		enemy[i]->UpdateEntity(dt, playerPosCase);
+		//Check collision with player
 		if (game->player.overlaps(*enemy[i]) && enemy[i]->canHurtPlayer()) {
 			game->player.KillPlayer();
 			for (Enemy* en : enemy) {
@@ -57,19 +47,16 @@ void GameScene::UpdateScene(double dt) {
 				en = nullptr;
 			}
 			enemy.clear();
-			game->bullet.clear();
-			game->particleManager.push_back(ParticleSystem(4000, sf::Color::Cyan, game->player.GetPosition(), false, 250, 5));
-			game->CheckHighscore();
-			game->StartRespawn();
-			game->StartMenu();
+			game->EndGame();
 			return;
 		}
 	}
 	nextSpawnTimer += dt;
 	levelTimer += dt;
-
+	//Update bullets
 	for (int i = game->bullet.size() - 1; i >= 0; i--) {
 		game->bullet[i].UpdateEntity(dt);
+		//Check collision
 		for (int j = enemy.size() - 1; j >= 0; j--) {
 			if (game->bullet[i].overlaps(*enemy[j])) {
 				game->bullet[i].destroyed = true;
@@ -93,10 +80,12 @@ void GameScene::UpdateScene(double dt) {
 
 void GameScene::ProcessInput(sf::Event& event) {
 	if (event.type == sf::Event::KeyPressed) {
+		//Return to menu
 		if (event.key.code == sf::Keyboard::Space) {
 			game->StartMenu();
 			return;
 		}
+		//Use bomb
 		if (event.key.code == sf::Keyboard::E) {
 			if (game->player.BombAvailable()) {
 				game->particleManager.push_back(ParticleSystem(1000, sf::Color(247, 249, 118), game->player.GetPosition(), false, 500, 1.5));
@@ -128,4 +117,15 @@ int GameScene::BombDamage(float& bombRa) {
 		}
 	}
 	return bombChain;
+}
+
+sf::Vector2f GameScene::FindSpawn() {
+	sf::Vector2f playerPos = game->player.GetPosition();
+	sf::Vector2f spawnPos(20 + (rand() % 1220), 20 + (rand() % 660));
+	sf::Vector2f newPos(playerPos - spawnPos);
+	while (Entity::getMag(newPos) < 250) {
+		spawnPos = sf::Vector2f(20 + (rand() % 1220), 20 + (rand() % 660));
+		newPos = playerPos - spawnPos;
+	}
+	return spawnPos;
 }
