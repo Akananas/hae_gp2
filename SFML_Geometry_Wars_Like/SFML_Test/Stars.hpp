@@ -4,25 +4,17 @@
 class Stars : public sf::Drawable {
 public:
 	Stars():
-		_stars(1500),
-		starsVertex(sf::Points, 1500) 
+		_stars(1000),
+		starsVertex(sf::Points, 1000) 
 	{
 		for (std::size_t i = 0; i < _stars.size(); i++) {
 			_stars[i].velMul = 1 + rand() % 4;
 			starsVertex[i].position = sf::Vector2f(-640 + rand() % 2560, -360 + rand() % 1440);
 		}
 	}
-	void UpdateStars(double& dt, sf::Vector2f vel) {
-		for (std::size_t i = 0; i < _stars.size(); i++) {
-			starsVertex[i].position -= speed * (float)Entity::GRID_SIZE * vel * _stars[i].velMul * (float)dt;
-		}
-	}
+	void UpdateStars(double& dt, sf::Vector2f vel);
 private:
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		// draw the vertex array
-		target.draw(starsVertex, states);
-	}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	struct Star {
 		float velMul;
 	};

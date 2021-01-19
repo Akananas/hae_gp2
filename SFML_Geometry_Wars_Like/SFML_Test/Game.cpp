@@ -6,33 +6,31 @@
 Game::Game(sf::RenderWindow* win) {
 	this->win = win;
 	curView = win->getView();
-	if (bgm.openFromFile("../res/Speedier Than Photons.wav")) {
-		bgm.setLoop(true);
-		bgm.setVolume(15);
-		bgm.play();
+	if (!coinsTex.loadFromFile("../res/coins.png")) {
+		std::cout << "ERROR COINS NOT FOUND" << std::endl;
 	}
 	if (!gameFont.loadFromFile("../res/Squares Bold Free.otf")) {
 		std::cout << "ERROR NO FONT" << std::endl;
 	}
+	//Load sound and music
+	if (bgm.openFromFile("../res/Speedier Than Photons.wav")) {
+		bgm.setLoop(true);
+		bgm.play();
+	}
 	if (hitSoundBuffer.loadFromFile("../res/Hit_Hurt7.wav")) {
 		hitSound.setBuffer(hitSoundBuffer);
-		hitSound.setVolume(15);
 	}
 	if (powerUpSoundBuffer.loadFromFile("../res/Powerup22.wav")) {
 		powerUpSound.setBuffer(powerUpSoundBuffer);
-		powerUpSound.setVolume(15);
 	}
 	if (attackSoundBuffer.loadFromFile("../res/Laser_Shoot36.wav")) {
 		attackSound.setBuffer(attackSoundBuffer);
-		attackSound.setVolume(5);
 	}
 	if (explosionSoundBuffer.loadFromFile("../res/Explosion57.wav")) {
 		explosionSound.setBuffer(explosionSoundBuffer);
-		explosionSound.setVolume(15);
 	}
 	if (bombSoundBuffer.loadFromFile("../res/Explosion80.wav")) {
 		bombSound.setBuffer(bombSoundBuffer);
-		bombSound.setVolume(15);
 	}
 	chargeAttack = new HotReloadShader("../res/player.vert", "../res/player.frag");
 	shockwave = new HotReloadShader("../res/simple.vert", "../res/shockwave.frag");
@@ -48,11 +46,12 @@ Game::Game(sf::RenderWindow* win) {
 	player.LoadSave(curSave.savedDamageLevel, curSave.savedAttackSpeedLevel, curSave.savedBomb);
 
 	hud = HUD(this);
-	hud.SetTexture();
+	hud.SetData();
 	hud.UpdateBombText(&player.bomb);
 	ChangeVolume(curSave.sfxVolume, SFX);
 	ChangeVolume(curSave.musicVolume, Music);
 	StartMenu();
+	//Create wall
 	for (int i = 0; i < cols; ++i) {
 		walls.push_back(sf::Vector2i(i, lastLine - 1));
 		walls.push_back(sf::Vector2i(i, 0));
@@ -250,6 +249,19 @@ void Game::UpgradeLevel() {
 	hud.LevelUp();
 }
 
+void Game::ChangeVolume(float val, SliderEffect effect) {
+	if (effect == SFX) {
+		attackSound.setVolume(5 * val);
+		hitSound.setVolume(15 * val);
+		explosionSound.setVolume(15 * val);
+		bombSound.setVolume(15 * val);
+		powerUpSound.setVolume(15 * val);
+	}
+	else if (effect == Music) {
+		bgm.setVolume(15 * val);
+	}
+}
+
 void Game::PlayerView() {
 	curView.setCenter(player.GetPosition());
 	win->setView(curView);
@@ -301,6 +313,7 @@ void Game::drawUI() {
 }
 
 void Game::Shoot() {
+	//Get direction vector from mouse pos and player pos
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*win);
 	sf::Vector2f mouseWorld = win->mapPixelToCoords(mousePos);
 	sf::Vector2f dir = mouseWorld - player.GetPosition();

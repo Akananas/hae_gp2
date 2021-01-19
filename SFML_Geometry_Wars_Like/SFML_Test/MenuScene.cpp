@@ -42,10 +42,10 @@ void MenuScene::ProcessInput(sf::Event& event) {
 }
 
 void MenuScene::CreateMenu() {
-	MenuObject start(StartState, sf::Color(71, 191, 255), sf::Vector2f(640, 620), game->gameFont, false);
-	MenuObject powerUp(PowerUpState, sf::Color(134, 91, 111), sf::Vector2f(320, 120), game->gameFont, true, 5 * game->player.damageLevel);
-	MenuObject attackSpeedUp(AttackSpeedState, sf::Color(143, 57, 133), sf::Vector2f(640, 120), game->gameFont, true, 5 * game->player.attackSpeedLevel);
-	MenuObject BombBuy(BombState, sf::Color(118, 5, 72), sf::Vector2f(910, 120), game->gameFont, true, 50);
+	MenuObject start(StartState, sf::Color(71, 191, 255), sf::Vector2f(640, 620), game->gameFont,&game->coinsTex, false);
+	MenuObject powerUp(PowerUpState, sf::Color(134, 91, 111), sf::Vector2f(320, 120), game->gameFont, &game->coinsTex, true, 5 * game->player.damageLevel);
+	MenuObject attackSpeedUp(AttackSpeedState, sf::Color(143, 57, 133), sf::Vector2f(640, 120), game->gameFont, &game->coinsTex, true, 5 * game->player.attackSpeedLevel);
+	MenuObject BombBuy(BombState, sf::Color(118, 5, 72), sf::Vector2f(910, 120), game->gameFont, &game->coinsTex, true, 50);
 	menuObject.push_back(start);
 	menuObject.push_back(powerUp);
 	menuObject.push_back(attackSpeedUp);
@@ -60,4 +60,13 @@ void MenuScene::CreateMenu() {
 	highScoreText.setString("Highscore: " + std::to_string(game->highScore));
 	textBounds = highScoreText.getLocalBounds();
 	highScoreText.setPosition(sf::Vector2f(860 - textBounds.width / 2.0, 604));
+}
+
+void MenuScene::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (auto menu : menuObject) {
+		target.draw(menu, states);
+	}
+	target.draw(highScoreText);
+	target.draw(maxLevelText);
 }

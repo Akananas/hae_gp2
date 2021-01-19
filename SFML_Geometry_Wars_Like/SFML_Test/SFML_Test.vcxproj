@@ -173,6 +173,7 @@
     <ClCompile Include="SFML_Geometry_Wars_Like.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="SlowEnemy.cpp" />
+    <ClCompile Include="Stars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Boss.hpp" />

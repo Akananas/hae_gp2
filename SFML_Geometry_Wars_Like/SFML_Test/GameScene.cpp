@@ -129,3 +129,10 @@ sf::Vector2f GameScene::FindSpawn() {
 	}
 	return spawnPos;
 }
+
+void GameScene::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (int i = enemy.size() - 1; i >= 0; i--) {
+		target.draw(*enemy[i], states);
+	}
+}

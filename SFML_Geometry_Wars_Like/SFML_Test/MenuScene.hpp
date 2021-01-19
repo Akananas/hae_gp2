@@ -14,13 +14,6 @@ public:
 
 	void CreateMenu();
 private:
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		for (auto menu : menuObject) {
-			target.draw(menu, states);
-		}
-		target.draw(highScoreText);
-		target.draw(maxLevelText);
-	}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 

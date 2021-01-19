@@ -8,9 +8,13 @@ public:
 	sf::RectangleShape buttonShape;
 	bool isHovering = false;
 	bool isVisible = false;
+	std::function<void()> onClick;
 	Button(){}
-	Button(std::string path, sf::Vector2f pos, bool isVis);
+	Button(std::string path, sf::Vector2f pos, sf::Vector2f size,bool isVis);
 	void UpdateButton(sf::Vector2f mousePos);
+	void SetOnClick(std::function<void()> function) {
+		onClick = function;
+	}
 	void mouseHover(bool hovering) {
 		if (isVisible) {
 			if (hovering) {

@@ -134,8 +134,7 @@ int main()
 		{
 			ImGui::SFML::ProcessEvent(event);
 			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { //Si on essaye de fermer la fenetre
-				newGame.SaveGame();
-				window.close();//Ferme la fenetre
+				newGame.CloseGame();
 			}
 			newGame.processInput(event);
 		}

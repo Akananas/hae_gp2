@@ -2,12 +2,12 @@
 #include "HUD.hpp"
 
 
-Button::Button(std::string path, sf::Vector2f pos, bool isVis)
+Button::Button(std::string path, sf::Vector2f pos, sf::Vector2f size, bool isVis)
 {
 	idleTex.loadFromFile(path + "idle.png");
 	hoverTex.loadFromFile(path + "hover.png");
-	buttonShape.setSize(sf::Vector2f(48, 48));
-	buttonShape.setOrigin(24, 24);
+	buttonShape.setSize(size);
+	buttonShape.setOrigin(size.x/2.0f, size.y / 2.0f);
 	buttonShape.setPosition(pos);
 	isVisible = isVis;
 	buttonShape.setTexture(&idleTex);

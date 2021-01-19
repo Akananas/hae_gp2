@@ -66,6 +66,7 @@ public:
 	HotReloadShader* shockwave = nullptr;
 	sf::Texture winTex;
 	sf::Texture noise;
+	sf::Texture coinsTex;
 	bool respawn;
 	float respawnTimer = 0.0f;
 	float shootTimer = 0.0f;
@@ -89,21 +90,14 @@ public:
 		respawnTimer = 0;
 	}
 	void EndGame();
+	void CloseGame() {
+		SaveGame();
+		win->close();
+	}
 	void SwitchMenu(MenuObject& val, int& index);
 	void AddMoney(int _money);
 	void UpgradeLevel();
-	void ChangeVolume(float val, SliderEffect effect) {
-		if (effect == SFX) {
-			attackSound.setVolume(5 * val);
-			hitSound.setVolume(15 * val);
-			explosionSound.setVolume(15 * val);
-			bombSound.setVolume(15 * val);
-			powerUpSound.setVolume(15 * val);
-		}
-		else if (effect == Music) {
-			bgm.setVolume(15 * val);
-		}
-	}
+	void ChangeVolume(float val, SliderEffect effect);
 	void PlayerView();
 	void drawGame();
 	void drawUI();

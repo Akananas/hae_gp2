@@ -17,14 +17,9 @@ public:
 	void InitScene();
 	void UpdateScene(double dt);
 	void ProcessInput(sf::Event& event);
-	int BombDamage(float& bombRa);
 private:
+	int BombDamage(float& bombRa);
 	sf::Vector2f FindSpawn();
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		for (int i = enemy.size() - 1; i >= 0; i--) {
-			target.draw(*enemy[i],states);
-		}
-	}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
